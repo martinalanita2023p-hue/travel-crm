@@ -1,0 +1,88 @@
+/* ===========================
+   MANAGER DASHBOARD
+=========================== */
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  margin: 30px 0;
+}
+
+.stat-card {
+  background: #ffffff !important;
+  border: 3px solid #1976d2 !important;
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #444 !important;
+  margin-bottom: 15px;
+}
+
+.stat-card h1 {
+  font-size: 50px;
+  font-weight: 900;
+  color: #0d47a1 !important;
+  margin: 0;
+  text-shadow: none !important;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+.agent-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background: white;
+  border: 2px solid #1976d2;
+}
+
+.agent-table th {
+  background: #1976d2;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px;
+  border: 1px solid #1565c0;
+}
+
+.agent-table td {
+  padding: 12px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  color: #222 !important;
+  border: 1px solid #ddd;
+}
+
+.agent-table tr:nth-child(even) {
+  background: #f5f9ff;
+}
+
+.agent-table tr:hover {
+  background: #dbeafe;
+}
+
+/* ===========================
+   FORCE ALL TEXT INSIDE CARDS
+=========================== */
+
+.stat-card * {
+  color: inherit !important;
+}
+
+.stat-card h1 {
+  color: #0d47a1 !important;
+}
+
+.stat-card h3 {
+  color: #444 !important;
+}

@@ -1,0 +1,257 @@
+/* ===========================
+   SIDEBAR
+=========================== */
+
+.sidebar {
+
+  width: 220px;
+  min-width: 220px;
+  height: 100vh;
+
+  background: #184a9c;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 25px 15px;
+
+  box-sizing: border-box;
+
+  box-shadow: 3px 0 10px rgba(0,0,0,.15);
+
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.sidebar h2 {
+
+  color: white;
+
+  font-size: 32px;
+
+  font-weight: 900;
+
+  text-align: center;
+
+  margin-bottom: 45px;
+
+  line-height: 1.2;
+
+}
+
+/* ===========================
+   MENU
+=========================== */
+
+.sidebar nav {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+}
+
+/* ===========================
+   LINKS
+=========================== */
+
+.sidebar a {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 14px 18px;
+
+  color: white;
+
+  text-decoration: none;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  border-radius: 12px;
+
+  transition: all .25s ease;
+
+}
+
+/* Hover */
+
+.sidebar a:hover {
+
+  background: rgba(255,255,255,.18);
+
+  transform: translateX(6px);
+
+}
+
+/* Active Page */
+
+.sidebar a.active {
+
+  background: white;
+
+  color: #184a9c;
+
+  font-weight: 700;
+
+}
+
+/* ===========================
+   ICONS
+=========================== */
+
+.sidebar a i,
+.sidebar a svg {
+
+  font-size: 22px;
+
+  width: 24px;
+
+  text-align: center;
+
+}
+
+/* ===========================
+   SPACER
+=========================== */
+
+.sidebar .spacer {
+
+  flex: 1;
+
+}
+
+/* ===========================
+   LOGOUT
+=========================== */
+
+.logout {
+
+  margin-top: auto;
+
+}
+
+/* ===========================
+   SCROLLBAR
+=========================== */
+
+.sidebar::-webkit-scrollbar {
+
+  width: 6px;
+
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+
+  background: rgba(255,255,255,.25);
+
+  border-radius: 20px;
+
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:20px 30px;
+
+background:white;
+
+border-bottom:1px solid #ddd;
+
+}
+
+.header-right{
+
+display:flex;
+
+align-items:center;
+
+gap:20px;
+
+}
+
+.logout-btn{
+
+padding:10px 18px;
+
+border:none;
+
+border-radius:8px;
+
+background:#d32f2f;
+
+color:white;
+
+font-size:15px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.logout-btn:hover{
+
+background:#b71c1c;
+
+}
+
+.welcome-title{
+
+margin:0;
+
+font-size:34px;
+
+font-weight:900;
+
+color:#1565c0;
+
+}
+
+.header-date{
+
+margin-top:8px;
+
+margin-bottom:12px;
+
+font-size:15px;
+
+font-weight:600;
+
+color:#666;
+
+}
+
+.header h2{
+
+margin:8px 0 0;
+
+font-size:25px;
+
+font-weight:1000;
+
+color:#111;
+
+letter-spacing:.3px;
+
+}

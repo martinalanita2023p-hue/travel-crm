@@ -1,0 +1,35 @@
+.reports-container{
+
+background:white;
+
+padding:35px;
+
+margin:25px;
+
+border-radius:18px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.reports-container h2{
+
+margin:0;
+
+font-size:34px;
+
+color:#1565c0;
+
+font-weight:900;
+
+}
+
+.reports-container p{
+
+margin-top:12px;
+
+font-size:17px;
+
+color:#666;
+
+}
