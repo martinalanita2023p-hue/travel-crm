@@ -1,0 +1,19 @@
+.trend-card{
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.trend-card h3{
+
+margin-bottom:20px;
+
+color:#1d4ed8;
+
+}

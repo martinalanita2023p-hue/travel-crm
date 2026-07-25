@@ -25,6 +25,7 @@ function Agent() {
     mac_calls: 0,
     manager_calls: 0,
     airport_calls: 0,
+    name_calls: 0,
 
     dc_calls: 0,
     dc_sales: 0,
@@ -153,6 +154,8 @@ function Agent() {
           handleChange={handleChange}
 
         />
+
+        
 
         <div className="performance-card">
 

@@ -8,15 +8,17 @@ const dashboardSections = [
 
     fields: [
 
-      { label: "Fresh Calls", name: "fresh_calls" },
+  { label: "Fresh Calls", name: "fresh_calls" },
 
-      { label: "MAC Calls", name: "mac_calls" },
+  { label: "Name Calls", name: "name_calls" },
 
-      { label: "Manager Calls", name: "manager_calls" },
+  { label: "MAC Calls", name: "mac_calls" },
 
-      { label: "Airport Calls", name: "airport_calls" },
+  { label: "Manager Calls", name: "manager_calls" },
 
-    ]
+  { label: "Airport Calls", name: "airport_calls" },
+
+]
 
   },
 

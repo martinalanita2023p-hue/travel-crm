@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Reports from "./pages/Reports";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -10,48 +10,46 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Login />} />
 
-  <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
-  <Route path="/login" element={<Login />} />
+        <Route
+          path="/agent"
+          element={
+            <ProtectedRoute role="Agent">
+              <Agent />
+            </ProtectedRoute>
+          }
+        />
 
-  <Route
-    path="/agent"
-    element={
-      <ProtectedRoute role="Agent">
-        <Agent />
-      </ProtectedRoute>
-    }
-  />
+        <Route
+          path="/manager"
+          element={
+            <ProtectedRoute role="Manager">
+              <Manager />
+            </ProtectedRoute>
+          }
+        />
 
-  <Route
-    path="/manager"
-    element={
-      <ProtectedRoute role="Manager">
-        <Manager />
-      </ProtectedRoute>
-    }
-  />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute role="Manager">
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
 
-  <Route
-  path="/reports"
-  element={
-    <ProtectedRoute role="Manager">
-      <Reports />
-    </ProtectedRoute>
-  }
-/>
-
-  <Route
-    path="/reception"
-    element={
-      <ProtectedRoute role="Manager">
-        <Reception />
-      </ProtectedRoute>
-    }
-  />
-
-</Routes>
+        <Route
+          path="/reception"
+          element={
+            <ProtectedRoute role="Manager">
+              <Reception />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

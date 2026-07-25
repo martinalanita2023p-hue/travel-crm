@@ -1,0 +1,136 @@
+.performance-card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 25px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.08);
+}
+
+.performance-card h2 {
+  margin-bottom: 18px;
+  color: #1d4ed8;
+}
+
+.performance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.performance-table th {
+  background: #1d4ed8;
+  color: white;
+  padding: 12px;
+}
+
+.performance-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.performance-table tr:hover {
+  background: #f8faff;
+}
+
+.no-data {
+  padding: 30px;
+  text-align: center;
+  color: gray;
+}
+
+.target-met {
+  background: #d4edda;
+  color: #155724;
+  font-weight: 700;
+  text-align: center;
+}
+
+.target-missed {
+  background: #f8d7da;
+  color: #721c24;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Fresh Call Target */
+
+.target-met{
+    background:#dcfce7;
+    color:#166534;
+    font-weight:700;
+    text-align:center;
+}
+
+.target-missed{
+    background:#fee2e2;
+    color:#b91c1c;
+    font-weight:700;
+    text-align:center;
+}
+
+/* Conversion */
+
+.conversion-good{
+    background:#dcfce7;
+    color:#166534;
+    font-weight:700;
+    text-align:center;
+}
+
+.conversion-average{
+    background:#fef3c7;
+    color:#92400e;
+    font-weight:700;
+    text-align:center;
+}
+
+.conversion-poor{
+    background:#fee2e2;
+    color:#991b1b;
+    font-weight:700;
+    text-align:center;
+}
+
+/* Buttons */
+
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+}
+
+.edit-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:6px 12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.2s;
+}
+
+.edit-btn:hover{
+    background:#1d4ed8;
+}
+
+.no-data{
+    text-align:center;
+    font-weight:600;
+    padding:20px;
+}
+
+.delete-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.2s;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}
