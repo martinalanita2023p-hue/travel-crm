@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateAgentReport } from "../../services/managerService";
+import { updateAgentReport } from "../../services/ManagerService";
 import "./EditReportModal.css";
 
 export default function EditReportModal({
