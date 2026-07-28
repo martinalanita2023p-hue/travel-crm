@@ -6,12 +6,12 @@ import DashboardRenderer from "../components/DashboardRenderer";
 
 import "../styles/agentDashboard.css";
 
-import { getUser } from "../services/AuthService";
+import { getUser } from "../services/authService";
 
 import {
   getTodayReport,
   submitAgentReport,
-} from "../services/agentService";
+} from "../services/AgentService";
 
 function Agent() {
 
