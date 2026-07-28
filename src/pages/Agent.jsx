@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
-import AgentHeader from "../components/agentHeader";
+import AgentHeader from "../components/AgentHeader";
 import DashboardRenderer from "../components/DashboardRenderer";
 
 import "../styles/agentDashboard.css";
