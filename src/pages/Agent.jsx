@@ -11,7 +11,7 @@ import { getUser } from "../services/AuthService";
 import {
   getTodayReport,
   submitAgentReport,
-} from "../services/agentService";
+} from "../services/AgentService";
 
 function Agent() {
 
