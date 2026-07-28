@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getReportsByDate } from "../services/managerService";
+import { getReportsByDate } from "../services/ManagerService";
 
 export default function useManagerData(selectedDate) {
   const [reports, setReports] = useState([]);

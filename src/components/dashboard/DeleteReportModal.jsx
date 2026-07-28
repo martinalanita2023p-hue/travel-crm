@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./DeleteReportModal.css";
-import { deleteAgentReport } from "../../services/managerService";
+import { deleteAgentReport } from "../../services/ManagerService";
 
 export default function DeleteReportModal({
   report,
