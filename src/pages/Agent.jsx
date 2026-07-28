@@ -6,7 +6,7 @@ import DashboardRenderer from "../components/DashboardRenderer";
 
 import "../styles/agentDashboard.css";
 
-import { getUser } from "../services/authService";
+import { getUser } from "../services/AuthService";
 
 import {
   getTodayReport,
