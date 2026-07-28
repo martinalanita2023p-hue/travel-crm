@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
-import AgentHeader from "../components/AgentHeader";
+import AgentHeader from "../components/agentHeader";
 import DashboardRenderer from "../components/DashboardRenderer";
 
 import "../styles/agentDashboard.css";
@@ -31,7 +31,7 @@ function Agent() {
     dc_sales: 0,
 
     cancellation_calls: 0,
-    cancellation_sales: 0,
+    cancellation_sales: 0, 
 
     fresh_tickets: 0,
     b2c_sales: 0,

@@ -1,4 +1,4 @@
-import { getUser } from "../services/AuthService";
+import { getUser } from "../services/authService";
 
 function AgentHeader() {
 

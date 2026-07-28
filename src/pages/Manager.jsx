@@ -17,7 +17,7 @@ import DeleteReportModal from "../components/dashboard/DeleteReportModal";
 // import Leaderboard from "../components/dashboard/Leaderboard";
 
 import useManagerData from "../hooks/useManagerData";
-import { getAllAgents } from "../services/userService";
+import { getAllAgents } from "../services/UserService";
 
 import "../styles/manager.css";
 

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getUser } from "../services/AuthService";
+import { getUser } from "../services/authService";
 
 function ProtectedRoute({ children, role }) {
 
