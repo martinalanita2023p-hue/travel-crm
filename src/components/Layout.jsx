@@ -5,7 +5,7 @@ import "../styles/sidebar.css";
 import {
   getUser,
   logout,
-} from "../services/AuthService";
+} from "../services/authService";
 
 function Layout({ title, children }) {
 
