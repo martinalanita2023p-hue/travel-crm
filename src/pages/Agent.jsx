@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
 import AgentHeader from "../components/AgentHeader";
-import DashboardRenderer from "../components/DashboardRenderer";
+import DashboardRenderer from "../components/dashboardRenderer";
 
-import "../styles/agentDashboard.css";
+import "../styles/agentdashboard.css";
 
 import { getUser } from "../services/AuthService";
 
