@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
 import "../styles/reception.css";
-import { saveServiceRequest } from "../services/ServiceRequestService";
+import { saveServiceRequest } from "../services/serviceRequestService";
 
 function Reception() {
 const [customerName, setCustomerName] = useState("");
