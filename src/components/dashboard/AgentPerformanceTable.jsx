@@ -5,129 +5,237 @@ export default function AgentPerformanceTable({
   onEdit,
   onDelete,
 }) {
+
   return (
-    <div className="performance-card">
-      <h2>👥 Agent Performance</h2>
 
-      <table className="performance-table">
-        <thead>
-          <tr>
-            <th>Agent</th>
-            <th>Fresh Calls</th>
-            <th>Name Calls</th>
-            <th>MAC Calls</th>
-            <th>Manager Calls</th>
-            <th>Airport Calls</th>
-            <th>Tickets</th>
-            <th>PNRs</th>
-            <th>Insurance</th>
-            <th>Google</th>
-            <th>Trustpilot</th>
-            <th>TOA ($)</th>
-            <th>Conversion</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+    <div className="table-card">
 
-        <tbody>
-          {reports.length === 0 ? (
+      <div className="table-header">
+
+        <h2>👥 Agent Performance</h2>
+
+        <span>
+          {reports.length} Agent(s)
+        </span>
+
+      </div>
+
+      <div className="table-wrapper">
+
+        <table className="performance-table">
+
+          <thead>
+
             <tr>
-              <td colSpan="14" className="no-data">
-                No reports found.
-              </td>
+
+              <th>Agent</th>
+
+              <th>Fresh</th>
+
+              <th>Name</th>
+
+              <th>MAC</th>
+
+              <th>Manager</th>
+
+              <th>Airport</th>
+
+              <th>Tickets</th>
+
+              <th>PNRs</th>
+
+              <th>Insurance</th>
+
+              <th>Google</th>
+
+              <th>Trustpilot</th>
+
+              <th>TOA</th>
+
+              <th>Conversion</th>
+
+              <th>Actions</th>
+
             </tr>
-          ) : (
-            reports.map((report) => {
-              const freshCalls = Number(report.fresh_calls || 0);
-              const tickets = Number(report.fresh_tickets || 0);
 
-              const conversion =
-                freshCalls === 0
-                  ? 0
-                  : Number(((tickets / freshCalls) * 100).toFixed(1));
+          </thead>
 
-              return (
-                <tr key={report.id}>
-                  <td>{report.agent_name}</td>
+          <tbody>
 
-                  {/* Fresh Calls */}
-                  <td
-                    className={
-                      freshCalls >= 5
-                        ? "target-met"
-                        : "target-missed"
-                    }
-                  >
-                    {freshCalls}
-                  </td>
+            {reports.length === 0 ? (
 
-                  {/* Name Calls */}
-                  <td>{report.name_calls || 0}</td>
+              <tr>
 
-                  {/* MAC Calls */}
-                  <td>{report.mac_calls || 0}</td>
+                <td
+                  colSpan="14"
+                  className="no-data"
+                >
 
-                  {/* Manager Calls */}
-                  <td>{report.manager_calls || 0}</td>
+                  No reports found.
 
-                  {/* Airport Calls */}
-                  <td>{report.airport_calls || 0}</td>
+                </td>
 
-                  {/* Tickets */}
-                  <td>{tickets}</td>
+              </tr>
 
-                  {/* PNRs */}
-                  <td>{report.pnrs_created || 0}</td>
+            ) : (
 
-                  {/* Insurance */}
-                  <td>{report.insurance_sold || 0}</td>
+              reports.map((report) => {
 
-                  {/* Google */}
-                  <td>{report.google_reviews || 0}</td>
+                const fresh =
+                  Number(
+                    report.fresh_calls || 0
+                  );
 
-                  {/* Trustpilot */}
-                  <td>{report.trustpilot_reviews || 0}</td>
+                const tickets =
+                  Number(
+                    report.fresh_tickets || 0
+                  );
 
-                  {/* TOA */}
-                  <td>${Number(report.token_appreciation || 0)}</td>
+                const conversion =
+                  fresh === 0
+                    ? 0
+                    : Number(
+                        (
+                          (tickets / fresh) *
+                          100
+                        ).toFixed(1)
+                      );
 
-                  {/* Conversion */}
-                  <td
-                    className={
-                      conversion >= 80
-                        ? "conversion-good"
-                        : conversion >= 60
-                        ? "conversion-average"
-                        : "conversion-poor"
-                    }
-                  >
-                    {conversion}%
-                  </td>
+                return (
 
-                  {/* Actions */}
-                  <td>
-                    <div className="action-buttons">
-                      <button
-                        className="edit-btn"
-                        onClick={() => onEdit?.(report)}
+                  <tr key={report.id}>
+
+                    <td className="agent-name">
+
+                      👤 {report.agent_name}
+
+                    </td>
+
+                    <td>{fresh}</td>
+
+                    <td>
+                      {report.name_calls || 0}
+                    </td>
+
+                    <td>
+                      {report.mac_calls || 0}
+                    </td>
+
+                    <td>
+                      {report.manager_calls || 0}
+                    </td>
+
+                    <td>
+                      {report.airport_calls || 0}
+                    </td>
+
+                    <td className="ticket-cell">
+
+                      {tickets}
+
+                    </td>
+
+                    <td>
+
+                      {report.pnrs_created || 0}
+
+                    </td>
+
+                    <td>
+
+                      {report.insurance_sold || 0}
+
+                    </td>
+
+                    <td>
+
+                      {report.google_reviews || 0}
+
+                    </td>
+
+                    <td>
+
+                      {report.trustpilot_reviews || 0}
+
+                    </td>
+
+                    <td>
+
+                      $
+
+                      {Number(
+                        report.token_appreciation || 0
+                      )}
+
+                    </td>
+
+                    <td>
+
+                      <span
+                        className={
+                          conversion >= 80
+                            ? "badge green"
+
+                            : conversion >= 60
+
+                            ? "badge orange"
+
+                            : "badge red"
+                        }
                       >
-                        ✏️ Edit
-                      </button>
 
-                      <button
-                        className="delete-btn"
-                        onClick={() => onDelete?.(report)}
-                      >
-                        🗑 Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+                        {conversion}%
+
+                      </span>
+
+                    </td>
+
+                    <td>
+
+                      <div className="actions">
+
+                        <button
+                          className="edit-btn"
+                          onClick={() =>
+                            onEdit(report)
+                          }
+                        >
+
+                          ✏️
+
+                        </button>
+
+                        <button
+                          className="delete-btn"
+                          onClick={() =>
+                            onDelete(report)
+                          }
+                        >
+
+                          🗑
+
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                );
+
+              })
+
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
+
   );
+
 }

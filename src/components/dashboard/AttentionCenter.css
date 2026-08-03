@@ -1,0 +1,120 @@
+/* ==========================================
+   ATTENTION CENTER
+========================================== */
+
+.attention-center{
+
+background:linear-gradient(
+145deg,
+#f8faff,
+#eef2f7);
+
+border-radius:24px;
+
+padding:28px;
+
+margin:30px 0;
+
+box-shadow:
+10px 10px 25px rgba(163,177,198,.22),
+-10px -10px 25px rgba(255,255,255,.95);
+
+}
+
+/* ==========================================
+   TITLE
+========================================== */
+
+.attention-center h2{
+
+margin:0 0 22px;
+
+font-size:24px;
+
+font-weight:700;
+
+color:#1b2430;
+
+}
+
+/* ==========================================
+   ALERT
+========================================== */
+
+.alert{
+
+display:flex;
+
+align-items:center;
+
+padding:16px 20px;
+
+margin-bottom:14px;
+
+border-radius:16px;
+
+font-size:15px;
+
+font-weight:600;
+
+transition:.25s;
+
+}
+
+.alert:last-child{
+
+margin-bottom:0;
+
+}
+
+/* ==========================================
+   RED
+========================================== */
+
+.alert.red{
+
+background:#ffe8e8;
+
+color:#d32f2f;
+
+border-left:6px solid #d32f2f;
+
+}
+
+/* ==========================================
+   YELLOW
+========================================== */
+
+.alert.yellow{
+
+background:#fff8e5;
+
+color:#d68910;
+
+border-left:6px solid #f5b301;
+
+}
+
+/* ==========================================
+   GREEN
+========================================== */
+
+.alert.green{
+
+background:#eafaf1;
+
+color:#1e8449;
+
+border-left:6px solid #2ecc71;
+
+}
+
+/* ==========================================
+   HOVER
+========================================== */
+
+.alert:hover{
+
+transform:translateX(6px);
+
+}

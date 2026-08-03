@@ -1,136 +1,324 @@
-.performance-card {
-  background: white;
-  border-radius: 14px;
-  padding: 20px;
-  margin-top: 25px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.08);
+/* ==========================================
+   TABLE CARD
+========================================== */
+
+.table-card{
+
+background:#ffffff;
+
+border-radius:22px;
+
+padding:24px;
+
+box-shadow:0 8px 30px rgba(0,0,0,.08);
+
 }
 
-.performance-card h2 {
-  margin-bottom: 18px;
-  color: #1d4ed8;
+/* ==========================================
+   HEADER
+========================================== */
+
+.table-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
 }
 
-.performance-table {
-  width: 100%;
-  border-collapse: collapse;
+.table-header h2{
+
+margin:0;
+
+font-size:26px;
+
+font-weight:800;
+
+color:#111827;
+
 }
 
-.performance-table th {
-  background: #1d4ed8;
-  color: white;
-  padding: 12px;
+.table-header span{
+
+background:#eef2ff;
+
+color:#4f46e5;
+
+padding:8px 16px;
+
+border-radius:12px;
+
+font-weight:700;
+
 }
 
-.performance-table td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
+/* ==========================================
+   TABLE WRAPPER
+========================================== */
+
+.table-wrapper{
+
+overflow:auto;
+
+border-radius:18px;
+
 }
 
-.performance-table tr:hover {
-  background: #f8faff;
+/* ==========================================
+   TABLE
+========================================== */
+
+.performance-table{
+
+width:100%;
+
+min-width:1400px;
+
+border-collapse:separate;
+
+border-spacing:0;
+
+background:white;
+
 }
 
-.no-data {
-  padding: 30px;
-  text-align: center;
-  color: gray;
+/* ==========================================
+   HEADER
+========================================== */
+
+.performance-table thead th{
+
+position:sticky;
+
+top:0;
+
+background:#4f46e5;
+
+color:white;
+
+padding:16px;
+
+font-size:14px;
+
+font-weight:700;
+
+white-space:nowrap;
+
+z-index:5;
+
 }
 
-.target-met {
-  background: #d4edda;
-  color: #155724;
-  font-weight: 700;
-  text-align: center;
+/* ==========================================
+   BODY
+========================================== */
+
+.performance-table tbody td{
+
+padding:16px;
+
+font-size:14px;
+
+border-bottom:1px solid #edf2f7;
+
+white-space:nowrap;
+
+text-align:center;
+
 }
 
-.target-missed {
-  background: #f8d7da;
-  color: #721c24;
-  font-weight: 700;
-  text-align: center;
+/* ==========================================
+   ROW
+========================================== */
+
+.performance-table tbody tr{
+
+transition:.25s;
+
 }
 
-/* Fresh Call Target */
+.performance-table tbody tr:hover{
 
-.target-met{
-    background:#dcfce7;
-    color:#166534;
-    font-weight:700;
-    text-align:center;
+background:#f8faff;
+
 }
 
-.target-missed{
-    background:#fee2e2;
-    color:#b91c1c;
-    font-weight:700;
-    text-align:center;
+/* ==========================================
+   FIRST COLUMN
+========================================== */
+
+.agent-name{
+
+text-align:left!important;
+
+font-weight:700;
+
+color:#111827;
+
+position:sticky;
+
+left:0;
+
+background:white;
+
+z-index:4;
+
 }
 
-/* Conversion */
+/* ==========================================
+   TICKET
+========================================== */
 
-.conversion-good{
-    background:#dcfce7;
-    color:#166534;
-    font-weight:700;
-    text-align:center;
+.ticket-cell{
+
+font-weight:800;
+
+color:#2563eb;
+
 }
 
-.conversion-average{
-    background:#fef3c7;
-    color:#92400e;
-    font-weight:700;
-    text-align:center;
+/* ==========================================
+   BADGES
+========================================== */
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:6px 14px;
+
+border-radius:30px;
+
+font-weight:700;
+
+font-size:13px;
+
+min-width:72px;
+
 }
 
-.conversion-poor{
-    background:#fee2e2;
-    color:#991b1b;
-    font-weight:700;
-    text-align:center;
+.green{
+
+background:#dcfce7;
+
+color:#15803d;
+
 }
 
-/* Buttons */
+.orange{
 
-.action-buttons{
-    display:flex;
-    justify-content:center;
-    gap:8px;
+background:#fef3c7;
+
+color:#b45309;
+
+}
+
+.red{
+
+background:#fee2e2;
+
+color:#b91c1c;
+
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.actions{
+
+display:flex;
+
+justify-content:center;
+
+gap:10px;
+
+}
+
+.edit-btn,
+.delete-btn{
+
+width:38px;
+
+height:38px;
+
+border:none;
+
+border-radius:12px;
+
+cursor:pointer;
+
+font-size:17px;
+
+transition:.25s;
+
 }
 
 .edit-btn{
-    background:#2563eb;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding:6px 12px;
-    cursor:pointer;
-    font-weight:600;
-    transition:.2s;
+
+background:#dbeafe;
+
 }
 
 .edit-btn:hover{
-    background:#1d4ed8;
-}
 
-.no-data{
-    text-align:center;
-    font-weight:600;
-    padding:20px;
+background:#93c5fd;
+
+transform:scale(1.08);
+
 }
 
 .delete-btn{
-    background:#dc2626;
-    color:white;
-    border:none;
-    padding:6px 12px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:600;
-    transition:.2s;
+
+background:#fee2e2;
+
 }
 
 .delete-btn:hover{
-    background:#b91c1c;
+
+background:#fca5a5;
+
+transform:scale(1.08);
+
+}
+
+/* ==========================================
+   NO DATA
+========================================== */
+
+.no-data{
+
+padding:50px!important;
+
+text-align:center;
+
+font-size:18px;
+
+color:#6b7280;
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+.table-wrapper::-webkit-scrollbar{
+
+height:10px;
+
+}
+
+.table-wrapper::-webkit-scrollbar-thumb{
+
+background:#cbd5e1;
+
+border-radius:20px;
+
 }

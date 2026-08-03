@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+
+import "../styles/layout.css";
 import "../styles/sidebar.css";
 
 import {
@@ -7,22 +9,25 @@ import {
   logout,
 } from "../services/authService";
 
-function Layout({ title, children }) {
+export default function Layout({
+  title,
+  children,
+}) {
 
   const navigate = useNavigate();
 
   const user = getUser();
 
-  const today = new Date();
+  const now = new Date();
 
-  const date = today.toLocaleDateString("en-US", {
+  const date = now.toLocaleDateString("en-US", {
     weekday: "long",
-    year: "numeric",
     month: "long",
     day: "numeric",
+    year: "numeric",
   });
 
-  const time = today.toLocaleTimeString([], {
+  const time = now.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -37,40 +42,79 @@ function Layout({ title, children }) {
 
   return (
 
-    <div style={{ display: "flex" }}>
+    <div className="app-layout">
 
       <Sidebar />
 
-      <div style={{ flex: 1 }}>
+      <div className="main-layout">
 
         <header className="header">
 
-          <div>
+          <div className="header-left">
 
-            <h1 className="welcome-title">
+            <div className="header-title">
 
-              👋 Welcome, {user?.username}
+              <h1>
 
-            </h1>
+                {title || "Travel CRM"}
 
-            <div className="header-date">
+              </h1>
 
-              {date}
+              <p>
 
-              &nbsp;&nbsp;🕓 {time}
+                {date}
+
+                &nbsp;&nbsp;
+
+                🟢 {time}
+
+              </p>
 
             </div>
 
-            <h2>{title}</h2>
-
           </div>
 
-          <button
-            className="logout-btn"
-            onClick={handleLogout}
-          >
-            🚪 Logout
-          </button>
+          <div className="header-right">
+
+            <div className="user-card">
+
+              <div className="avatar">
+
+                👤
+
+              </div>
+
+              <div>
+
+                <h4>
+
+                  {user?.username || "Manager"}
+
+                </h4>
+
+                <span>
+
+                  Manager
+
+                </span>
+
+              </div>
+
+            </div>
+
+            <button
+
+              className="logout-btn"
+
+              onClick={handleLogout}
+
+            >
+
+              Logout
+
+            </button>
+
+          </div>
 
         </header>
 
@@ -87,5 +131,3 @@ function Layout({ title, children }) {
   );
 
 }
-
-export default Layout;

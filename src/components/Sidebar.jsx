@@ -1,29 +1,75 @@
 import { NavLink } from "react-router-dom";
-import "../styles/sidebar.css";
 
-function Sidebar() {
+export default function Sidebar() {
+
   return (
-    <div className="sidebar">
-      <h2>Travel CRM</h2>
 
-      <ul>
-        <li>
-          <NavLink to="/manager">🏠 Manager</NavLink>
-        </li>
-        
-        <li>
-  <NavLink to="/agent">
-    👨‍💼 Agent
-  </NavLink>
-</li>
+    <aside className="sidebar">
 
-        <li>
-          <NavLink to="/reception">📞 Reception</NavLink>
-        </li>
-      </ul>
-    </div>
+      <div className="sidebar-logo">
+
+        <h2>Travel CRM</h2>
+
+        <p>Management Portal</p>
+
+      </div>
+
+      <nav>
+
+        <NavLink to="/manager">
+
+          📊 Dashboard
+
+        </NavLink>
+
+        <NavLink to="/agent">
+
+          👨‍💼 Agents
+
+        </NavLink>
+
+        <NavLink to="/reception">
+
+          ☎ Reception
+
+        </NavLink>
+
+        <NavLink to="/reports">
+
+          📈 Reports
+
+        </NavLink>
+
+        <NavLink to="/settings">
+
+          ⚙ Settings
+
+        </NavLink>
+
+      </nav>
+
+      <div className="sidebar-spacer" />
+
+      <div className="sidebar-user">
+
+        <div className="sidebar-avatar">
+
+          👤
+
+        </div>
+
+        <div>
+
+          <h4>Manager</h4>
+
+          <span>Administrator</span>
+
+        </div>
+
+      </div>
+
+    </aside>
+
   );
-  
-}
 
-export default Sidebar;
+}

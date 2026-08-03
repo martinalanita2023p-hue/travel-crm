@@ -1,4 +1,6 @@
-function ManagerHeader({
+import "./ManagerHeader.css";
+
+export default function ManagerHeader({
   selectedDate,
   setSelectedDate,
   selectedAgent,
@@ -9,14 +11,17 @@ function ManagerHeader({
   exportExcel,
 }) {
   return (
-    <div className="manager-header">
+    <div className="manager-toolbar">
 
-      <div className="manager-title">
-        <h1>📊 Manager Dashboard</h1>
-        <p>Daily Team Performance</p>
+      <div className="toolbar-title">
+
+        <h2>📊 Manager Dashboard</h2>
+
+        <p>Daily Team Performance Overview</p>
+
       </div>
 
-      <div className="manager-controls">
+      <div className="toolbar-controls">
 
         <input
           type="date"
@@ -32,24 +37,21 @@ function ManagerHeader({
             setSelectedAgent(e.target.value)
           }
         >
-          <option value="All Agents">
-            All Agents
-          </option>
+          <option>All Agents</option>
 
           {agents.map((agent) => (
             <option
               key={agent.id}
-              value={agent.name}
+              value={agent.username}
             >
-              {agent.name}
+              {agent.username}
             </option>
           ))}
-
         </select>
 
         <input
           type="text"
-          placeholder="🔍 Search Agent..."
+          placeholder="Search agent..."
           value={search}
           onChange={(e) =>
             setSearch(e.target.value)
@@ -68,5 +70,3 @@ function ManagerHeader({
     </div>
   );
 }
-
-export default ManagerHeader;

@@ -1,80 +1,81 @@
 import "./TopPerformers.css";
 
-function topAgent(reports, field, money = false) {
-  if (!reports.length) return [];
+function topAgent(reports, field) {
+  if (!reports.length) return null;
+
+  return [...reports].sort(
+    (a, b) => Number(b[field] || 0) - Number(a[field] || 0)
+  )[0];
+}
+
+function bestConversion(reports) {
+  if (!reports.length) return null;
 
   return [...reports]
-    .sort((a, b) => Number(b[field] || 0) - Number(a[field] || 0))
-    .slice(0, 3);
+    .map((agent) => ({
+      ...agent,
+      conversion:
+        Number(agent.fresh_calls || 0) === 0
+          ? 0
+          : (
+              (Number(agent.fresh_tickets || 0) /
+                Number(agent.fresh_calls || 0)) *
+              100
+            ).toFixed(1),
+    }))
+    .sort((a, b) => b.conversion - a.conversion)[0];
 }
 
 export default function TopPerformers({ reports }) {
-  const tickets = topAgent(reports, "fresh_tickets");
-  const insurance = topAgent(reports, "insurance_sold");
-  const toa = topAgent(reports, "token_appreciation");
-  const reviews = topAgent(reports, "google_reviews");
+  const ticketChampion = topAgent(reports, "fresh_tickets");
+  const toaChampion = topAgent(reports, "token_appreciation");
+  const conversionChampion = bestConversion(reports);
 
-  function Card(title, list, field, money = false) {
-    const medals = ["🥇", "🥈", "🥉"];
+  // Temporary until Performance Score is built
+  const topPerformer = ticketChampion;
 
-    return (
-      <div className="performer-card">
-
-        <h3>{title}</h3>
-
-        {list.length === 0 ? (
-          <p>No Data</p>
-        ) : (
-          list.map((agent, index) => (
-            <div
-              key={agent.id}
-              className="performer-row"
-            >
-              <span>
-                {medals[index]} {agent.agent_name}
-              </span>
-
-              <strong>
-                {money
-                  ? `$${agent[field]}`
-                  : agent[field]}
-              </strong>
-            </div>
-          ))
-        )}
-
-      </div>
-    );
-  }
+  const cards = [
+    {
+      title: "🏆 Top Performer",
+      agent: topPerformer?.agent_name || "No Data",
+      value: topPerformer
+        ? `${topPerformer.fresh_tickets} Tickets`
+        : "",
+    },
+    {
+      title: "🥇 Best Conversion",
+      agent: conversionChampion?.agent_name || "No Data",
+      value: conversionChampion
+        ? `${conversionChampion.conversion}%`
+        : "",
+    },
+    {
+      title: "💰 Highest TOA",
+      agent: toaChampion?.agent_name || "No Data",
+      value: toaChampion
+        ? `$${toaChampion.token_appreciation}`
+        : "",
+    },
+    {
+      title: "🎫 Ticket Champion",
+      agent: ticketChampion?.agent_name || "No Data",
+      value: ticketChampion
+        ? `${ticketChampion.fresh_tickets} Tickets`
+        : "",
+    },
+  ];
 
   return (
     <div className="top-container">
+      {cards.map((card) => (
+        <div className="performer-card" key={card.title}>
+          <h3>{card.title}</h3>
 
-      {Card(
-        "🎫 Tickets",
-        tickets,
-        "fresh_tickets"
-      )}
+          <h2>{card.agent}</h2>
 
-      {Card(
-        "🛡 Insurance",
-        insurance,
-        "insurance_sold"
-      )}
-
-      {Card(
-        "💰 TOA",
-        toa,
-        "token_appreciation",
-        true
-      )}
-
-      {Card(
-        "⭐ Google Reviews",
-        reviews,
-        "google_reviews"
-      )}
-
+          <p>{card.value}</p>
+        </div>
+      ))}
     </div>
   );
 }

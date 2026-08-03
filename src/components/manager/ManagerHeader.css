@@ -1,0 +1,139 @@
+.manager-toolbar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-end;
+
+gap:24px;
+
+padding:24px;
+
+background:white;
+
+border-radius:20px;
+
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+
+}
+
+.toolbar-title h2{
+
+margin:0;
+
+font-size:30px;
+
+font-weight:800;
+
+color:#111827;
+
+}
+
+.toolbar-title p{
+
+margin-top:6px;
+
+color:#6b7280;
+
+font-size:15px;
+
+}
+
+.toolbar-controls{
+
+display:flex;
+
+gap:14px;
+
+align-items:center;
+
+flex-wrap:wrap;
+
+}
+
+.toolbar-controls input,
+.toolbar-controls select{
+
+height:44px;
+
+padding:0 16px;
+
+border:1px solid #d1d5db;
+
+border-radius:12px;
+
+font-size:14px;
+
+min-width:170px;
+
+background:white;
+
+}
+
+.toolbar-controls input:focus,
+.toolbar-controls select:focus{
+
+outline:none;
+
+border-color:#4f46e5;
+
+box-shadow:0 0 0 3px rgba(79,70,229,.15);
+
+}
+
+.export-btn{
+
+height:44px;
+
+padding:0 22px;
+
+border:none;
+
+border-radius:12px;
+
+background:#4f46e5;
+
+color:white;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.export-btn:hover{
+
+background:#4338ca;
+
+transform:translateY(-2px);
+
+}
+
+@media(max-width:1100px){
+
+.manager-toolbar{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+.toolbar-controls{
+
+width:100%;
+
+}
+
+.toolbar-controls input,
+.toolbar-controls select,
+.export-btn{
+
+width:100%;
+
+}
+
+}

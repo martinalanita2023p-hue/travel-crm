@@ -28,11 +28,11 @@ export default function KPICards({
       icon: "🎫",
     },
     {
-      title: "PNRs",
-      value: stats.pnrs,
-      key: "pnrs",
-      icon: "📄",
-    },
+  title: "MAC Calls",
+  value: stats.macCalls,
+  key: "macCalls",
+  icon: "📞",
+},
     {
       title: "Insurance",
       value: stats.insurance,
