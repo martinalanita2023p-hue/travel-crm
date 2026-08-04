@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
 import AgentHeader from "../components/AgentHeader";
-import DashboardRenderer from "../components/DashboardRenderer";
+
+import AgentReportForm from "../components/agent/AgentReportForm";
+import AgentProgress from "../components/agent/AgentProgress";
+import AgentSummary from "../components/agent/AgentSummary";
+import AgentHistory from "../components/agent/AgentHistory";
+import { toast } from "react-toastify";
+import { getLastReports } from "../services/agentService";
 
 import "../styles/agentDashboard.css";
 
@@ -16,8 +22,10 @@ import {
 function Agent() {
 
   const currentUser = getUser();
+  const [lastReports, setLastReports] = useState([]);
 
   const [report, setReport] = useState({
+    
 
     agent_name: currentUser?.name || "",
 
@@ -125,7 +133,7 @@ function Agent() {
 
       await submitAgentReport(reportData);
 
-      alert("✅ Report Saved Successfully");
+     toast.success("Report saved successfully!");
 
     }
 
@@ -133,55 +141,64 @@ function Agent() {
 
       console.error(error);
 
-      alert(error.message);
+      toast.error(error.message);
 
     }
 
   }
 
+  async function loadHistory() {
+
+  try {
+
+    const history =
+      await getLastReports(
+        currentUser.name
+      );
+
+    setLastReports(history);
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
   return (
+  <Layout title="Agent Dashboard">
 
-    <Layout title="Agent Dashboard">
+    <div className="agent-page">
 
-      <div className="dashboard-container">
+      <AgentHeader />
 
-        <AgentHeader />
+      <AgentSummary
+        report={report}
+      />
 
-        <DashboardRenderer
+      <div className="agent-main-grid">
 
+        <AgentReportForm
           report={report}
-
           handleChange={handleChange}
-
+          handleSubmit={handleSubmit}
+          AgentHistory
+    reports={lastReports}
         />
 
-        
-
-        <div className="performance-card">
-
-          <h2>📈 Today's Conversion</h2>
-
-          <h1>{conversion.toFixed(2)}%</h1>
-
-        </div>
-
-        <button
-
-          className="submit-btn"
-
-          onClick={handleSubmit}
-
-        >
-
-          💾 Save Today's Report
-
-        </button>
+        <AgentProgress
+          report={report}
+        />
 
       </div>
 
-    </Layout>
+    </div>
 
-  );
+  </Layout>
+);
 
 }
 

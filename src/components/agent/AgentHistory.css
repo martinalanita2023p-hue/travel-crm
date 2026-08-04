@@ -1,0 +1,95 @@
+.agent-history-card{
+
+background:var(--surface);
+
+border-radius:24px;
+
+padding:25px;
+
+box-shadow:var(--shadow);
+
+margin-top:25px;
+
+overflow-x:auto;
+
+}
+
+.history-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
+
+.history-header h2{
+
+margin:0;
+
+font-size:24px;
+
+}
+
+.history-header span{
+
+font-size:14px;
+
+color:var(--muted);
+
+}
+
+.agent-history-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+.agent-history-table th{
+
+text-align:left;
+
+padding:16px;
+
+font-size:14px;
+
+color:var(--muted);
+
+border-bottom:1px solid rgba(0,0,0,.08);
+
+}
+
+.agent-history-table td{
+
+padding:16px;
+
+border-bottom:1px solid rgba(0,0,0,.05);
+
+}
+
+.agent-history-table tbody tr:hover{
+
+background:rgba(99,102,241,.05);
+
+}
+
+.submitted{
+
+background:#dcfce7;
+
+color:#15803d;
+
+padding:6px 12px;
+
+border-radius:20px;
+
+font-size:12px;
+
+font-weight:600;
+
+}

@@ -1,0 +1,183 @@
+.agent-progress-card{
+
+background:#fff;
+
+border-radius:24px;
+
+padding:30px;
+
+box-shadow:0 12px 30px rgba(15,23,42,.12);
+
+border:1px solid #E2E8F0;
+
+display:flex;
+
+flex-direction:column;
+
+gap:24px;
+
+height:100%;
+
+}
+
+.agent-progress-card h2{
+
+margin:0;
+
+font-size:32px;
+
+font-weight:700;
+
+color:#334155;
+
+text-align:center;
+
+padding-bottom:20px;
+
+border-bottom:1px solid #E2E8F0;
+
+}
+
+/* ======================== */
+
+.progress-item{
+
+display:flex;
+
+flex-direction:column;
+
+gap:14px;
+
+}
+
+.progress-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+font-size:16px;
+
+font-weight:600;
+
+color:#334155;
+
+}
+
+.progress-bar{
+
+height:12px;
+
+background:#E2E8F0;
+
+border-radius:30px;
+
+overflow:hidden;
+
+}
+
+.progress-fill{
+
+height:100%;
+
+border-radius:30px;
+
+background:linear-gradient(90deg,#6366F1,#8B5CF6);
+
+transition:width .5s ease;
+
+}
+
+/* ======================== */
+
+.progress-stat{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px 0;
+
+font-size:16px;
+
+border-bottom:1px solid #EDF2F7;
+
+}
+
+.progress-stat span{
+
+color:#64748B;
+
+font-weight:500;
+
+}
+
+.progress-stat strong{
+
+font-size:18px;
+
+font-weight:700;
+
+color:#1E293B;
+
+}
+
+/* ======================== */
+
+.status-good{
+
+color:#16A34A !important;
+
+}
+
+.status-warning{
+
+color:#EA580C !important;
+
+}
+
+/* ======================== */
+
+.daily-goal{
+
+margin-top:auto;
+
+padding:22px;
+
+border-radius:18px;
+
+background:linear-gradient(
+135deg,
+rgba(99,102,241,.08),
+rgba(139,92,246,.08)
+);
+
+border:1px solid rgba(99,102,241,.15);
+
+}
+
+.daily-goal h3{
+
+margin:0 0 12px;
+
+font-size:20px;
+
+color:#4F46E5;
+
+}
+
+.daily-goal p{
+
+margin:0;
+
+line-height:1.7;
+
+font-size:15px;
+
+color:#475569;
+
+}

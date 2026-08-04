@@ -36,3 +36,24 @@ export async function getTodayReport(agentName) {
 
   return data;
 }
+
+/* =======================================
+   GET LAST 7 REPORTS
+======================================= */
+
+export async function getLastReports(agentName) {
+
+  const { data, error } = await supabase
+    .from("daily_agent_reports")
+    .select("*")
+    .eq("agent_name", agentName)
+    .order("report_date", {
+      ascending: false,
+    })
+    .limit(7);
+
+  if (error) throw error;
+
+  return data || [];
+
+}

@@ -4,15 +4,17 @@ import * as XLSX from "xlsx";
 import Layout from "../components/Layout";
 import ManagerHeader from "../components/manager/ManagerHeader";
 
-import DashboardSummary from "../components/dashboard/DashboardSummary";
-import KPICards from "../components/dashboard/KPICards";
+
+import SummaryCards from "../components/manager/SummaryCards/SummaryCards";
 import AttentionCenter from "../components/dashboard/AttentionCenter";
 import TopPerformers from "../components/dashboard/TopPerformers";
-import AgentPerformanceTable from "../components/dashboard/AgentPerformanceTable";
+import TeamTable from "../components/manager/TeamTable/TeamTable";
+
 
 import KPIDetailsModal from "../components/dashboard/KPIDetailsModal";
 import EditReportModal from "../components/dashboard/EditReportModal";
 import DeleteReportModal from "../components/dashboard/DeleteReportModal";
+
 
 import useManagerData from "../hooks/useManagerData";
 import { getAllAgents } from "../services/userService";
@@ -304,22 +306,11 @@ export default function Manager() {
           exportExcel={exportExcel}
         />
 
-        {/* ==========================
-            DASHBOARD SUMMARY
-        ========================== */}
-
-        <DashboardSummary
-          stats={stats}
-        />
-
-        {/* ==========================
-            KPI CARDS
-        ========================== */}
-
-        <KPICards
-          stats={stats}
-          onCardClick={setSelectedKPI}
-        />
+        
+      <SummaryCards
+    stats={stats}
+    onCardClick={setSelectedKPI}
+/>
 
         {/* ==========================
             INSIGHTS
@@ -349,11 +340,10 @@ export default function Manager() {
             PERFORMANCE TABLE
         ========================== */}
 
-        <AgentPerformanceTable
-          reports={filteredReports}
-          onEdit={setEditingReport}
-          onDelete={setDeletingReport}
-        />
+        <TeamTable
+    reports={filteredReports}
+    onAnalytics={setEditingReport}
+/>
 
                 {/* ==========================
             MODALS
