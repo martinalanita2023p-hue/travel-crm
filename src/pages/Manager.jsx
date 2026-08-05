@@ -2,13 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 
 import Layout from "../components/Layout";
+import buildInsights from "../utils/buildInsights";
 import ManagerHeader from "../components/manager/ManagerHeader";
-
+import aggregateReports from "../utils/aggregateReports";
+import Leaderboard from "../components/manager/Leaderboard/Leaderboard";
+import QuickActions from "../components/manager/QuickActions/QuickActions";
 
 import SummaryCards from "../components/manager/SummaryCards/SummaryCards";
 import AttentionCenter from "../components/dashboard/AttentionCenter";
 import TopPerformers from "../components/dashboard/TopPerformers";
+import TeamStatus from "../components/manager/TeamStatus/TeamStatus";
 import TeamTable from "../components/manager/TeamTable/TeamTable";
+import AnalyticsDrawer from "../components/manager/Drawer/AnalyticsDrawer";
+
 
 
 import KPIDetailsModal from "../components/dashboard/KPIDetailsModal";
@@ -31,10 +37,14 @@ export default function Manager() {
   ========================== */
 
   const [agents, setAgents] = useState([]);
+  const [filterMode, setFilterMode] = useState("all");
+  const [activeTab, setActiveTab] = useState("overview");
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const [viewMode, setViewMode] = useState("day");
 
   const [selectedAgent, setSelectedAgent] =
     useState("All Agents");
@@ -47,6 +57,9 @@ export default function Manager() {
   const [editingReport, setEditingReport] =
     useState(null);
 
+    const [selectedReport, setSelectedReport] =
+  useState(null);
+
   const [deletingReport, setDeletingReport] =
     useState(null);
 
@@ -54,11 +67,14 @@ export default function Manager() {
      DATA
   ========================== */
 
-  const {
-    reports,
-    loading,
-    error,
-  } = useManagerData(selectedDate);
+const {
+  reports,
+  loading,
+  error,
+} = useManagerData(
+  selectedDate,
+  viewMode
+);
 
   /* ==========================
      LOAD AGENTS
@@ -92,36 +108,49 @@ export default function Manager() {
      FILTER REPORTS
   ========================== */
 
+  if (viewMode !== "day") {
+
+  data = aggregateReports(data);
+
+}
+
   const filteredReports = useMemo(() => {
 
-    let data = [...reports];
+  let data = [...reports];
 
-    if (selectedAgent !== "All Agents") {
+  if (selectedAgent !== "All Agents") {
 
-      data = data.filter(
-        report =>
-          report.agent_name === selectedAgent
-      );
+    data = data.filter(
+      report => report.agent_name === selectedAgent
+    );
 
-    }
+  }
 
-    if (search.trim()) {
+  if (search.trim()) {
 
-      data = data.filter(report =>
-        report.agent_name
-          ?.toLowerCase()
-          .includes(search.toLowerCase())
-      );
+    data = data.filter(report =>
+      report.agent_name
+        ?.toLowerCase()
+        .includes(search.toLowerCase())
+    );
 
-    }
+  }
 
-    return data;
+  // Aggregate reports for Week & Month
+  if (viewMode !== "day") {
 
-  }, [
-    reports,
-    selectedAgent,
-    search,
-  ]);
+    data = aggregateReports(data);
+
+  }
+
+  return data;
+
+}, [
+  reports,
+  selectedAgent,
+  search,
+  viewMode
+]);
 
   /* ==========================
      DASHBOARD STATS
@@ -141,6 +170,11 @@ export default function Manager() {
     ]
 
   );
+
+  const insights = useMemo(
+  () => buildInsights(stats),
+  [stats]
+);
 
   /* ==========================
      ALERTS
@@ -304,13 +338,61 @@ export default function Manager() {
           search={search}
           setSearch={setSearch}
           exportExcel={exportExcel}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          filterMode={filterMode}
+          setFilterMode={setFilterMode}
         />
 
+        <TeamStatus
+    reports={filteredReports}
+    agents={agents}
+/>
+
         
-      <SummaryCards
+  <SummaryCards
     stats={stats}
     onCardClick={setSelectedKPI}
+    viewMode={viewMode}
 />
+
+
+
+<Leaderboard
+    reports={filteredReports}
+/>
+
+<div className="manager-tabs">
+
+  <button
+    className={activeTab==="overview" ? "active" : ""}
+    onClick={()=>setActiveTab("overview")}
+  >
+    📊 Overview
+  </button>
+
+  <button
+    className={activeTab==="team" ? "active" : ""}
+    onClick={()=>setActiveTab("team")}
+  >
+    👥 Team
+  </button>
+
+  <button
+    className={activeTab==="analytics" ? "active" : ""}
+    onClick={()=>setActiveTab("analytics")}
+  >
+    📈 Analytics
+  </button>
+
+  <button
+    className={activeTab==="leaderboard" ? "active" : ""}
+    onClick={()=>setActiveTab("leaderboard")}
+  >
+    🏆 Leaderboard
+  </button>
+
+</div>
 
         {/* ==========================
             INSIGHTS
@@ -340,10 +422,31 @@ export default function Manager() {
             PERFORMANCE TABLE
         ========================== */}
 
-        <TeamTable
+       <div className="manager-workspace">
+
+    <div className="workspace-left">
+
+        {activeTab === "team" && (
+
+<TeamTable
     reports={filteredReports}
-    onAnalytics={setEditingReport}
+    onAnalytics={setSelectedReport}
 />
+
+)}
+
+    </div>
+
+    <div className="workspace-right">
+
+        <AnalyticsDrawer
+            report={selectedReport}
+        />
+
+    </div>
+
+</div>
+
 
                 {/* ==========================
             MODALS
@@ -405,4 +508,3 @@ export default function Manager() {
 
 }
 
-export default Manager;

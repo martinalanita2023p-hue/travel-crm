@@ -65,16 +65,72 @@ export async function getAllReports() {
 /**
  * Get reports for one agent
  */
-export async function getReportsByAgent(agentName) {
-  const { data, error } = await supabase
+/**
+ * Get reports by Day / Week / Month
+ */
+export async function getReports(selectedDate, viewMode = "day") {
+
+  let query = supabase
     .from("daily_agent_reports")
-    .select("*")
-    .eq("agent_name", agentName)
-    .order("report_date", { ascending: false });
+    .select("*");
+
+  if (viewMode === "day") {
+
+    query = query.eq(
+      "report_date",
+      selectedDate
+    );
+
+  } else if (viewMode === "week") {
+
+    const end = new Date(selectedDate);
+    const start = new Date(selectedDate);
+
+    start.setDate(start.getDate() - 6);
+
+    query = query
+      .gte(
+        "report_date",
+        start.toISOString().split("T")[0]
+      )
+      .lte(
+        "report_date",
+        end.toISOString().split("T")[0]
+      );
+
+  } else if (viewMode === "month") {
+
+    const end = new Date(selectedDate);
+
+    const start = new Date(
+      end.getFullYear(),
+      end.getMonth(),
+      1
+    );
+
+    query = query
+      .gte(
+        "report_date",
+        start.toISOString().split("T")[0]
+      )
+      .lte(
+        "report_date",
+        selectedDate
+      );
+
+  }
+
+  query = query.order(
+    "report_date",
+    { ascending: true }
+  );
+
+  const { data, error } = await query;
 
   if (error) throw error;
 
-  return data ?? [];
+  return data || [];
+
 }
 
 /**

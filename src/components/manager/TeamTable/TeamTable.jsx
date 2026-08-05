@@ -1,19 +1,29 @@
 import "./TeamTable.css";
+import performanceScore from "../../../utils/performanceScore";
 
 export default function TeamTable({
   reports,
   onAnalytics,
 }) {
+
+  const rankedReports = [...reports]
+    .map(report => ({
+      ...report,
+      score: performanceScore(report),
+    }))
+    .sort((a, b) => b.score - a.score);
+
   return (
+
     <div className="team-table-card">
 
-      <div className="team-header">
+      <div className="team-table-header">
 
         <div>
 
           <h2>👥 Team Performance</h2>
 
-          <p>Monitor your team's daily performance</p>
+          <p>Daily Team Overview</p>
 
         </div>
 
@@ -25,23 +35,27 @@ export default function TeamTable({
 
           <tr>
 
+            <th>Rank</th>
+
             <th>Agent</th>
 
-            <th>Calls</th>
+            <th>Fresh Calls</th>
 
-            <th>Tickets</th>
+            <th>Fresh Tickets</th>
 
-            <th>Conversion</th>
+            <th>SC Calls</th>
 
             <th>Insurance</th>
 
-            <th>Reviews</th>
+            <th>Google</th>
+
+            <th>Trustpilot</th>
 
             <th>TOA</th>
 
-            <th>Status</th>
+            <th>PNRs</th>
 
-            <th></th>
+            <th>📊</th>
 
           </tr>
 
@@ -49,105 +63,123 @@ export default function TeamTable({
 
         <tbody>
 
-          {reports.map((report) => {
+          {rankedReports.map((report, index) => (
 
-            const conversion =
-              Number(report.fresh_calls) === 0
-                ? 0
-                : (
-                    (Number(report.fresh_tickets) /
-                      Number(report.fresh_calls)) *
-                    100
-                  ).toFixed(1);
+            <tr key={report.id}>
 
-            return (
+              <td>
 
-              <tr key={report.id}>
+                {index === 0
+                  ? "🥇"
+                  : index === 1
+                  ? "🥈"
+                  : index === 2
+                  ? "🥉"
+                  : index + 1}
 
-                <td className="agent-cell">
+              </td>
 
-                  <div className="avatar">
+              <td className="agent-cell">
 
-                    {report.agent_name
-                      ?.charAt(0)
-                      .toUpperCase()}
+                <div className="avatar">
 
-                  </div>
+                  {report.agent_name?.charAt(0)?.toUpperCase()}
 
-                  <div>
+                </div>
 
-                    <strong>
+                <div>
 
-                      {report.agent_name}
+                  <strong>
 
-                    </strong>
+                    {report.agent_name}
 
-                    <p>Travel Consultant</p>
+                  </strong>
 
-                  </div>
+                  <small>
 
-                </td>
+                    Travel Consultant
 
-                <td>{report.fresh_calls}</td>
+                  </small>
 
-                <td>{report.fresh_tickets}</td>
+                </div>
 
-                <td>{conversion}%</td>
+              </td>
 
-                <td>{report.insurance_sold}</td>
+              <td>
 
-                <td>
+                {report.fresh_calls || 0}
 
-                  {Number(report.google_reviews) +
-                    Number(report.trustpilot_reviews)}
+              </td>
 
-                </td>
+              <td>
 
-                <td>
+                {report.fresh_tickets || 0}
 
-                  $
+              </td>
 
-                  {Number(
-                    report.token_appreciation
-                  ).toFixed(0)}
+              <td>
 
-                </td>
+                {report.sc_calls || 0}
 
-                <td>
+              </td>
 
-                  <span className="status">
+              <td>
 
-                    🟢 Active
+                {report.insurance_sold || 0}
 
-                  </span>
+              </td>
 
-                </td>
+              <td>
 
-                <td>
+                {report.google_reviews || 0}
 
-                  <button
-                    className="analytics-btn"
-                    onClick={() =>
-                      onAnalytics(report)
-                    }
-                  >
+              </td>
 
-                    📊 View
+              <td>
 
-                  </button>
+                {report.trustpilot_reviews || 0}
 
-                </td>
+              </td>
 
-              </tr>
+              <td>
 
-            );
+                $
 
-          })}
+                {Number(
+                  report.token_appreciation || 0
+                ).toFixed(2)}
+
+              </td>
+
+              <td>
+
+                {report.pnrs_created || 0}
+
+              </td>
+
+              <td>
+
+                <button
+                  className="view-btn"
+                  onClick={() => onAnalytics(report)}
+                >
+
+                  📊
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          ))}
 
         </tbody>
 
       </table>
 
     </div>
+
   );
+
 }

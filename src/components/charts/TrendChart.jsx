@@ -1,48 +1,44 @@
 import {
+  ResponsiveContainer,
   LineChart,
   Line,
-  ResponsiveContainer,
   XAxis,
-  YAxis,
   Tooltip,
-  CartesianGrid,
+  CartesianGrid
 } from "recharts";
-
-import "./TrendChart.css";
 
 export default function TrendChart({
   title,
   data,
   dataKey,
-  color,
 }) {
   return (
-    <div className="trend-card">
+    <div className="trend-chart">
 
       <h3>{title}</h3>
 
       <ResponsiveContainer
         width="100%"
-        height={250}
+        height={220}
       >
+
         <LineChart data={data}>
 
-          <CartesianGrid strokeDasharray="3 3"/>
+          <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis dataKey="date"/>
+          <XAxis dataKey="label" />
 
-          <YAxis/>
-
-          <Tooltip/>
+          <Tooltip />
 
           <Line
             type="monotone"
             dataKey={dataKey}
-            stroke={color}
+            stroke="#4f46e5"
             strokeWidth={3}
           />
 
         </LineChart>
+
       </ResponsiveContainer>
 
     </div>

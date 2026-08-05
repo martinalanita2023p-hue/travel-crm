@@ -1,35 +1,42 @@
-export function calculatePerformanceScore(report) {
-  const tickets = Number(report.fresh_tickets || 0);
-  const insurance = Number(report.insurance_sold || 0);
-  const freshCalls = Number(report.fresh_calls || 0);
-  const google = Number(report.google_reviews || 0);
-  const trustpilot = Number(report.trustpilot_reviews || 0);
-  const toa = Number(report.token_appreciation || 0);
-
-  const conversion =
-    freshCalls === 0
-      ? 0
-      : (tickets / freshCalls) * 100;
+export default function performanceScore(report) {
 
   let score = 0;
 
-  // Tickets (50 pts)
-  score += Math.min((tickets / 15) * 50, 50);
+  // Fresh Calls
+  score += Math.min(Number(report.fresh_calls || 0) * 3, 15);
 
-  // Insurance (25 pts)
-  score += Math.min((insurance / 5) * 25, 25);
+  // Fresh Tickets
+  score += Math.min(Number(report.fresh_tickets || 0) * 4, 20);
 
-  // Conversion (15 pts)
-  score += Math.min((conversion / 80) * 15, 15);
+  // SC Calls
+  score += Math.min(Number(report.sc_calls || 0) * 2, 10);
 
-  // Google Reviews (5 pts)
-  score += Math.min((google / 3) * 5, 5);
+  // SC Sales
+  score += Math.min(Number(report.sc_sales || 0) * 3, 10);
 
-  // Trustpilot (3 pts)
-  score += Math.min((trustpilot / 2) * 3, 3);
+  // DC Sales
+  score += Math.min(Number(report.dc_sales || 0) * 3, 10);
 
-  // TOA (2 pts)
-  score += Math.min((toa / 100) * 2, 2);
+  // Insurance
+  score += Math.min(Number(report.insurance_sold || 0) * 3, 10);
+
+  // Reviews
+  score += Math.min(
+    (
+      Number(report.google_reviews || 0) +
+      Number(report.trustpilot_reviews || 0)
+    ) * 2,
+    10
+  );
+
+  // TOA
+  score += Math.min(
+    Number(report.token_appreciation || 0) / 10,
+    10
+  );
+
+  // Attendance
+  score += Math.min(Number(report.days_present || 0), 5);
 
   return Math.round(score);
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getReportsByDate } from "../services/managerService";
+import { getReports } from "../services/managerService";
 
-export default function useManagerData(selectedDate) {
+export default function useManagerData(selectedDate, viewMode) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -11,12 +11,15 @@ export default function useManagerData(selectedDate) {
       try {
         setLoading(true);
 
-        const data = await getReportsByDate(selectedDate);
+        const data = await getReports(
+          selectedDate,
+          viewMode
+        );
 
         setReports(data || []);
         setError("");
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load reports:", err);
         setError("Failed to load reports");
       } finally {
         setLoading(false);
@@ -24,7 +27,7 @@ export default function useManagerData(selectedDate) {
     }
 
     loadReports();
-  }, [selectedDate]);
+  }, [selectedDate, viewMode]);
 
   return {
     reports,
