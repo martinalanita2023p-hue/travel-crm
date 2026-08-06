@@ -1,11 +1,12 @@
 import "./TeamTable.css";
+import reportFields from "../../../constants/reportFields";
 import performanceScore from "../../../utils/performanceScore";
 
 export default function TeamTable({
   reports,
   onAnalytics,
+  visibleColumns,
 }) {
-
   const rankedReports = [...reports]
     .map(report => ({
       ...report,
@@ -39,21 +40,16 @@ export default function TeamTable({
 
             <th>Agent</th>
 
-            <th>Fresh Calls</th>
+            {reportFields
+              .filter(field => field.showInTable)
+              .sort((a, b) => a.order - b.order)
+              .map(field => (
 
-            <th>Fresh Tickets</th>
+                <th key={field.key}>
+                  {field.short}
+                </th>
 
-            <th>SC Calls</th>
-
-            <th>Insurance</th>
-
-            <th>Google</th>
-
-            <th>Trustpilot</th>
-
-            <th>TOA</th>
-
-            <th>PNRs</th>
+              ))}
 
             <th>📊</th>
 
@@ -83,85 +79,52 @@ export default function TeamTable({
 
                 <div className="avatar">
 
-                  {report.agent_name?.charAt(0)?.toUpperCase()}
+                  {report.agent_name
+                    ?.charAt(0)
+                    ?.toUpperCase()}
 
                 </div>
 
                 <div>
 
                   <strong>
-
                     {report.agent_name}
-
                   </strong>
 
                   <small>
-
                     Travel Consultant
-
                   </small>
 
                 </div>
 
               </td>
 
-              <td>
+              {reportFields
+                .filter(field => field.showInTable)
+                .sort((a, b) => a.order - b.order)
+                .map(field => (
 
-                {report.fresh_calls || 0}
+                  <td key={field.key}>
 
-              </td>
+                    {field.type === "currency"
 
-              <td>
+                      ? `$${Number(
+                          report[field.key] || 0
+                        ).toFixed(2)}`
 
-                {report.fresh_tickets || 0}
+                      : report[field.key] || 0}
 
-              </td>
+                  </td>
 
-              <td>
-
-                {report.sc_calls || 0}
-
-              </td>
-
-              <td>
-
-                {report.insurance_sold || 0}
-
-              </td>
-
-              <td>
-
-                {report.google_reviews || 0}
-
-              </td>
-
-              <td>
-
-                {report.trustpilot_reviews || 0}
-
-              </td>
-
-              <td>
-
-                $
-
-                {Number(
-                  report.token_appreciation || 0
-                ).toFixed(2)}
-
-              </td>
-
-              <td>
-
-                {report.pnrs_created || 0}
-
-              </td>
+                ))}
 
               <td>
 
                 <button
                   className="view-btn"
-                  onClick={() => onAnalytics(report)}
+                  onClick={() =>
+                    onAnalytics(report)
+                  }
                 >
 
                   📊

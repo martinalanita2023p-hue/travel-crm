@@ -38,19 +38,19 @@ export async function getTodayReport(agentName) {
 }
 
 /* =======================================
-   GET LAST 7 REPORTS
+   GET REPORT HISTORY
 ======================================= */
 
-export async function getLastReports(agentName) {
+export async function getLastReports(agentName, limit = 30) {
 
   const { data, error } = await supabase
     .from("daily_agent_reports")
     .select("*")
     .eq("agent_name", agentName)
     .order("report_date", {
-      ascending: false,
+      ascending: true,
     })
-    .limit(7);
+    .limit(limit);
 
   if (error) throw error;
 

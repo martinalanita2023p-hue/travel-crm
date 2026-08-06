@@ -148,3 +148,20 @@ export async function getReportsBetweenDates(startDate, endDate) {
 
   return data ?? [];
 }
+
+/**
+ * Get history for one agent
+ */
+export async function getAgentHistory(agentName) {
+
+  const { data, error } = await supabase
+    .from("daily_agent_reports")
+    .select("*")
+    .eq("agent_name", agentName)
+    .order("report_date", { ascending: true });
+
+  if (error) throw error;
+
+  return data ?? [];
+
+}

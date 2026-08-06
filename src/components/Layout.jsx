@@ -86,20 +86,13 @@ export default function Layout({
 
               <div>
 
-                <h4>
+  <h4>
 
-                  {user?.username || "Manager"}
+    {user?.username || "User"}
 
-                </h4>
+  </h4>
 
-                <span>
-
-                  Manager
-
-                </span>
-
-              </div>
-
+</div>
             </div>
 
             <button

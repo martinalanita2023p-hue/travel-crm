@@ -5,9 +5,7 @@ export default function AgentReportForm({
   handleChange,
   handleSubmit,
 }) {
-
   return (
-
     <div className="agent-form-card">
 
       <h2>📝 Today's Report</h2>
@@ -28,6 +26,13 @@ export default function AgentReportForm({
           />
 
           <FormInput
+            label="SC Calls"
+            name="sc_calls"
+            value={report.sc_calls}
+            onChange={handleChange}
+          />
+
+          <FormInput
             label="Name Calls"
             name="name_calls"
             value={report.name_calls}
@@ -38,6 +43,13 @@ export default function AgentReportForm({
             label="MAC Calls"
             name="mac_calls"
             value={report.mac_calls}
+            onChange={handleChange}
+          />
+
+          <FormInput
+            label="DC Calls"
+            name="dc_calls"
+            value={report.dc_calls}
             onChange={handleChange}
           />
 
@@ -56,13 +68,6 @@ export default function AgentReportForm({
           />
 
           <FormInput
-            label="DC Calls"
-            name="dc_calls"
-            value={report.dc_calls}
-            onChange={handleChange}
-          />
-
-          <FormInput
             label="Cancellation Calls"
             name="cancellation_calls"
             value={report.cancellation_calls}
@@ -73,7 +78,7 @@ export default function AgentReportForm({
 
       </div>
 
-            {/* ================= SALES ================= */}
+      {/* ================= SALES ================= */}
 
       <div className="form-section">
 
@@ -123,18 +128,11 @@ export default function AgentReportForm({
             onChange={handleChange}
           />
 
-          <FormInput
-            label="Token of Appreciation ($)"
-            name="token_appreciation"
-            value={report.token_appreciation}
-            onChange={handleChange}
-          />
-
         </div>
 
       </div>
 
-            {/* ================= REVIEWS ================= */}
+      {/* ================= REVIEWS ================= */}
 
       <div className="form-section">
 
@@ -160,6 +158,25 @@ export default function AgentReportForm({
 
       </div>
 
+      {/* ================= FINANCE ================= */}
+
+      <div className="form-section">
+
+        <h3>💰 Finance</h3>
+
+        <div className="form-grid">
+
+          <FormInput
+            label="Token of Appreciation ($)"
+            name="token_appreciation"
+            value={report.token_appreciation}
+            onChange={handleChange}
+          />
+
+        </div>
+
+      </div>
+
       {/* ================= SAVE ================= */}
 
       <div className="save-report-section">
@@ -174,9 +191,7 @@ export default function AgentReportForm({
       </div>
 
     </div>
-
   );
-
 }
 
 function FormInput({
@@ -185,9 +200,7 @@ function FormInput({
   value,
   onChange,
 }) {
-
   return (
-
     <div className="agent-form-input">
 
       <label>{label}</label>
@@ -201,7 +214,5 @@ function FormInput({
       />
 
     </div>
-
   );
-
 }

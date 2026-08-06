@@ -2,23 +2,27 @@ import supabase from "../supabase/client";
 
 export async function login(username, password) {
 
-  console.log("Username Entered:", username);
-  console.log("Password Entered:", password);
+  console.clear();
+
+  console.log("========== LOGIN ==========");
 
   const { data, error } = await supabase
     .from("users")
     .select("*");
 
-  console.log("ALL USERS:", data);
-  console.log("SUPABASE ERROR:", error);
+  if (error) {
+    console.error("Supabase Error:", error);
+    throw error;
+  }
 
-  const user = data?.find(
+  const user = data.find(
     (u) =>
-      u.username === username.trim().toLowerCase() &&
+      u.username.toLowerCase() === username.trim().toLowerCase() &&
       u.password === password.trim()
   );
 
-  console.log("FOUND USER:", user);
+  console.log("Matched User:", user);
+  console.log("Role From Database:", user?.role);
 
   if (!user) {
     throw new Error("Invalid Username or Password");

@@ -4,6 +4,13 @@ function AgentHeader() {
 
   const user = getUser();
 
+  console.log("==================================");
+  console.log("HEADER USER:", user);
+  console.log("NAME:", user?.name);
+  console.log("USERNAME:", user?.username);
+  console.log("ROLE:", user?.role);
+  console.log("==================================");
+
   const today = new Date();
 
   return (
@@ -14,7 +21,7 @@ function AgentHeader() {
 
         <div className="avatar">
 
-          {user?.name?.charAt(0).toUpperCase()}
+          {user?.name?.charAt(0)?.toUpperCase()}
 
         </div>
 
@@ -22,7 +29,7 @@ function AgentHeader() {
 
           <h2>{user?.name}</h2>
 
-          <p>{user?.role}</p>
+          
 
         </div>
 
@@ -41,9 +48,11 @@ function AgentHeader() {
         <span>Day</span>
 
         <strong>
+
           {today.toLocaleDateString("en-US", {
             weekday: "long",
           })}
+
         </strong>
 
       </div>

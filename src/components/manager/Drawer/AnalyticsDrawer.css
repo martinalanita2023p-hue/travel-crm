@@ -141,3 +141,25 @@ grid-template-columns:1fr;
 }
 
 }
+
+.metric-selector{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:20px 0;
+}
+
+.metric-selector button{
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    background:#eef2ff;
+    font-weight:600;
+    transition:.2s;
+}
+
+.metric-selector button:hover{
+    background:#2563eb;
+    color:#fff;
+}

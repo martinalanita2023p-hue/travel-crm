@@ -17,6 +17,7 @@ export default function AnalyticsDrawer({ report }) {
   }
 
  const [trendData, setTrendData] = useState([]);
+ const [metric, setMetric] = useState("fresh_calls");
 
 useEffect(() => {
 
@@ -35,7 +36,7 @@ useEffect(() => {
           .toLocaleDateString("en-US", {
             weekday: "short",
           }),
-        value: item.fresh_calls,
+        value: Number(item[metric] || 0),
       }));
 
       setTrendData(chart);
@@ -50,7 +51,7 @@ useEffect(() => {
 
   loadTrend();
 
-}, [report]);
+}, [report, metric]);
 
   return (
     <div className="analytics-drawer">
@@ -263,9 +264,33 @@ useEffect(() => {
   </div>
 
   <div className="compare-label">
-    <span>DEC Sales</span>
-    <strong>{report.dec_sales || 0}</strong>
+    <span>DC Sales</span>
+    <strong>{report.dc_sales || 0}</strong>
   </div>
+
+</div>
+
+<div className="metric-selector">
+
+  <button onClick={() => setMetric("fresh_calls")}>
+    📞 Calls
+  </button>
+
+  <button onClick={() => setMetric("fresh_tickets")}>
+    🎫 Tickets
+  </button>
+
+  <button onClick={() => setMetric("insurance_sold")}>
+    🛡 Insurance
+  </button>
+
+  <button onClick={() => setMetric("token_appreciation")}>
+    💰 TOA
+  </button>
+
+  <button onClick={() => setMetric("pnrs_created")}>
+    📋 PNRs
+  </button>
 
 </div>
 
@@ -274,7 +299,7 @@ useEffect(() => {
       =============================== */}
 
       <TrendChart
-        title="Weekly Performance Trend"
+    title={metric.replaceAll("_", " ").toUpperCase()}
         data={trendData}
         dataKey="value"
       />
