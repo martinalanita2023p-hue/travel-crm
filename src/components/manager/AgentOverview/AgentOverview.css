@@ -1,0 +1,222 @@
+.agent-overview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.agent-overview-header {
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 22px 26px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+
+.agent-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #6366f1;
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.agent-overview-header h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.agent-overview-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+/* ==========================
+   KPI GRID
+========================== */
+
+.agent-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.agent-kpi-card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.agent-kpi-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.agent-kpi-card strong {
+  font-size: 27px;
+  color: var(--text);
+}
+
+/* ==========================
+   CALLS VS TICKETS
+========================== */
+
+.calls-tickets-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-heading h3 {
+  margin: 0;
+  color: var(--text);
+}
+
+.section-heading span {
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.bar-chart {
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 80px;
+  padding: 30px 20px 10px;
+}
+
+.bar-column {
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 110px;
+}
+
+.bar-column strong {
+  margin-bottom: 8px;
+  font-size: 20px;
+  color: var(--text);
+}
+
+.bar {
+  width: 65px;
+  max-height: 190px;
+  min-height: 10px;
+  border-radius: 12px 12px 4px 4px;
+}
+
+.calls-bar {
+  background: #6366f1;
+}
+
+.tickets-bar {
+  background: #22c55e;
+}
+
+.bar-column span {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ==========================
+   DETAILS
+========================== */
+
+.agent-details-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.agent-details-card h3 {
+  margin-top: 0;
+  color: var(--text);
+}
+
+.agent-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.agent-detail-row:last-child {
+  border-bottom: none;
+}
+
+.agent-detail-row span {
+  color: var(--muted);
+}
+
+.agent-detail-row strong {
+  color: var(--text);
+}
+
+/* ==========================
+   EMPTY
+========================== */
+
+.agent-overview-empty {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.agent-overview-empty h2 {
+  color: var(--text);
+}
+
+.agent-overview-empty p {
+  color: var(--muted);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 1100px) {
+  .agent-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .agent-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bar-chart {
+    gap: 40px;
+  }
+}

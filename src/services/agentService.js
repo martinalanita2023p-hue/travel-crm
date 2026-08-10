@@ -1,5 +1,23 @@
 import supabase from "../supabase/client";
 
+/* =======================================
+   GET CURRENT EASTERN DATE
+======================================= */
+
+function getEasternDate() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+
+/* =======================================
+   SUBMIT / UPDATE AGENT REPORT
+======================================= */
+
 export async function submitAgentReport(report) {
 
   console.log("Sending to Supabase:", report);
@@ -19,11 +37,14 @@ export async function submitAgentReport(report) {
   return data;
 }
 
+
+/* =======================================
+   GET TODAY'S REPORT
+======================================= */
+
 export async function getTodayReport(agentName) {
 
-  const today = new Date()
-    .toISOString()
-    .split("T")[0];
+  const today = getEasternDate();
 
   const { data, error } = await supabase
     .from("daily_agent_reports")
@@ -37,11 +58,15 @@ export async function getTodayReport(agentName) {
   return data;
 }
 
+
 /* =======================================
    GET REPORT HISTORY
 ======================================= */
 
-export async function getLastReports(agentName, limit = 30) {
+export async function getLastReports(
+  agentName,
+  limit = 30
+) {
 
   const { data, error } = await supabase
     .from("daily_agent_reports")
@@ -55,5 +80,4 @@ export async function getLastReports(agentName, limit = 30) {
   if (error) throw error;
 
   return data || [];
-
 }

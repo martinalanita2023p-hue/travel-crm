@@ -2,18 +2,18 @@ import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 
 import Layout from "../components/Layout";
-import buildInsights from "../utils/buildInsights";
+
 import ManagerHeader from "../components/manager/ManagerHeader";
 import aggregateReports from "../utils/aggregateReports";
-import Leaderboard from "../components/manager/Leaderboard/Leaderboard";
-import QuickActions from "../components/manager/QuickActions/QuickActions";
+import AgentOverview from "../components/manager/AgentOverview/AgentOverview";
+
 
 import SummaryCards from "../components/manager/SummaryCards/SummaryCards";
 import AttentionCenter from "../components/dashboard/AttentionCenter";
 import TopPerformers from "../components/dashboard/TopPerformers";
-import TeamStatus from "../components/manager/TeamStatus/TeamStatus";
+
 import TeamTable from "../components/manager/TeamTable/TeamTable";
-import AnalyticsDrawer from "../components/manager/Drawer/AnalyticsDrawer";
+
 
 
 
@@ -38,7 +38,7 @@ export default function Manager() {
 
   const [agents, setAgents] = useState([]);
   const [filterMode, setFilterMode] = useState("all");
-  const [activeTab, setActiveTab] = useState("overview");
+  
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -57,8 +57,7 @@ export default function Manager() {
   const [editingReport, setEditingReport] =
     useState(null);
 
-    const [selectedReport, setSelectedReport] =
-  useState(null);
+    
 
   const [deletingReport, setDeletingReport] =
     useState(null);
@@ -104,27 +103,20 @@ const {
     loadAgents();
 
   }, []);
-    /* ==========================
-     FILTER REPORTS
-  ========================== */
-
-  if (viewMode !== "day") {
-
-  data = aggregateReports(data);
-
-}
-
+   
   const filteredReports = useMemo(() => {
 
   let data = [...reports];
 
   if (selectedAgent !== "All Agents") {
 
-    data = data.filter(
-      report => report.agent_name === selectedAgent
-    );
+  data = data.filter(
+    report =>
+      report.agent_name?.trim().toLowerCase() ===
+      selectedAgent.trim().toLowerCase()
+  );
 
-  }
+}
 
   if (search.trim()) {
 
@@ -171,10 +163,7 @@ const {
 
   );
 
-  const insights = useMemo(
-  () => buildInsights(stats),
-  [stats]
-);
+
 
   /* ==========================
      ALERTS
@@ -344,108 +333,60 @@ const {
           setFilterMode={setFilterMode}
         />
 
-        <TeamStatus
-    reports={filteredReports}
-    agents={agents}
-/>
-
-        
-  <SummaryCards
-    stats={stats}
-    onCardClick={setSelectedKPI}
-    viewMode={viewMode}
-/>
-
-
-
-<Leaderboard
-    reports={filteredReports}
-/>
-
-<div className="manager-tabs">
-
-  <button
-    className={activeTab==="overview" ? "active" : ""}
-    onClick={()=>setActiveTab("overview")}
-  >
-    📊 Overview
-  </button>
-
-  <button
-    className={activeTab==="team" ? "active" : ""}
-    onClick={()=>setActiveTab("team")}
-  >
-    👥 Team
-  </button>
-
-  <button
-    className={activeTab==="analytics" ? "active" : ""}
-    onClick={()=>setActiveTab("analytics")}
-  >
-    📈 Analytics
-  </button>
-
-  <button
-    className={activeTab==="leaderboard" ? "active" : ""}
-    onClick={()=>setActiveTab("leaderboard")}
-  >
-    🏆 Leaderboard
-  </button>
-
-</div>
+   
 
         {/* ==========================
-            INSIGHTS
-        ========================== */}
+    COMPANY OVERVIEW
+========================== */}
 
-        <div className="manager-info-row">
+{selectedAgent === "All Agents" && (
+  <>
 
-          <div className="manager-left-panel">
+    {selectedAgent === "All Agents" && (
+  <>
+    <SummaryCards
+      stats={stats}
+      onCardClick={setSelectedKPI}
+      viewMode={viewMode}
+    />
 
-            <AttentionCenter
-              alerts={alerts}
-            />
+    <div className="manager-info-row">
+      <div className="manager-left-panel">
+        <AttentionCenter
+          alerts={alerts}
+        />
+      </div>
+    </div>
 
-          </div>
-
-          <div className="manager-right-panel">
-
-            <TopPerformers
-              reports={filteredReports}
-            />
-
-          </div>
-
-        </div>
-
-        {/* ==========================
-            PERFORMANCE TABLE
-        ========================== */}
-
-       <div className="manager-workspace">
-
-    <div className="workspace-left">
-
-        {activeTab === "team" && (
-
-<TeamTable
-    reports={filteredReports}
-    onAnalytics={setSelectedReport}
-/>
-
+    <div className="team-table-card">
+      <TeamTable
+        reports={filteredReports}
+        onEdit={setEditingReport}
+        onDelete={setDeletingReport}
+      />
+    </div>
+  </>
 )}
 
-    </div>
+{selectedAgent !== "All Agents" && (
+  <AgentOverview
+    report={filteredReports[0]}
+    selectedDate={selectedDate}
+  />
+)}
+  </>
+)}
 
-    <div className="workspace-right">
+{/* ==========================
+    INDIVIDUAL AGENT OVERVIEW
+========================== */}
 
-        <AnalyticsDrawer
-            report={selectedReport}
-        />
-
-    </div>
-
-</div>
+{selectedAgent !== "All Agents" && (
+  <AgentOverview
+    report={filteredReports[0]}
+  />
+)}
+  
 
 
                 {/* ==========================

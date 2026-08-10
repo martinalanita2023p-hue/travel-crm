@@ -23,9 +23,9 @@ export default function ManagerHeader({
 
       <div className="toolbar-title">
 
-        <h2>📊 Manager Dashboard</h2>
+        
 
-        <p>Travel CRM Performance Center</p>
+        
 
       </div>
 

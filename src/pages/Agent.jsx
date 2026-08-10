@@ -8,7 +8,7 @@ import AgentProgress from "../components/agent/AgentProgress";
 import AgentSummary from "../components/agent/AgentSummary";
 import AgentHistory from "../components/agent/AgentHistory";
 import { toast } from "react-toastify";
-import { getLastReports } from "../services/agentService";
+
 
 import "../styles/agentDashboard.css";
 
@@ -17,7 +17,21 @@ import { getUser } from "../services/authService";
 import {
   getTodayReport,
   submitAgentReport,
+  getLastReports,
 } from "../services/agentService";
+
+
+
+function getEasternDate() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+
 
 function Agent() {
 
@@ -118,13 +132,7 @@ function Agent() {
 
         agent_name: currentUser.name,
 
-        report_date:
-
-          new Date()
-
-            .toISOString()
-
-            .split("T")[0],
+        report_date: getEasternDate(),
 
       };
 
