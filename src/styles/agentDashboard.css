@@ -87,3 +87,162 @@ position:static;
 }
 
 }
+
+
+/* =====================================================
+   FIX: AGENT NAME VISIBILITY
+===================================================== */
+
+.agent-header-card .agent-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.agent-header-card .agent-profile > div:last-child {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.agent-header-card .agent-profile h2 {
+  display: block !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #17213a !important;
+
+  font-size: 22px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.2 !important;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  white-space: nowrap !important;
+}
+
+/* =====================================================
+   AGENT HEADER
+===================================================== */
+
+.agent-header-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   AGENT NAME
+===================================================== */
+
+.agent-header-card .agent-profile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px;
+
+  width: 100%;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.agent-header-card .agent-name {
+  display: block !important;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.agent-header-card .agent-name h2 {
+  margin: 0;
+
+  color: #17213a !important;
+
+  font-size: 24px;
+  font-weight: 800;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+
+/* =====================================================
+   DATE / DAY / DAYS PRESENT
+===================================================== */
+
+.agent-header-info-row {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+
+  box-sizing: border-box;
+}
+
+
+/* Individual boxes */
+
+.agent-header-info-row .header-item {
+  min-height: 70px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 14px 18px;
+
+  border-radius: 16px;
+
+  background: #f4f6fb;
+
+  box-sizing: border-box;
+}
+
+
+/* Labels */
+
+.agent-header-info-row .header-item span {
+  margin-bottom: 5px;
+
+  color: #697386;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* Values */
+
+.agent-header-info-row .header-item strong {
+  color: #17213a;
+
+  font-size: 18px;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .agent-header-info-row {
+    grid-template-columns: 1fr;
+  }
+
+}

@@ -4,6 +4,7 @@ export default function AgentReportForm({
   report,
   handleChange,
   handleSubmit,
+  isSubmitted,
 }) {
   return (
     <div className="agent-form-card">
@@ -80,20 +81,32 @@ export default function AgentReportForm({
 
       {/* ================= SALES ================= */}
 
+      {/* Fresh Tickets */}
+
+
       <div className="form-section">
 
         <h3>🎫 Sales</h3>
 
         <div className="form-grid">
 
-          <input
-  type="number"
-  name="fresh_tickets"
-  min="0"
-  max={Number(report.fresh_calls || 0)}
-  value={report.fresh_tickets}
-  onChange={handleChange}
-/>
+
+          <div className="form-group">
+
+  <label>Fresh Tickets</label>
+
+  <input
+    type="number"
+    name="fresh_tickets"
+    value={report.fresh_tickets || 0}
+    onChange={handleChange}
+    min="0"
+  />
+
+</div>
+
+
+          
 
           <FormInput
             label="PNRs Created"
@@ -183,12 +196,21 @@ export default function AgentReportForm({
 
       <div className="save-report-section">
 
-        <button
-          className="save-report-btn"
-          onClick={handleSubmit}
-        >
-          💾 Save Today's Report
-        </button>
+       <button
+  type="button"
+  className="premium-submit-btn"
+  onClick={handleSubmit}
+>
+  <span className="premium-submit-icon">
+    {isSubmitted ? "↻" : "✓"}
+  </span>
+
+  <span>
+    {isSubmitted
+      ? "Update Today's Report"
+      : "Submit Today's Report"}
+  </span>
+</button>
 
       </div>
 

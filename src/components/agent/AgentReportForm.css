@@ -187,3 +187,198 @@ input[type=number]{
 appearance:textfield;
 
 }
+
+/* =========================================================
+   PREMIUM CLAYMORPHIC REPORT BUTTON
+========================================================= */
+
+.premium-submit-btn {
+  width: 100%;
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 22px;
+  padding: 0 28px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: linear-gradient(
+    145deg,
+    #665ff2,
+    #5149df
+  );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+
+  cursor: pointer;
+
+  /* Claymorphism */
+  box-shadow:
+    8px 8px 16px rgba(45, 48, 110, 0.22),
+    -6px -6px 14px rgba(255, 255, 255, 0.75),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.18),
+    inset -3px -3px 6px rgba(42, 37, 130, 0.20);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+
+  box-sizing: border-box;
+
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* Soft glossy highlight */
+
+.premium-submit-btn::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 12%;
+
+  width: 76%;
+  height: 45%;
+
+  border-radius: 0 0 50% 50%;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0)
+  );
+
+  pointer-events: none;
+}
+
+
+/* Hover */
+
+.premium-submit-btn:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.04);
+
+  box-shadow:
+    10px 11px 20px rgba(45, 48, 110, 0.25),
+    -7px -7px 15px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.2),
+    inset -3px -3px 7px rgba(42, 37, 130, 0.22);
+}
+
+
+/* Press */
+
+.premium-submit-btn:active {
+  transform: translateY(2px) scale(0.99);
+
+  box-shadow:
+    3px 3px 7px rgba(45, 48, 110, 0.22),
+    -3px -3px 7px rgba(255, 255, 255, 0.7),
+    inset 3px 3px 7px rgba(42, 37, 130, 0.20),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   BUTTON ICON
+========================================================= */
+
+.premium-submit-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 4px rgba(40, 35, 120, 0.16);
+
+  font-size: 18px;
+  font-weight: 900;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .premium-submit-btn {
+    min-height: 60px;
+
+    font-size: 15px;
+
+    border-radius: 16px;
+  }
+
+  .premium-submit-icon {
+    width: 31px;
+    height: 31px;
+
+    font-size: 16px;
+  }
+
+}
+
+
+/* =====================================================
+   SALES FORM GRID
+   Keep every Sales field identical in size
+===================================================== */
+
+.form-section .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+
+/* Every field occupies one equal grid cell */
+
+.form-section .form-group {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* Every input has identical dimensions */
+
+.form-section .form-group input {
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+  border: 1px solid #d8deea;
+
+  font-size: 15px;
+  font-weight: 600;
+}
