@@ -51,7 +51,7 @@ function Login() {
         onSubmit={handleLogin}
       >
 
-        <h1>✈ Travel CRM</h1>
+        <h1>✈ Alanita Hub</h1>
 
         <p>
           Login to continue

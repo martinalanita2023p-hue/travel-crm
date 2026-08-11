@@ -8,7 +8,7 @@ export default function Sidebar() {
 
       <div className="sidebar-logo">
 
-        <h2>Travel CRM</h2>
+        <h2>Alanita Hub</h2>
 
         <p>Management Portal</p>
 

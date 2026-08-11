@@ -1,222 +1,962 @@
+/* =========================================================
+   AGENT OVERVIEW
+========================================================= */
+
 .agent-overview {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  box-sizing: border-box;
+  padding: 20px;
+  background: #f4f7fb;
+  color: #17233c;
 }
 
-/* ==========================
-   HEADER
-========================== */
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.agent-overview-empty {
+  min-height: 280px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  background: #ffffff;
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.agent-overview-empty h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #17233c;
+}
+
+.agent-overview-empty p {
+  margin: 0;
+  font-size: 13px;
+  color: #7a8499;
+}
+
+
+/* =========================================================
+   AGENT HEADER
+========================================================= */
 
 .agent-overview-header {
-  background: var(--surface);
-  border-radius: 22px;
-  padding: 22px 26px;
+  width: 100%;
+  min-height: 70px;
+
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: var(--shadow);
+  gap: 14px;
+
+  padding: 14px 18px;
+  margin-bottom: 16px;
+
+  background: #ffffff;
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+
+  box-sizing: border-box;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
 .agent-avatar {
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #6366f1;
-  color: white;
-  font-size: 24px;
-  font-weight: 800;
+
+  border-radius: 14px;
+
+  background: #5b55e8;
+  color: #ffffff;
+
+  font-size: 21px;
+  font-weight: 750;
 }
 
 .agent-overview-header h2 {
   margin: 0;
-  font-size: 25px;
-  font-weight: 800;
-  color: var(--text);
+
+  font-size: 22px;
+  line-height: 1.2;
+
+  color: #17233c;
 }
 
 .agent-overview-header p {
   margin: 4px 0 0;
-  color: var(--muted);
+
+  font-size: 13px;
+  color: #7a8499;
 }
 
-/* ==========================
+
+/* =========================================================
+   DATE RANGE
+========================================================= */
+
+.agent-date-panel {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+
+  padding: 14px 18px;
+
+  background: #ffffff;
+  border: 1px solid #e5eaf1;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+.agent-date-panel > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.agent-date-panel label {
+  font-size: 11px;
+  font-weight: 650;
+  color: #647084;
+}
+
+.agent-date-panel input {
+  width: 165px;
+  height: 36px;
+
+  padding: 0 9px;
+
+  border: 1px solid #d9e0e9;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #17233c;
+
+  font-size: 12px;
+
+  outline: none;
+  box-sizing: border-box;
+}
+
+.agent-date-panel input:focus {
+  border-color: #5b55e8;
+}
+
+
+/* =========================================================
+   PERIOD
+========================================================= */
+
+.agent-period-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 9px 3px 5px;
+
+  font-size: 11px;
+}
+
+.agent-period-label span {
+  color: #7a8499;
+}
+
+.agent-period-label strong {
+  color: #4b5563;
+  font-weight: 650;
+}
+
+
+/* =========================================================
    KPI GRID
-========================== */
+========================================================= */
 
 .agent-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
   gap: 16px;
+
+  margin-top: 14px;
 }
+
+
+/* =========================================================
+   KPI CARD
+========================================================= */
 
 .agent-kpi-card {
-  background: var(--surface);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--shadow);
+  min-height: 135px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5eaf1;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.agent-kpi-card span {
+.agent-kpi-card > span {
   display: block;
-  color: var(--muted);
-  font-size: 13px;
-  margin-bottom: 8px;
+
+  margin-bottom: 9px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  color: #718096;
 }
 
-.agent-kpi-card strong {
+.agent-kpi-card > strong {
+  display: block;
+
   font-size: 27px;
-  color: var(--text);
+  line-height: 1;
+
+  font-weight: 750;
+
+  color: #17233c;
 }
 
-/* ==========================
-   CALLS VS TICKETS
-========================== */
+.agent-kpi-card > small {
+  display: block;
 
-.calls-tickets-card {
-  background: var(--surface);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: var(--shadow);
+  margin-top: 9px;
+
+  font-size: 10px;
+  font-weight: 650;
+
+  color: #7a8499;
 }
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-good {
+  color: #159447 !important;
+}
+
+.status-warning {
+  color: #d97706 !important;
+}
+
+
+/* =========================================================
+   CHARTS ROW
+
+   THIS IS THE IMPORTANT LAYOUT.
+
+   LEFT:
+   Fresh Calls vs Fresh Tickets
+
+   RIGHT:
+   Daily Performance Trend
+========================================================= */
+
+.performance-charts-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.85fr)
+    minmax(0, 1.35fr);
+
+  gap: 18px;
+
+  width: 100%;
+
+  margin-top: 18px;
+
+  align-items: stretch;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
 
 .section-heading {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 16px;
 }
 
 .section-heading h3 {
   margin: 0;
-  color: var(--text);
+
+  font-size: 15px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  color: #17233c;
 }
 
 .section-heading span {
-  font-weight: 700;
-  color: #6366f1;
+  display: block;
+
+  margin-top: 4px;
+
+  font-size: 10px;
+
+  color: #7a8499;
 }
 
+
+/* =========================================================
+   FRESH CALLS VS TICKETS CARD
+========================================================= */
+
+.calls-tickets-card {
+  min-width: 0;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5eaf1;
+  border-radius: 15px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.calls-tickets-card .section-heading {
+  margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   MAIN BAR CHART
+========================================================= */
+
 .bar-chart {
-  height: 280px;
+  min-height: 250px;
+
   display: flex;
-  justify-content: center;
   align-items: flex-end;
-  gap: 80px;
-  padding: 30px 20px 10px;
+  justify-content: center;
+
+  gap: 55px;
+
+  padding:
+    20px
+    15px
+    0;
+
+  border-top:
+    1px solid #edf0f5;
+
+  box-sizing: border-box;
 }
 
 .bar-column {
-  height: 230px;
+  height: 215px;
+
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   align-items: center;
-  min-width: 110px;
+  justify-content: flex-end;
+
+  min-width: 70px;
 }
 
-.bar-column strong {
-  margin-bottom: 8px;
-  font-size: 20px;
-  color: var(--text);
+.bar-column > strong {
+  margin-bottom: 7px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #4b5563;
 }
 
 .bar {
-  width: 65px;
-  max-height: 190px;
+  width: 48px;
+
   min-height: 10px;
-  border-radius: 12px 12px 4px 4px;
+
+  border-radius:
+    7px 7px 0 0;
 }
 
 .calls-bar {
-  background: #6366f1;
+  background: #5b55e8;
 }
 
 .tickets-bar {
-  background: #22c55e;
+  background: #20bf5a;
 }
 
-.bar-column span {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 13px;
+.bar-column > span {
+  margin-top: 9px;
+
+  font-size: 10px;
+
+  color: #718096;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   DAILY PERFORMANCE TREND
+========================================================= */
+
+.agent-trend-card {
+  min-width: 0;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5eaf1;
+  border-radius: 15px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =========================================================
+   TREND LEGEND
+========================================================= */
+
+.trend-legend {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+}
+
+.trend-legend span {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  margin: 0;
+
+  font-size: 9px;
+  color: #687386;
+}
+
+.trend-legend i {
+  width: 8px;
+  height: 8px;
+
+  display: inline-block;
+
+  border-radius: 2px;
+}
+
+.legend-calls {
+  background: #5b55e8;
+}
+
+.legend-tickets {
+  background: #20bf5a;
+}
+
+
+/* =========================================================
+   TREND CHART
+========================================================= */
+
+.trend-chart {
+  width: 100%;
+  height: 215px;
+
+  display: flex;
+  align-items: flex-end;
+
+  gap: 12px;
+
+  padding:
+    25px
+    8px
+    4px;
+
+  border-top:
+    1px solid #edf0f5;
+
+  box-sizing: border-box;
+
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.trend-day {
+  width: 42px;
+  min-width: 42px;
+
+  height: 175px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.trend-bars {
+  height: 145px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 4px;
+}
+
+.trend-bar {
+  width: 10px;
+
+  min-height: 7px;
+
+  position: relative;
+
+  border-radius:
+    4px 4px 0 0;
+}
+
+.trend-calls {
+  background: #5b55e8;
+}
+
+.trend-tickets {
+  background: #20bf5a;
+}
+
+.trend-bar span {
+  position: absolute;
+
+  top: -17px;
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  font-size: 8px;
+
+  line-height: 1;
+
   font-weight: 700;
+
+  color: #536174;
+
+  white-space: nowrap;
+
+  z-index: 5;
 }
 
-/* ==========================
-   DETAILS
-========================== */
+.trend-date {
+  margin-top: 8px;
+
+  font-size: 9px;
+
+  line-height: 1;
+
+  color: #7a8499;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY TREND
+========================================================= */
+
+.trend-empty {
+  height: 160px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  color: #8a94a8;
+}
+
+
+/* =========================================================
+   SALES & PERFORMANCE TITLE
+========================================================= */
+
+.agent-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin:
+    24px
+    0
+    12px;
+}
+
+.agent-section-title h3 {
+  margin: 0;
+
+  font-size: 17px;
+
+  font-weight: 750;
+
+  color: #17233c;
+}
+
+.agent-section-title span {
+  font-size: 10px;
+
+  color: #7a8499;
+}
+
+
+/* =========================================================
+   SALES & PERFORMANCE GRID
+========================================================= */
+
+.agent-secondary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.agent-secondary-grid .agent-kpi-card {
+  min-height: 125px;
+}
+
+
+/* =========================================================
+   ADDITIONAL PERFORMANCE
+========================================================= */
 
 .agent-details-card {
-  background: var(--surface);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: var(--shadow);
+  margin-top: 20px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5eaf1;
+  border-radius: 15px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
 .agent-details-card h3 {
-  margin-top: 0;
-  color: var(--text);
+  margin: 0 0 15px;
+
+  font-size: 16px;
+
+  font-weight: 750;
+
+  color: #17233c;
+}
+
+
+/* =========================================================
+   DETAIL GRID
+========================================================= */
+
+.agent-detail-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  column-gap: 30px;
 }
 
 .agent-detail-row {
+  min-height: 48px;
+
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  gap: 15px;
+
+  padding: 9px 4px;
+
+  border-bottom:
+    1px solid #edf0f5;
+
+  box-sizing: border-box;
 }
 
-.agent-detail-row:last-child {
-  border-bottom: none;
+.agent-detail-row > span {
+  font-size: 12px;
+
+  color: #687386;
 }
 
-.agent-detail-row span {
-  color: var(--muted);
+.detail-value {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
 }
 
 .agent-detail-row strong {
-  color: var(--text);
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #17233c;
 }
 
-/* ==========================
-   EMPTY
-========================== */
+.agent-detail-row small {
+  font-size: 9px;
 
-.agent-overview-empty {
-  background: var(--surface);
-  border-radius: 24px;
-  padding: 40px;
-  text-align: center;
-  box-shadow: var(--shadow);
+  color: #7a8499;
 }
 
-.agent-overview-empty h2 {
-  color: var(--text);
+
+/* =========================================================
+   REPORT COUNT
+========================================================= */
+
+.agent-report-count {
+  display: flex;
+  justify-content: flex-end;
+
+  padding:
+    12px
+    3px
+    3px;
 }
 
-.agent-overview-empty p {
-  color: var(--muted);
+.agent-report-count span {
+  font-size: 10px;
+
+  color: #8a94a8;
 }
 
-/* ==========================
-   RESPONSIVE
-========================== */
 
-@media (max-width: 1100px) {
-  .agent-kpi-grid {
-    grid-template-columns: repeat(3, 1fr);
+/* =========================================================
+   LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1200px) {
+
+  .agent-overview {
+    padding: 22px 24px;
   }
-}
 
-@media (max-width: 700px) {
-  .agent-kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .performance-charts-row {
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(0, 1.4fr);
   }
 
   .bar-chart {
-    gap: 40px;
+    min-height: 270px;
   }
+
+  .bar-column {
+    height: 235px;
+  }
+
+  .trend-chart {
+    height: 235px;
+  }
+
+  .trend-day {
+    height: 190px;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .agent-kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .performance-charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-secondary-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =========================================================
+   SMALL TABLET
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .agent-overview {
+    padding: 14px;
+  }
+
+  .agent-date-panel {
+    flex-wrap: wrap;
+  }
+
+  .agent-secondary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .agent-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .agent-overview {
+    padding: 10px;
+  }
+
+  .agent-overview-header {
+    padding: 12px;
+  }
+
+  .agent-overview-header h2 {
+    font-size: 19px;
+  }
+
+  .agent-avatar {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+
+
+  .agent-date-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agent-date-panel input {
+    width: 100%;
+  }
+
+
+  .agent-period-label {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 4px;
+  }
+
+
+  .agent-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+
+  .performance-charts-row {
+    grid-template-columns: 1fr;
+  }
+
+
+  .calls-tickets-card,
+  .agent-trend-card {
+    padding: 15px;
+  }
+
+
+  .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+
+  .trend-legend {
+    margin-top: 2px;
+  }
+
+
+  .bar-chart {
+    gap: 35px;
+  }
+
+
+  .agent-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .agent-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bar-chart {
+    gap: 25px;
+  }
+
+  .bar {
+    width: 42px;
+  }
+
 }

@@ -86,12 +86,14 @@ export default function AgentReportForm({
 
         <div className="form-grid">
 
-          <FormInput
-            label="Fresh Tickets"
-            name="fresh_tickets"
-            value={report.fresh_tickets}
-            onChange={handleChange}
-          />
+          <input
+  type="number"
+  name="fresh_tickets"
+  min="0"
+  max={Number(report.fresh_calls || 0)}
+  value={report.fresh_tickets}
+  onChange={handleChange}
+/>
 
           <FormInput
             label="PNRs Created"

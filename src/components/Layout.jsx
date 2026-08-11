@@ -56,7 +56,7 @@ export default function Layout({
 
               <h1>
 
-                {title || "Travel CRM"}
+                {title || "Alanita Hub"}
 
               </h1>
 
