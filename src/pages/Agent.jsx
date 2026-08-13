@@ -3,10 +3,23 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import AgentHeader from "../components/AgentHeader";
 
-import AgentReportForm from "../components/agent/AgentReportForm";
-import AgentProgress from "../components/agent/AgentProgress";
-import AgentSummary from "../components/agent/AgentSummary";
-import AgentHistory from "../components/agent/AgentHistory";
+import AgentSummary
+  from "../components/agent/AgentSummary";
+
+import AgentReportForm
+  from "../components/agent/AgentReportForm";
+
+import AgentProgress
+  from "../components/agent/AgentProgress";
+
+import AgentHistory
+  from "../components/agent/AgentHistory";
+
+import AgentSalesPerformance
+  from "../components/agent/AgentSalesPerformance/AgentSalesPerformance";
+
+import AgentAdditionalPerformance
+  from "../components/agent/AgentAdditionalPerformance/AgentAdditionalPerformance";
 
 import { toast } from "react-toastify";
 
@@ -20,9 +33,12 @@ import {
   getLastReports,
 } from "../services/agentService";
 
+import useAgentPerformance
+  from "../hooks/useAgentPerformance";
+
 
 /* =====================================================
-   GET CURRENT EASTERN DATE
+   GET CURRENT EASTERN / BOSTON DATE
 ===================================================== */
 
 function getEasternDate() {
@@ -31,6 +47,7 @@ function getEasternDate() {
     "en-CA",
     {
       timeZone: "America/New_York",
+
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -48,7 +65,8 @@ function createEmptyReport(agentName) {
 
   return {
 
-    agent_name: agentName || "",
+    agent_name:
+      agentName || "",
 
     fresh_calls: 0,
 
@@ -98,7 +116,29 @@ function Agent() {
 
 
   /* ===================================================
-     REPORT STATE
+     SHARED AGENT PERFORMANCE
+     
+     This is ONLY used for:
+     
+     Sales & Performance
+     Additional Performance
+     
+     It uses the current month and
+     Eastern / Boston time.
+  =================================================== */
+
+  const {
+    reports,
+    stats,
+    fromDate,
+    toDate,
+    loading: performanceLoading,
+    error: performanceError,
+  } = useAgentPerformance();
+
+
+  /* ===================================================
+     TODAY'S REPORT
   =================================================== */
 
   const [report, setReport] =
@@ -110,7 +150,7 @@ function Agent() {
 
 
   /* ===================================================
-     HISTORY STATE
+     REPORT HISTORY
   =================================================== */
 
   const [lastReports, setLastReports] =
@@ -118,10 +158,7 @@ function Agent() {
 
 
   /* ===================================================
-     SUBMISSION STATE
-
-     false = no report submitted yet
-     true  = today's report already exists
+     SUBMISSION STATUS
   =================================================== */
 
   const [isSubmitted, setIsSubmitted] =
@@ -129,16 +166,16 @@ function Agent() {
 
 
   /* ===================================================
-     LOADING STATE
+     LOADING
   =================================================== */
 
   const [loadingReport, setLoadingReport] =
     useState(true);
 
 
-  /* ===================================================
+  /* =====================================================
      LOAD TODAY'S REPORT
-  =================================================== */
+  ===================================================== */
 
   useEffect(() => {
 
@@ -163,7 +200,7 @@ function Agent() {
 
 
         /* =============================================
-           EXISTING REPORT FOUND
+           REPORT EXISTS
         ============================================== */
 
         if (todayReport) {
@@ -178,7 +215,7 @@ function Agent() {
 
 
         /* =============================================
-           NO REPORT FOR TODAY
+           NO REPORT YET
         ============================================== */
 
         else {
@@ -195,11 +232,11 @@ function Agent() {
 
       }
 
-      catch (err) {
+      catch (error) {
 
         console.error(
           "Failed to load today's report:",
-          err
+          error
         );
 
         toast.error(
@@ -226,12 +263,12 @@ function Agent() {
      HANDLE INPUT CHANGE
   ===================================================== */
 
-  function handleChange(e) {
+  function handleChange(event) {
 
     const {
       name,
       value,
-    } = e.target;
+    } = event.target;
 
 
     setReport(
@@ -245,29 +282,6 @@ function Agent() {
     );
 
   }
-
-
-  /* =====================================================
-     CONVERSION
-  ===================================================== */
-
-  const conversion =
-
-    Number(report.fresh_calls) === 0
-
-      ? 0
-
-      : (
-
-          Number(
-            report.fresh_tickets
-          ) /
-
-          Number(
-            report.fresh_calls
-          )
-
-        ) * 100;
 
 
   /* =====================================================
@@ -302,12 +316,9 @@ function Agent() {
       };
 
 
-      /*
-       * Remove database-generated fields.
-       *
-       * The upsert will find the existing row
-       * using agent_name + report_date.
-       */
+      /* =============================================
+         REMOVE DATABASE GENERATED FIELDS
+      ============================================== */
 
       delete reportData.id;
 
@@ -315,7 +326,7 @@ function Agent() {
 
 
       /* =============================================
-         SAVE
+         SAVE / UPDATE
       ============================================== */
 
       const savedData =
@@ -323,10 +334,6 @@ function Agent() {
           reportData
         );
 
-
-      /* =============================================
-         USE RETURNED DATABASE ROW
-      ============================================== */
 
       if (
         savedData &&
@@ -340,18 +347,14 @@ function Agent() {
       }
 
 
-      /* =============================================
-         MARK AS SUBMITTED
-      ============================================== */
+      const wasAlreadySubmitted =
+        isSubmitted;
+
 
       setIsSubmitted(true);
 
 
-      /* =============================================
-         MESSAGE
-      ============================================== */
-
-      if (isSubmitted) {
+      if (wasAlreadySubmitted) {
 
         toast.success(
           "Today's report updated successfully!"
@@ -388,7 +391,7 @@ function Agent() {
 
 
   /* =====================================================
-     LOAD HISTORY
+     LOAD REPORT HISTORY
   ===================================================== */
 
   async function loadHistory() {
@@ -409,16 +412,16 @@ function Agent() {
 
 
       setLastReports(
-        history
+        history || []
       );
 
     }
 
-    catch (err) {
+    catch (error) {
 
       console.error(
         "Failed to load report history:",
-        err
+        error
       );
 
     }
@@ -427,7 +430,32 @@ function Agent() {
 
 
   /* =====================================================
-     LOADING
+     LOAD HISTORY ONCE
+  ===================================================== */
+
+  useEffect(() => {
+
+    loadHistory();
+
+  }, [currentUser?.name]);
+
+
+  /* =====================================================
+     PERFORMANCE ERROR
+  ===================================================== */
+
+  if (performanceError) {
+
+    console.error(
+      "Agent performance error:",
+      performanceError
+    );
+
+  }
+
+
+  /* =====================================================
+     PAGE LOADING
   ===================================================== */
 
   if (loadingReport) {
@@ -452,7 +480,7 @@ function Agent() {
 
 
   /* =====================================================
-     PAGE
+     MAIN PAGE
   ===================================================== */
 
   return (
@@ -462,50 +490,76 @@ function Agent() {
       <div className="agent-page">
 
 
-        {/* =============================================
-            HEADER
-        ============================================== */}
+        {/* =================================================
+            AGENT HEADER
+        ================================================= */}
 
         <AgentHeader />
 
 
-        {/* =============================================
-            SUMMARY
-        ============================================== */}
+        {/* =================================================
+            TODAY'S SUMMARY
+        ================================================= */}
 
         <AgentSummary
           report={report}
         />
 
 
-        {/* =============================================
-            MAIN GRID
-        ============================================== */}
+        {/* =================================================
+            SALES & PERFORMANCE
+        ================================================= */}
+
+        <AgentSalesPerformance
+
+          stats={stats}
+
+          loading={performanceLoading}
+
+          fromDate={fromDate}
+
+          toDate={toDate}
+
+        />
+
+
+        {/* =================================================
+            ADDITIONAL PERFORMANCE
+        ================================================= */}
+
+        <AgentAdditionalPerformance
+
+          stats={stats}
+
+          loading={performanceLoading}
+
+          fromDate={fromDate}
+
+          toDate={toDate}
+
+        />
+
+
+        {/* =================================================
+            TODAY'S REPORT + TODAY'S PERFORMANCE
+        ================================================= */}
 
         <div className="agent-main-grid">
 
 
-          {/* ===========================================
-              REPORT FORM
-          ============================================ */}
+          {/* ===============================================
+              TODAY'S REPORT
+          =============================================== */}
 
           <AgentReportForm
 
-            report={
-              report
-            }
+            report={report}
 
-            handleChange={
-              handleChange
-            }
+            handleChange={handleChange}
 
-            handleSubmit={
-              handleSubmit
-            }
+            handleSubmit={handleSubmit}
 
-            isSubmitted={
-              isSubmitted
-            }
+            isSubmitted={isSubmitted}
 
             submitLabel={
               isSubmitted
@@ -516,14 +570,13 @@ function Agent() {
           />
 
 
-          {/* ===========================================
-              PROGRESS
-          ============================================ */}
+          {/* ===============================================
+              TODAY'S PERFORMANCE
+          =============================================== */}
 
           <AgentProgress
-            report={
-              report
-            }
+
+            report={report}
 
           />
 
@@ -531,15 +584,13 @@ function Agent() {
         </div>
 
 
-        {/* =============================================
-            HISTORY
-        ============================================== */}
+        {/* =================================================
+            REPORT HISTORY
+        ================================================= */}
 
         <AgentHistory
 
-          reports={
-            lastReports
-          }
+          reports={lastReports}
 
         />
 

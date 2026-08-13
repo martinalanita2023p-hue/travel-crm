@@ -1,0 +1,192 @@
+.agent-daily-trend {
+  width: 100%;
+  margin-top: 24px;
+  padding: 22px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 5px 16px rgba(
+      20,
+      35,
+      60,
+      0.07
+    );
+}
+
+
+.agent-daily-trend-header {
+  margin-bottom: 20px;
+}
+
+
+.agent-daily-trend-header h3 {
+  margin: 0;
+
+  color: #17213a;
+
+  font-size: 20px;
+  font-weight: 900;
+}
+
+
+.agent-daily-trend-header p {
+  margin: 5px 0 0;
+
+  color: #536078;
+
+  font-size: 12px;
+  font-weight: 750;
+}
+
+
+.agent-daily-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+
+.agent-daily-row {
+  display: grid;
+
+  grid-template-columns:
+    80px 1fr;
+
+  gap: 20px;
+
+  align-items: center;
+}
+
+
+.agent-daily-date {
+  color: #17213a;
+
+  font-size: 14px;
+
+  font-weight: 900;
+}
+
+
+.agent-daily-bars {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+
+.agent-daily-line {
+  display: grid;
+
+  grid-template-columns:
+    65px 1fr 40px;
+
+  gap: 10px;
+
+  align-items: center;
+}
+
+
+.agent-daily-label {
+  color: #536078;
+
+  font-size: 12px;
+
+  font-weight: 850;
+}
+
+
+.agent-daily-track {
+  height: 18px;
+
+  overflow: hidden;
+
+  background: #edf1f6;
+
+  border-radius: 9px;
+}
+
+
+.agent-daily-bar {
+  height: 100%;
+
+  min-width: 4px;
+
+  border-radius: 9px;
+}
+
+
+.agent-calls-bar {
+  background: #315c9c;
+}
+
+
+.agent-tickets-bar {
+  background: #1b8a5a;
+}
+
+
+.agent-daily-line strong {
+  color: #071f4d;
+
+  font-size: 15px;
+
+  font-weight: 950;
+
+  text-align: right;
+}
+
+
+.agent-daily-empty {
+  padding: 45px 20px;
+
+  text-align: center;
+
+  color: #536078;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+@media (max-width: 700px) {
+
+  .agent-daily-trend {
+    padding: 16px;
+  }
+
+
+  .agent-daily-row {
+    grid-template-columns: 60px 1fr;
+
+    gap: 10px;
+  }
+
+
+  .agent-daily-line {
+    grid-template-columns:
+      55px 1fr 30px;
+
+    gap: 7px;
+  }
+
+
+  .agent-daily-track {
+    height: 16px;
+  }
+
+
+  .agent-daily-line strong {
+    font-size: 14px;
+  }
+
+}

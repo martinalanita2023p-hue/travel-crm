@@ -1,0 +1,257 @@
+/* =====================================================
+   AGENT CORE PERFORMANCE
+===================================================== */
+
+.agent-core-performance {
+  width: 100%;
+
+  margin-top: 24px;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.agent-core-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 10px;
+}
+
+
+.agent-core-header h3 {
+  margin: 0;
+
+  color: #17213a;
+
+  font-size: 20px;
+
+  font-weight: 900;
+}
+
+
+.agent-core-header span {
+  color: #536078;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.agent-core-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.agent-core-card {
+  min-height: 120px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 4px 12px rgba(
+      20,
+      35,
+      60,
+      0.06
+    );
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.agent-core-card:hover {
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(
+      20,
+      35,
+      60,
+      0.10
+    );
+}
+
+
+/* =====================================================
+   LABEL
+===================================================== */
+
+.agent-core-card > span {
+
+  margin-bottom: 9px;
+
+  color: #263b62;
+
+  font-size: 14px;
+
+  font-weight: 850;
+
+  text-align: center;
+}
+
+
+/* =====================================================
+   VALUE
+===================================================== */
+
+.agent-core-card > strong {
+
+  color: #071f4d;
+
+  font-size: 30px;
+
+  line-height: 1.1;
+
+  font-weight: 900;
+
+  text-align: center;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.agent-core-loading {
+
+  min-height: 120px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  color: #536078;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+  .agent-core-grid {
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .agent-core-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+
+  .agent-core-header h3 {
+
+    font-size: 19px;
+
+  }
+
+
+  .agent-core-grid {
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+  }
+
+
+  .agent-core-card {
+
+    min-height: 105px;
+
+    padding: 12px;
+
+  }
+
+
+  .agent-core-card > span {
+
+    font-size: 12px;
+
+  }
+
+
+  .agent-core-card > strong {
+
+    font-size: 25px;
+
+  }
+
+}

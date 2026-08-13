@@ -1,0 +1,370 @@
+/* =====================================================
+   SETTINGS PAGE
+===================================================== */
+
+.settings-page {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+  padding: 28px 32px 50px;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.settings-header {
+  margin-bottom: 26px;
+}
+
+.settings-header h1 {
+  margin: 0;
+
+  color: #17213a;
+
+  font-size: 28px;
+  font-weight: 850;
+}
+
+.settings-header p {
+  margin: 7px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   SETTINGS CARD
+===================================================== */
+
+.settings-card {
+  width: 100%;
+
+  margin-bottom: 22px;
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e4e8f0;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 24px rgba(25, 35, 60, 0.06);
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   CARD HEADER
+===================================================== */
+
+.settings-card-header {
+  margin-bottom: 20px;
+}
+
+.settings-card-header h2 {
+  margin: 0;
+
+  color: #17213a;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.settings-card-header p {
+  margin: 6px 0 0;
+
+  color: #737b8c;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   SETTINGS GRID
+===================================================== */
+
+.settings-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+
+/* =====================================================
+   FIELD
+===================================================== */
+
+.settings-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.settings-field label {
+  color: #30394d;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   READ-ONLY VALUE
+===================================================== */
+
+.settings-value {
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 14px;
+
+  background: #f7f8fb;
+
+  border: 1px solid #e0e5ee;
+
+  border-radius: 11px;
+
+  color: #17213a;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+.role-value {
+  text-transform: capitalize;
+}
+
+
+/* =====================================================
+   SELECT
+===================================================== */
+
+.settings-field select {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #dce2ec;
+
+  border-radius: 11px;
+
+  color: #17213a;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  outline: none;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.settings-field select:focus {
+  border-color: #665ff2;
+
+  box-shadow:
+    0 0 0 3px rgba(102, 95, 242, 0.10);
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.settings-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+}
+
+
+/* =====================================================
+   SECONDARY BUTTON
+===================================================== */
+
+.settings-secondary-btn {
+  min-height: 46px;
+
+  padding: 0 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #eef0ff;
+
+  color: #4d46c8;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.settings-secondary-btn:hover {
+  background: #e3e5ff;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.settings-danger-btn {
+  min-height: 46px;
+
+  padding: 0 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #fff0f0;
+
+  color: #c03939;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.settings-danger-btn:hover {
+  background: #ffe3e3;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .settings-page {
+    padding: 22px 16px 40px;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings-secondary-btn,
+  .settings-danger-btn {
+    width: 100%;
+  }
+
+}
+
+/* =====================================================
+   SAVE SETTINGS
+===================================================== */
+
+.settings-save-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 22px;
+
+  flex-wrap: wrap;
+}
+
+
+.settings-save-btn {
+  min-height: 46px;
+
+  padding: 0 22px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #665ff2;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 14px rgba(102, 95, 242, 0.20);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.settings-save-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 9px 18px rgba(102, 95, 242, 0.25);
+}
+
+
+.settings-save-btn:active {
+  transform: translateY(1px);
+}
+
+
+.settings-saved-message {
+  color: #16803c;
+
+  font-size: 14px;
+
+  font-weight: 800;
+}
