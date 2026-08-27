@@ -1131,3 +1131,319 @@
   }
 
 }
+
+/* =========================================================
+   MANAGER DASHBOARD - READABILITY UPGRADE
+========================================================= */
+
+/* Main Meeting Team headings */
+.meeting-team-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.meeting-team-header p {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+
+/* Date labels */
+.meeting-team-dates label {
+  font-size: 13px;
+  font-weight: 750;
+  color: #1f2937;
+}
+
+.meeting-team-dates input {
+  height: 42px;
+  width: 190px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+
+/* Selected agent chips */
+.team-member-chip {
+  min-height: 36px;
+
+  padding-left: 14px;
+  padding-right: 7px;
+
+  font-size: 13px;
+  font-weight: 750;
+
+  color: #29256f;
+}
+
+.team-member-chip button {
+  font-size: 18px;
+}
+
+
+/* Agent selector */
+.agent-selector-top h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.agent-selector-top p {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.team-agent-search {
+  height: 42px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  color: #111827;
+}
+
+.agent-selector-item {
+  min-height: 46px;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  color: #1f2937;
+}
+
+.agent-check {
+  width: 24px;
+  height: 24px;
+
+  font-size: 14px;
+}
+
+
+/* Team Performance heading */
+.team-performance-title h3 {
+  font-size: 21px;
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.team-performance-title div > span {
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #4b5563;
+}
+
+.team-performance-title > span {
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+
+/* =========================================================
+   TEAM KPI CARDS
+========================================================= */
+
+.team-kpi-card {
+  min-height: 125px;
+
+  padding: 19px;
+}
+
+.team-kpi-card > span {
+  margin-bottom: 10px;
+
+  font-size: 13px;
+  font-weight: 750;
+
+  color: #374151;
+}
+
+.team-kpi-card > strong {
+  font-size: 30px;
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.team-kpi-card > small {
+  margin-top: 9px;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   TEAM TABLE
+========================================================= */
+
+.meeting-team-table-title h3 {
+  font-size: 17px;
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.meeting-team-table-title span {
+  font-size: 11px;
+  font-weight: 500;
+
+  color: #4b5563;
+}
+
+
+/* Table header */
+.meeting-team-table th {
+  padding: 14px 13px;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  color: #1f2937;
+
+  background: #eef1f5;
+}
+
+
+/* Table body */
+.meeting-team-table td {
+  padding: 14px 13px;
+
+  font-size: 13px;
+  font-weight: 550;
+
+  color: #1f2937;
+}
+
+
+/* Agent names */
+.meeting-team-table .team-agent-name {
+  font-size: 14px;
+  font-weight: 800 !important;
+
+  color: #111827 !important;
+}
+
+
+/* Conversion */
+.meeting-team-table td.team-status-good {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.meeting-team-table td.team-status-warning {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+/* Empty table */
+.team-table-empty {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+
+  color: #4b5563 !important;
+}
+
+
+/* Loading */
+.team-loading {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #374151;
+}
+
+
+/* =========================================================
+   EXISTING TEAM TABLE
+========================================================= */
+
+.team-table-card {
+  color: #111827;
+}
+
+
+/* =========================================================
+   GENERAL MANAGER TEXT DARKENING
+========================================================= */
+
+.manager-page {
+  color: #111827;
+}
+
+.manager-page h1,
+.manager-page h2,
+.manager-page h3,
+.manager-page h4 {
+  color: #111827;
+}
+
+.manager-page p,
+.manager-page span,
+.manager-page label {
+  color: #374151;
+}
+
+
+/* Keep KPI numbers strong */
+.manager-page strong {
+  color: #111827;
+}
+
+
+/* Don't override status colors */
+.manager-page .team-status-good {
+  color: #159447 !important;
+}
+
+.manager-page .team-status-warning {
+  color: #d97706 !important;
+}
+
+
+/* =========================================================
+   DESKTOP SCALE
+========================================================= */
+
+@media (min-width: 1200px) {
+
+  .meeting-team-section {
+    padding: 26px;
+  }
+
+  .team-kpi-grid {
+    gap: 16px;
+  }
+
+  .team-kpi-card {
+    min-height: 135px;
+    padding: 21px;
+  }
+
+  .team-kpi-card > span {
+    font-size: 14px;
+  }
+
+  .team-kpi-card > strong {
+    font-size: 32px;
+  }
+
+  .meeting-team-table th {
+    font-size: 12px;
+    padding: 15px 14px;
+  }
+
+  .meeting-team-table td {
+    font-size: 14px;
+    padding: 15px 14px;
+  }
+
+}

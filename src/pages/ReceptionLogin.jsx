@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login, saveUser } from "../services/authService";
 import "../styles/login.css";
 
-function Login() {
+function ReceptionLogin() {
 
   const navigate = useNavigate();
 
@@ -25,45 +25,32 @@ function Login() {
         password
       );
 
-      saveUser(user);
-
 
       /* =====================================
-         SEND USER TO THEIR DASHBOARD
+         ONLY RECEPTION USERS ALLOWED
       ===================================== */
 
-      if (user.role === "Manager") {
-
-        navigate("/manager");
-
-      }
-
-      else if (user.role === "Agent") {
-
-        navigate("/agent");
-
-      }
-
-      else if (user.role === "Reception") {
-
-        navigate("/reception");
-
-      }
-
-      else {
+      if (user.role !== "Reception") {
 
         alert(
-          "Invalid user role. Please contact the manager."
+          "This login is for Reception users only."
         );
 
+        return;
+
       }
+
+
+      saveUser(user);
+
+      navigate("/reception");
 
     }
 
     catch (err) {
 
       console.error(
-        "Login failed:",
+        "Reception login failed:",
         err
       );
 
@@ -87,16 +74,17 @@ function Login() {
       >
 
         <h1>
-          ✈ Alanita Hub
+          ☎ Alanita Hub
         </h1>
 
+
         <p>
-          Login to continue
+          Reception Login
         </p>
 
 
         <input
-          id="username"
+          id="reception-username"
           name="username"
           type="text"
           placeholder="Username"
@@ -112,7 +100,7 @@ function Login() {
 
 
         <input
-          id="password"
+          id="reception-password"
           name="password"
           type="password"
           placeholder="Password"
@@ -139,4 +127,5 @@ function Login() {
 
 }
 
-export default Login;
+
+export default ReceptionLogin;

@@ -1,18 +1,428 @@
+.reception-page {
+  width: 100%;
+  padding: 10px 0 40px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.reception-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.reception-heading h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: #0b2a55;
+}
+
+.reception-heading p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.reception-date {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+
+/* =========================================
+   SECTIONS
+========================================= */
+
+.reception-section,
+.reception-form-section {
+  margin-bottom: 32px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: #0b2a55;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.reception-stats-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.disposed-grid {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.reception-stat-card {
+  background: #ffffff;
+  border: 1px solid #dbe5f0;
+  border-radius: 14px;
+  padding: 24px 20px;
+  min-height: 118px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 5px 15px rgba(15, 23, 42, 0.06);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.reception-stat-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 9px 20px rgba(15, 23, 42, 0.09);
+}
+
+.reception-stat-title {
+  color: #173b70;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.reception-stat-value {
+  color: #063b8f;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 850;
+}
+
+.total-card {
+  border-top: 4px solid #2563eb;
+}
+
+.disposed-card {
+  border-top: 4px solid #f59e0b;
+}
+
+.disposed-card .reception-stat-value {
+  color: #b45309;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.reception-form-section {
+  background: #ffffff;
+  border: 1px solid #dbe5f0;
+  border-radius: 16px;
+  padding: 26px;
+
+  box-shadow:
+    0 5px 18px rgba(15, 23, 42, 0.06);
+}
+
+.reception-form {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
 .form-group {
-    margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
 }
 
 .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
+  color: #173b70;
+  font-size: 14px;
+  font-weight: 750;
 }
-.reception-form label {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-    color: #222;
-    margin-bottom: 6px;
-    margin-top: 12px;
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  padding: 12px 13px;
+
+  background: #ffffff;
+
+  color: #172554;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.required-label {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.form-actions {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: flex-end;
+
+  padding-top: 4px;
+}
+
+.save-btn {
+  border: none;
+  border-radius: 9px;
+
+  padding: 12px 24px;
+
+  background: #2563eb;
+  color: white;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.save-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .reception-stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .disposed-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .reception-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .reception-stats-grid,
+  .disposed-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reception-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    grid-column: auto;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+
+}
+
+/* =========================================
+   DATE INPUT
+========================================= */
+
+.report-date-input {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: #ffffff;
+  color: #173b70;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.report-date-input:focus {
+  border-color: #2563eb;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================
+   FORM SECTION TITLES
+========================================= */
+
+.form-section-title {
+  grid-column: 1 / -1;
+
+  padding: 10px 0 2px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  color: #0b2a55;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.disposed-title {
+  margin-top: 8px;
+  color: #a16207;
+}
+
+
+/* =========================================
+   NUMBER INPUTS
+========================================= */
+
+.form-group input[type="number"] {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   DISPOSED CARDS
+========================================= */
+
+.disposed-card {
+  border-top: 4px solid #f59e0b;
+}
+
+.disposed-card .reception-stat-value {
+  color: #b45309;
+}
+
+
+/* =========================================
+   REQUIRED LABEL
+========================================= */
+
+.required-label {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   DISABLED CONTROLS
+========================================= */
+
+.form-group select:disabled,
+.form-group input:disabled {
+  background: #f1f5f9;
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+  .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .report-date-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
 }
