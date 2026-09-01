@@ -1,58 +1,97 @@
 import { useEffect, useState } from "react";
 
 import Layout from "../components/Layout";
-
 import "../styles/reception.css";
 
 import {
   getAgents,
-  getReceptionDailyCall,
-  saveReceptionDailyCall,
   getReceptionCallsForDate,
-  getDisposedCallReasons,
-  saveDisposedCallReasons,
+  saveReceptionDailyCall,
 } from "../services/receptionDailyService";
-
-import { saveServiceRequest } from "../services/serviceRequestService";
 
 import { getUser } from "../services/authService";
 
 
-/* =========================================
-   GET LOCAL DATE
-========================================= */
+/* =====================================================
+   EASTERN / BOSTON DATE
+===================================================== */
 
-function getLocalDate() {
+function getEasternDate() {
 
-  const date = new Date();
+  return new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone: "America/New_York",
 
-  const year =
-    date.getFullYear();
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }
+  ).format(new Date());
 
-  const month =
-    String(date.getMonth() + 1)
-      .padStart(2, "0");
-
-  const day =
-    String(date.getDate())
-      .padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
 }
 
 
-/* =========================================
-   RECEPTION DASHBOARD
-========================================= */
+/* =====================================================
+   EMPTY ROW
+===================================================== */
+
+function createEmptyRow(agent) {
+
+  return {
+
+    agent_id:
+      agent.id,
+
+    agent_name:
+      agent.name,
+
+    fresh_calls: 0,
+
+    dc_calls: 0,
+
+    cancellation_calls: 0,
+
+    fresh_disposed: 0,
+
+    dc_disposed: 0,
+
+    cancellation_disposed: 0,
+
+    remarks: "",
+
+    reception_record_id: null,
+
+    dirty: false,
+
+  };
+
+}
+
+
+/* =====================================================
+   RECEPTION PAGE
+===================================================== */
 
 function Reception() {
 
-  const currentUser = getUser();
+  const currentUser =
+    getUser();
 
 
-  /* =======================================
+  /* ===================================================
+     DATE
+  =================================================== */
+
+  const [reportDate, setReportDate] =
+    useState(
+      getEasternDate()
+    );
+
+
+  /* ===================================================
      AGENTS
-  ======================================= */
+  =================================================== */
 
   const [agents, setAgents] =
     useState([]);
@@ -61,120 +100,31 @@ function Reception() {
     useState(true);
 
 
-  /* =======================================
-     DAILY REGISTER
-  ======================================= */
+  /* ===================================================
+     GRID DATA
+  =================================================== */
 
-  const [reportDate, setReportDate] =
-    useState(getLocalDate());
-
-  const [selectedAgent, setSelectedAgent] =
-    useState("");
-
-
-  const [freshCalls, setFreshCalls] =
-    useState(0);
-
-  const [dcCalls, setDcCalls] =
-    useState(0);
-
-  const [cancellationCalls, setCancellationCalls] =
-    useState(0);
-
-
-  /* =======================================
-     DISPOSED CALL COUNTS
-  ======================================= */
-
-  const [freshDisposed, setFreshDisposed] =
-    useState(0);
-
-  const [dcDisposed, setDcDisposed] =
-    useState(0);
-
-  const [cancellationDisposed, setCancellationDisposed] =
-    useState(0);
-
-
-  /* =======================================
-     DISPOSED CALL REASONS
-  ======================================= */
-
-  const [freshDisposedReasons, setFreshDisposedReasons] =
+  const [rows, setRows] =
     useState([]);
 
-  const [dcDisposedReasons, setDcDisposedReasons] =
-    useState([]);
-
-  const [cancellationDisposedReasons, setCancellationDisposedReasons] =
-    useState([]);
-
-
-  const [callRemarks, setCallRemarks] =
-    useState("");
-
-
-  const [loadingReport, setLoadingReport] =
-    useState(false);
-
-  const [savingReport, setSavingReport] =
-    useState(false);
-
-
-  /* =======================================
-     DAILY SUMMARY
-  ======================================= */
-
-  const [dailyRows, setDailyRows] =
-    useState([]);
-
-  const [loadingStats, setLoadingStats] =
+  const [loadingRows, setLoadingRows] =
     useState(true);
 
-
-  /* =======================================
-     SERVICE REQUEST
-  ======================================= */
-
-  const [source, setSource] =
-    useState("Phone");
-
-  const [callType, setCallType] =
-    useState("Fresh Booking");
-
-  const [sector, setSector] =
-    useState("Ex-USA");
-
-  const [requestedAgent, setRequestedAgent] =
-    useState("");
-
-  const [remarks, setRemarks] =
-    useState("");
-
-  const [savingRequest, setSavingRequest] =
+  const [saving, setSaving] =
     useState(false);
 
 
-  /* =======================================
-     CREATE REASON FIELDS
-  ======================================= */
+  /* ===================================================
+     SEARCH
+  =================================================== */
 
-  function createReasonFields(count) {
-
-    return Array.from(
-      {
-        length:
-          Number(count) || 0,
-      },
-      () => ""
-    );
-
-  }
+  const [search, setSearch] =
+    useState("");
 
 
-  /* =======================================
+  /* ===================================================
      LOAD AGENTS
-  ======================================= */
+  =================================================== */
 
   useEffect(() => {
 
@@ -187,19 +137,9 @@ function Reception() {
         const data =
           await getAgents();
 
-        setAgents(data || []);
-
-        if (
-          data &&
-          data.length > 0 &&
-          !selectedAgent
-        ) {
-
-          setSelectedAgent(
-            data[0].name
-          );
-
-        }
+        setAgents(
+          data || []
+        );
 
       }
 
@@ -224,158 +164,123 @@ function Reception() {
 
     }
 
+
     loadAgents();
 
   }, []);
 
 
-  /* =======================================
-     LOAD SELECTED AGENT'S RECEPTION DATA
-  ======================================= */
+  /* ===================================================
+     LOAD RECEPTION DATA FOR SELECTED DATE
+  =================================================== */
 
   useEffect(() => {
 
-    if (
-      !selectedAgent ||
-      !reportDate
-    ) {
+    async function loadRows() {
 
-      return;
+      if (
+        !agents ||
+        agents.length === 0
+      ) {
 
-    }
+        return;
 
+      }
 
-    async function loadAgentReport() {
 
       try {
 
-        setLoadingReport(true);
+        setLoadingRows(true);
 
 
-        const report =
-          await getReceptionDailyCall(
-            selectedAgent,
+        const existing =
+          await getReceptionCallsForDate(
             reportDate
           );
 
 
-        if (!report) {
-
-          setFreshCalls(0);
-
-          setDcCalls(0);
-
-          setCancellationCalls(0);
-
-          setFreshDisposed(0);
-
-          setDcDisposed(0);
-
-          setCancellationDisposed(0);
-
-          setFreshDisposedReasons([]);
-
-          setDcDisposedReasons([]);
-
-          setCancellationDisposedReasons([]);
-
-          setCallRemarks("");
-
-          return;
-
-        }
+        const existingMap =
+          new Map();
 
 
-        setFreshCalls(
-          report.fresh_calls ?? 0
-        );
+        (existing || []).forEach(
+          (record) => {
 
-        setDcCalls(
-          report.dc_calls ?? 0
-        );
+            existingMap.set(
+              record.agent_name
+                ?.trim()
+                .toLowerCase(),
 
-        setCancellationCalls(
-          report.cancellation_calls ?? 0
+              record
+            );
+
+          }
         );
 
 
-        setFreshDisposed(
-          report.fresh_disposed ?? 0
-        );
+        const newRows =
+          agents.map(
+            (agent) => {
 
-        setDcDisposed(
-          report.dc_disposed ?? 0
-        );
-
-        setCancellationDisposed(
-          report.cancellation_disposed ?? 0
-        );
-
-
-        setCallRemarks(
-          report.remarks ?? ""
-        );
+              const record =
+                existingMap.get(
+                  agent.name
+                    ?.trim()
+                    .toLowerCase()
+                );
 
 
-        /* -------------------------------
-           LOAD INDIVIDUAL REASONS
-        -------------------------------- */
+              if (!record) {
 
-        const reasons =
-          await getDisposedCallReasons(
-            report.id
+                return createEmptyRow(
+                  agent
+                );
+
+              }
+
+
+              return {
+
+                agent_id:
+                  agent.id,
+
+                agent_name:
+                  agent.name,
+
+                fresh_calls:
+                  record.fresh_calls ?? 0,
+
+                dc_calls:
+                  record.dc_calls ?? 0,
+
+                cancellation_calls:
+                  record.cancellation_calls ?? 0,
+
+                fresh_disposed:
+                  record.fresh_disposed ?? 0,
+
+                dc_disposed:
+                  record.dc_disposed ?? 0,
+
+                cancellation_disposed:
+                  record.cancellation_disposed ?? 0,
+
+                remarks:
+                  record.remarks ?? "",
+
+                reception_record_id:
+                  record.id,
+
+                dirty: false,
+
+              };
+
+            }
           );
 
 
-        const freshReasons =
-          reasons
-            .filter(
-              (item) =>
-                item.disposition_type ===
-                "Fresh Call Disposed"
-            )
-            .map(
-              (item) =>
-                item.reason || ""
-            );
-
-
-        const dcReasons =
-          reasons
-            .filter(
-              (item) =>
-                item.disposition_type ===
-                "DC Disposed"
-            )
-            .map(
-              (item) =>
-                item.reason || ""
-            );
-
-
-        const cancellationReasons =
-          reasons
-            .filter(
-              (item) =>
-                item.disposition_type ===
-                "Cancellation Disposed"
-            )
-            .map(
-              (item) =>
-                item.reason || ""
-            );
-
-
-        setFreshDisposedReasons(
-          freshReasons
-        );
-
-        setDcDisposedReasons(
-          dcReasons
-        );
-
-        setCancellationDisposedReasons(
-          cancellationReasons
+        setRows(
+          newRows
         );
 
       }
@@ -383,300 +288,208 @@ function Reception() {
       catch (error) {
 
         console.error(
-          "Failed to load Reception report:",
+          "Failed to load Reception daily data:",
           error
         );
 
         alert(
-          "Unable to load Reception data."
+          "Unable to load the Reception call register."
         );
 
       }
 
       finally {
 
-        setLoadingReport(false);
+        setLoadingRows(false);
 
       }
 
     }
 
 
-    loadAgentReport();
+    loadRows();
 
   }, [
-    selectedAgent,
+    agents,
     reportDate,
   ]);
 
 
-  /* =======================================
-     LOAD DAILY SUMMARY
-  ======================================= */
+  /* ===================================================
+     UPDATE CELL
+  =================================================== */
 
-  async function loadDailyStats() {
+  function updateCell(
+    agentName,
+    field,
+    value
+  ) {
 
-    try {
+    setRows(
+      (currentRows) =>
 
-      setLoadingStats(true);
+        currentRows.map(
+          (row) => {
 
-      const rows =
-        await getReceptionCallsForDate(
-          reportDate
-        );
+            if (
+              row.agent_name !==
+              agentName
+            ) {
 
-      setDailyRows(
-        rows || []
-      );
+              return row;
 
-    }
+            }
 
-    catch (error) {
 
-      console.error(
-        "Failed to load daily Reception data:",
-        error
-      );
+            let finalValue =
+              value;
 
-    }
 
-    finally {
+            if (
+              field !== "remarks"
+            ) {
 
-      setLoadingStats(false);
+              finalValue =
+                Math.max(
+                  0,
+                  Number(value) || 0
+                );
 
-    }
+            }
+
+
+            return {
+
+              ...row,
+
+              [field]:
+                finalValue,
+
+              dirty: true,
+
+            };
+
+          }
+        )
+    );
 
   }
 
 
-  useEffect(() => {
+  /* ===================================================
+     SAVE ALL
+  =================================================== */
 
-    if (reportDate) {
+  async function handleSaveAll() {
 
-      loadDailyStats();
+    const changedRows =
+      rows.filter(
+        (row) => row.dirty
+      );
+
+
+    if (
+      changedRows.length === 0
+    ) {
+
+      alert(
+        "There are no changes to save."
+      );
+
+      return;
 
     }
 
-  }, [reportDate]);
 
+    /* -----------------------------------------------
+       CHECK DISPOSED REMARKS
+    ----------------------------------------------- */
 
-  /* =======================================
-     DAILY TOTALS
-  ======================================= */
+    for (
+      const row of changedRows
+    ) {
 
-  const totalFresh =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
-        Number(
-          row.fresh_calls || 0
-        ),
-      0
-    );
-
-
-  const totalDC =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
-        Number(
-          row.dc_calls || 0
-        ),
-      0
-    );
-
-
-  const totalCancellation =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
-        Number(
-          row.cancellation_calls || 0
-        ),
-      0
-    );
-
-
-  const totalFreshDisposed =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
+      const disposedTotal =
         Number(
           row.fresh_disposed || 0
-        ),
-      0
-    );
+        ) +
 
-
-  const totalDCDisposed =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
         Number(
           row.dc_disposed || 0
-        ),
-      0
-    );
+        ) +
 
-
-  const totalCancellationDisposed =
-    dailyRows.reduce(
-      (sum, row) =>
-        sum +
         Number(
-          row.cancellation_disposed || 0
-        ),
-      0
-    );
+          row.cancellation_disposed ||
+          0
+        );
 
 
-  const totalCalls =
-    totalFresh +
-    totalDC +
-    totalCancellation;
+      if (
+        disposedTotal > 0 &&
+        !row.remarks?.trim()
+      ) {
 
+        alert(
+          `Remarks are required for disposed calls for ${row.agent_name}.`
+        );
 
-  /* =======================================
-     SAVE DAILY REGISTER
-  ======================================= */
+        return;
 
-  async function handleSaveDailyCalls(e) {
-
-    e.preventDefault();
-
-
-    if (!selectedAgent) {
-
-      alert(
-        "Please select an agent."
-      );
-
-      return;
-
-    }
-
-
-    /* -------------------------------------
-       BUILD ALL REASONS
-    ------------------------------------- */
-
-    const allDisposedReasons = [
-
-      ...freshDisposedReasons,
-
-      ...dcDisposedReasons,
-
-      ...cancellationDisposedReasons,
-
-    ];
-
-
-    /* -------------------------------------
-       CHECK EVERY DISPOSED CALL HAS REASON
-    ------------------------------------- */
-
-    if (
-      allDisposedReasons.some(
-        (reason) =>
-          !reason.trim()
-      )
-    ) {
-
-      alert(
-        "Every disposed call must have a reason."
-      );
-
-      return;
-
-    }
-
-
-    /* -------------------------------------
-       MAKE SURE COUNTS MATCH REASONS
-    ------------------------------------- */
-
-    if (
-      freshDisposedReasons.length !==
-      Number(freshDisposed)
-    ) {
-
-      alert(
-        "Fresh Call Disposed count does not match the number of reasons."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      dcDisposedReasons.length !==
-      Number(dcDisposed)
-    ) {
-
-      alert(
-        "DC Disposed count does not match the number of reasons."
-      );
-
-      return;
-
-    }
-
-
-    if (
-      cancellationDisposedReasons.length !==
-      Number(cancellationDisposed)
-    ) {
-
-      alert(
-        "Cancellation Disposed count does not match the number of reasons."
-      );
-
-      return;
+      }
 
     }
 
 
     try {
 
-      setSavingReport(true);
+      setSaving(true);
 
 
-      /* -----------------------------------
-         SAVE MAIN DAILY RECORD
-      ----------------------------------- */
+      for (
+        const row of changedRows
+      ) {
 
-      const savedReport =
         await saveReceptionDailyCall({
 
           report_date:
             reportDate,
 
           agent_name:
-            selectedAgent,
+            row.agent_name,
 
           fresh_calls:
-            Number(freshCalls) || 0,
+            Number(
+              row.fresh_calls || 0
+            ),
 
           dc_calls:
-            Number(dcCalls) || 0,
+            Number(
+              row.dc_calls || 0
+            ),
 
           cancellation_calls:
-            Number(cancellationCalls) || 0,
+            Number(
+              row.cancellation_calls || 0
+            ),
 
           fresh_disposed:
-            Number(freshDisposed) || 0,
+            Number(
+              row.fresh_disposed || 0
+            ),
 
           dc_disposed:
-            Number(dcDisposed) || 0,
+            Number(
+              row.dc_disposed || 0
+            ),
 
           cancellation_disposed:
             Number(
-              cancellationDisposed
-            ) || 0,
+              row.cancellation_disposed ||
+              0
+            ),
 
           remarks:
-            callRemarks.trim() ||
+            row.remarks?.trim() ||
             null,
 
           reception_user:
@@ -685,70 +498,23 @@ function Reception() {
 
         });
 
-
-      /* -----------------------------------
-         BUILD INDIVIDUAL DISPOSED RECORDS
-      ----------------------------------- */
-
-      const disposedReasons = [
-
-        ...freshDisposedReasons.map(
-          (reason) => ({
-
-            disposition_type:
-              "Fresh Call Disposed",
-
-            reason:
-              reason.trim(),
-
-          })
-        ),
+      }
 
 
-        ...dcDisposedReasons.map(
-          (reason) => ({
-
-            disposition_type:
-              "DC Disposed",
-
-            reason:
-              reason.trim(),
-
-          })
-        ),
-
-
-        ...cancellationDisposedReasons.map(
-          (reason) => ({
-
-            disposition_type:
-              "Cancellation Disposed",
-
-            reason:
-              reason.trim(),
-
-          })
-        ),
-
-      ];
-
-
-      /* -----------------------------------
-         SAVE INDIVIDUAL REASONS
-      ----------------------------------- */
-
-      await saveDisposedCallReasons(
-        savedReport.id,
-        disposedReasons
+      setRows(
+        (currentRows) =>
+          currentRows.map(
+            (row) => ({
+              ...row,
+              dirty: false,
+            })
+          )
       );
 
 
       alert(
-        `${selectedAgent}'s Reception call data saved successfully.`
+        "Reception call data saved successfully."
       );
-
-
-      await loadDailyStats();
 
     }
 
@@ -768,205 +534,93 @@ function Reception() {
 
     finally {
 
-      setSavingReport(false);
+      setSaving(false);
 
     }
 
   }
 
 
-  /* =======================================
-     FRESH DISPOSED CHANGE
-  ======================================= */
+  /* ===================================================
+     FILTER ROWS
+  =================================================== */
 
-  function handleFreshDisposedChange(e) {
-
-    const value =
-      Math.max(
-        0,
-        Number(e.target.value) || 0
-      );
-
-
-    setFreshDisposed(value);
-
-
-    setFreshDisposedReasons(
-      createReasonFields(value)
+  const filteredRows =
+    rows.filter(
+      (row) =>
+        row.agent_name
+          ?.toLowerCase()
+          .includes(
+            search
+              .trim()
+              .toLowerCase()
+          )
     );
 
-  }
 
+  /* ===================================================
+     SUMMARY TOTALS
+  =================================================== */
 
-  /* =======================================
-     DC DISPOSED CHANGE
-  ======================================= */
+  const totals =
+    rows.reduce(
+      (total, row) => {
 
-  function handleDcDisposedChange(e) {
+        total.fresh +=
+          Number(
+            row.fresh_calls || 0
+          );
 
-    const value =
-      Math.max(
-        0,
-        Number(e.target.value) || 0
-      );
+        total.dc +=
+          Number(
+            row.dc_calls || 0
+          );
 
+        total.cancellation +=
+          Number(
+            row.cancellation_calls ||
+            0
+          );
 
-    setDcDisposed(value);
+        total.freshDisposed +=
+          Number(
+            row.fresh_disposed || 0
+          );
 
+        total.dcDisposed +=
+          Number(
+            row.dc_disposed || 0
+          );
 
-    setDcDisposedReasons(
-      createReasonFields(value)
+        total.cancellationDisposed +=
+          Number(
+            row.cancellation_disposed ||
+            0
+          );
+
+        return total;
+
+      },
+      {
+        fresh: 0,
+        dc: 0,
+        cancellation: 0,
+        freshDisposed: 0,
+        dcDisposed: 0,
+        cancellationDisposed: 0,
+      }
     );
 
-  }
+
+  const totalCalls =
+    totals.fresh +
+    totals.dc +
+    totals.cancellation;
 
 
-  /* =======================================
-     CANCELLATION DISPOSED CHANGE
-  ======================================= */
-
-  function handleCancellationDisposedChange(e) {
-
-    const value =
-      Math.max(
-        0,
-        Number(e.target.value) || 0
-      );
-
-
-    setCancellationDisposed(value);
-
-
-    setCancellationDisposedReasons(
-      createReasonFields(value)
-    );
-
-  }
-
-
-  /* =======================================
-     SERVICE REQUEST SAVE
-  ======================================= */
-
-  async function handleSaveServiceRequest(e) {
-
-    e.preventDefault();
-
-
-    try {
-
-      setSavingRequest(true);
-
-
-      await saveServiceRequest({
-
-        source,
-
-        request_type:
-          callType,
-
-        travel_type:
-          sector,
-
-        requested_agent:
-          requestedAgent.trim() ||
-          null,
-
-        remarks:
-          remarks.trim() ||
-          null,
-
-        reception_user:
-          currentUser?.id ||
-          null,
-
-      });
-
-
-      alert(
-        "Service Request Saved Successfully!"
-      );
-
-
-      setSource("Phone");
-
-      setCallType(
-        "Fresh Booking"
-      );
-
-      setSector("Ex-USA");
-
-      setRequestedAgent("");
-
-      setRemarks("");
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "Service Request Error:",
-        error
-      );
-
-      alert(
-        error?.message ||
-        "Error saving service request."
-      );
-
-    }
-
-    finally {
-
-      setSavingRequest(false);
-
-    }
-
-  }
-
-
-  /* =======================================
-     STAT CARD
-  ======================================= */
-
-  function StatCard({
-    title,
-    value,
-    disposed = false,
-  }) {
-
-    return (
-
-      <div
-        className={
-          disposed
-            ? "reception-stat-card disposed-card"
-            : "reception-stat-card"
-        }
-      >
-
-        <div className="reception-stat-title">
-          {title}
-        </div>
-
-        <div className="reception-stat-value">
-
-          {loadingStats
-            ? "..."
-            : value}
-
-        </div>
-
-      </div>
-
-    );
-
-  }
-
-
-  /* =======================================
+  /* ===================================================
      PAGE
-  ======================================= */
+  =================================================== */
 
   return (
 
@@ -975,25 +629,20 @@ function Reception() {
       <div className="reception-page">
 
 
-        {/* =================================
+        {/* =============================================
             HEADER
-        ================================= */}
+        ============================================== */}
 
         <div className="reception-heading">
 
           <div>
 
-            
-
-            
-
-            <div>
-
-            </div>
+            <h1>
+              Reception Dashboard
+            </h1>
 
             <p>
-              Daily call registration and
-              service request management
+              Daily call register
             </p>
 
           </div>
@@ -1004,9 +653,15 @@ function Reception() {
             {new Intl.DateTimeFormat(
               "en-US",
               {
+                timeZone:
+                  "America/New_York",
+
                 weekday: "long",
+
                 month: "long",
+
                 day: "numeric",
+
                 year: "numeric",
               }
             ).format(
@@ -1018,27 +673,17 @@ function Reception() {
         </div>
 
 
-        {/* =================================
-            DAILY SUMMARY
-        ================================= */}
+        {/* =============================================
+            CONTROLS
+        ============================================== */}
 
-        <section className="reception-section">
+        <section className="reception-register-controls">
 
-          <div className="section-heading">
+          <div className="reception-control-group">
 
-            <div>
-
-              <h2>
-                Daily Call Summary
-              </h2>
-
-              <p>
-                Reception-confirmed calls
-                for {reportDate}
-              </p>
-
-            </div>
-
+            <label>
+              Report Date
+            </label>
 
             <input
               type="date"
@@ -1048,101 +693,117 @@ function Reception() {
                   e.target.value
                 )
               }
-              className="report-date-input"
             />
 
           </div>
 
 
-          <div className="reception-stats-grid">
+          <div className="reception-control-group search-control">
 
-            <StatCard
-              title="Total Calls"
-              value={totalCalls}
+            <label>
+              Search Agent
+            </label>
+
+            <input
+              type="text"
+              placeholder="Search agent..."
+              value={search}
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
             />
 
-            <StatCard
-              title="Fresh Calls"
-              value={totalFresh}
-            />
+          </div>
 
-            <StatCard
-              title="DC Calls"
-              value={totalDC}
-            />
 
-            <StatCard
-              title="Cancellation Calls"
-              value={totalCancellation}
-            />
+          <button
+            type="button"
+            className="save-all-btn"
+            onClick={handleSaveAll}
+            disabled={
+              saving ||
+              loadingRows
+            }
+          >
+
+            {saving
+              ? "Saving..."
+              : "Save All Changes"}
+
+          </button>
+
+        </section>
+
+
+        {/* =============================================
+            SUMMARY
+        ============================================== */}
+
+        <section className="reception-summary-grid">
+
+          <div className="reception-summary-card">
+
+            <span>
+              Total Calls
+            </span>
+
+            <strong>
+              {totalCalls}
+            </strong>
+
+          </div>
+
+
+          <div className="reception-summary-card">
+
+            <span>
+              Fresh Calls
+            </span>
+
+            <strong>
+              {totals.fresh}
+            </strong>
+
+          </div>
+
+
+          <div className="reception-summary-card">
+
+            <span>
+              DC Calls
+            </span>
+
+            <strong>
+              {totals.dc}
+            </strong>
+
+          </div>
+
+
+          <div className="reception-summary-card">
+
+            <span>
+              Cancellation Calls
+            </span>
+
+            <strong>
+              {totals.cancellation}
+            </strong>
 
           </div>
 
         </section>
 
 
-        {/* =================================
-            DISPOSED SUMMARY
-        ================================= */}
+        {/* =============================================
+            MAIN REGISTER
+        ============================================== */}
 
-        <section className="reception-section">
+        <section className="reception-register">
 
-          <div className="section-heading">
-
-            <div>
-
-              <h2>
-                Disposed Calls
-              </h2>
-
-              <p>
-                Calls not counted as
-                actionable agent workload
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div className="reception-stats-grid disposed-grid">
-
-            <StatCard
-              title="Fresh Call Disposed"
-              value={
-                totalFreshDisposed
-              }
-              disposed
-            />
-
-            <StatCard
-              title="DC Disposed"
-              value={
-                totalDCDisposed
-              }
-              disposed
-            />
-
-            <StatCard
-              title="Cancellation Disposed"
-              value={
-                totalCancellationDisposed
-              }
-              disposed
-            />
-
-          </div>
-
-        </section>
-
-
-        {/* =================================
-            AGENT DAILY CALL REGISTER
-        ================================= */}
-
-        <section className="reception-form-section">
-
-          <div className="section-heading">
+          <div className="reception-register-header">
 
             <div>
 
@@ -1151,8 +812,7 @@ function Reception() {
               </h2>
 
               <p>
-                Enter the official Reception
-                call counts for each agent
+                {reportDate}
               </p>
 
             </div>
@@ -1160,687 +820,324 @@ function Reception() {
           </div>
 
 
-          <form
-            className="reception-form"
-            onSubmit={
-              handleSaveDailyCalls
-            }
-          >
+          {loadingAgents ||
+          loadingRows ? (
 
+            <div className="reception-register-loading">
 
-            {/* DATE */}
-
-            <div className="form-group">
-
-              <label>
-                Report Date
-              </label>
-
-              <input
-                type="date"
-                value={reportDate}
-                onChange={(e) =>
-                  setReportDate(
-                    e.target.value
-                  )
-                }
-                required
-              />
+              Loading call register...
 
             </div>
 
+          ) : (
 
-            {/* AGENT */}
+            <div className="reception-table-wrapper">
 
-            <div className="form-group">
+              <table className="reception-table">
 
-              <label>
-                Agent
-              </label>
+                <thead>
 
-              <select
-                value={selectedAgent}
-                onChange={(e) =>
-                  setSelectedAgent(
-                    e.target.value
-                  )
-                }
-                disabled={
-                  loadingAgents
-                }
-                required
-              >
+                  <tr>
 
-                <option value="">
-                  {loadingAgents
-                    ? "Loading agents..."
-                    : "Select Agent"}
-                </option>
+                    <th>
+                      Agent
+                    </th>
 
-                {agents.map(
-                  (agent) => (
+                    <th>
+                      Fresh Calls
+                    </th>
 
-                    <option
-                      key={agent.id}
-                      value={agent.name}
-                    >
-                      {agent.name}
-                    </option>
+                    <th>
+                      DC Calls
+                    </th>
 
-                  )
-                )}
+                    <th>
+                      Cancellation
+                    </th>
 
-              </select>
+                    <th>
+                      Fresh Disposed
+                    </th>
 
-            </div>
+                    <th>
+                      DC Disposed
+                    </th>
 
+                    <th>
+                      Cancellation Disposed
+                    </th>
 
-            {/* =================================
-                ACTIONABLE CALLS
-            ================================== */}
+                    <th>
+                      Remarks
+                    </th>
 
-            <div className="form-section-title">
+                  </tr>
 
-              Actionable Calls
+                </thead>
 
-            </div>
 
+                <tbody>
 
-            {/* FRESH */}
+                  {filteredRows.map(
+                    (row) => (
 
-            <div className="form-group">
-
-              <label>
-                Fresh Calls
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={freshCalls}
-                onChange={(e) =>
-                  setFreshCalls(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* DC */}
-
-            <div className="form-group">
-
-              <label>
-                DC Calls
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={dcCalls}
-                onChange={(e) =>
-                  setDcCalls(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* CANCELLATION */}
-
-            <div className="form-group">
-
-              <label>
-                Cancellation Calls
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={
-                  cancellationCalls
-                }
-                onChange={(e) =>
-                  setCancellationCalls(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* =================================
-                DISPOSED CALLS
-            ================================== */}
-
-            <div className="form-section-title disposed-title">
-
-              Disposed Calls
-
-            </div>
-
-
-            {/* FRESH DISPOSED */}
-
-            <div className="form-group">
-
-              <label>
-                Fresh Call Disposed
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={
-                  freshDisposed
-                }
-                onChange={
-                  handleFreshDisposedChange
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* DC DISPOSED */}
-
-            <div className="form-group">
-
-              <label>
-                DC Disposed
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={
-                  dcDisposed
-                }
-                onChange={
-                  handleDcDisposedChange
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* CANCELLATION DISPOSED */}
-
-            <div className="form-group">
-
-              <label>
-                Cancellation Disposed
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                value={
-                  cancellationDisposed
-                }
-                onChange={
-                  handleCancellationDisposedChange
-                }
-                required
-              />
-
-            </div>
-
-
-            {/* =================================
-                FRESH REASONS
-            ================================== */}
-
-            {freshDisposedReasons.length > 0 && (
-
-              <div className="disposed-reasons-group">
-
-                <h3>
-                  Fresh Call Disposed Reasons
-                </h3>
-
-
-                {freshDisposedReasons.map(
-                  (reason, index) => (
-
-                    <div
-                      className="disposed-reason-row"
-                      key={`fresh-${index}`}
-                    >
-
-                      <label>
-                        Fresh Call Disposed #
-                        {index + 1}
-                      </label>
-
-                      <textarea
-                        rows="2"
-                        value={reason}
-                        placeholder={
-                          `Reason for Fresh Call Disposed #${index + 1}`
+                      <tr
+                        key={row.agent_id}
+                        className={
+                          row.dirty
+                            ? "row-dirty"
+                            : ""
                         }
-                        onChange={(e) => {
+                      >
 
-                          const updated = [
-                            ...freshDisposedReasons,
-                          ];
+                        {/* AGENT */}
 
-                          updated[index] =
-                            e.target.value;
+                        <td className="agent-name-cell">
 
-                          setFreshDisposedReasons(
-                            updated
-                          );
+                          {row.agent_name}
 
-                        }}
-                        required
-                      />
-
-                    </div>
-
-                  )
-                )}
-
-              </div>
-
-            )}
+                        </td>
 
 
-            {/* =================================
-                DC REASONS
-            ================================== */}
+                        {/* FRESH */}
 
-            {dcDisposedReasons.length > 0 && (
+                        <td>
 
-              <div className="disposed-reasons-group">
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.fresh_calls
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "fresh_calls",
+                                e.target.value
+                              )
+                            }
+                          />
 
-                <h3>
-                  DC Disposed Reasons
-                </h3>
-
-
-                {dcDisposedReasons.map(
-                  (reason, index) => (
-
-                    <div
-                      className="disposed-reason-row"
-                      key={`dc-${index}`}
-                    >
-
-                      <label>
-                        DC Disposed #
-                        {index + 1}
-                      </label>
-
-                      <textarea
-                        rows="2"
-                        value={reason}
-                        placeholder={
-                          `Reason for DC Disposed #${index + 1}`
-                        }
-                        onChange={(e) => {
-
-                          const updated = [
-                            ...dcDisposedReasons,
-                          ];
-
-                          updated[index] =
-                            e.target.value;
-
-                          setDcDisposedReasons(
-                            updated
-                          );
-
-                        }}
-                        required
-                      />
-
-                    </div>
-
-                  )
-                )}
-
-              </div>
-
-            )}
+                        </td>
 
 
-            {/* =================================
-                CANCELLATION REASONS
-            ================================== */}
+                        {/* DC */}
 
-            {cancellationDisposedReasons.length > 0 && (
+                        <td>
 
-              <div className="disposed-reasons-group">
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.dc_calls
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "dc_calls",
+                                e.target.value
+                              )
+                            }
+                          />
 
-                <h3>
-                  Cancellation Disposed Reasons
-                </h3>
-
-
-                {cancellationDisposedReasons.map(
-                  (reason, index) => (
-
-                    <div
-                      className="disposed-reason-row"
-                      key={`cancellation-${index}`}
-                    >
-
-                      <label>
-                        Cancellation Disposed #
-                        {index + 1}
-                      </label>
-
-                      <textarea
-                        rows="2"
-                        value={reason}
-                        placeholder={
-                          `Reason for Cancellation Disposed #${index + 1}`
-                        }
-                        onChange={(e) => {
-
-                          const updated = [
-                            ...cancellationDisposedReasons,
-                          ];
-
-                          updated[index] =
-                            e.target.value;
-
-                          setCancellationDisposedReasons(
-                            updated
-                          );
-
-                        }}
-                        required
-                      />
-
-                    </div>
-
-                  )
-                )}
-
-              </div>
-
-            )}
+                        </td>
 
 
-            {/* =================================
-                GENERAL REMARKS
-            ================================== */}
+                        {/* CANCELLATION */}
 
-            <div className="form-group full-width">
+                        <td>
 
-              <label>
-                General Remarks
-              </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.cancellation_calls
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "cancellation_calls",
+                                e.target.value
+                              )
+                            }
+                          />
 
-              <textarea
-                rows="4"
-                placeholder="Additional notes about the day's activity..."
-                value={callRemarks}
-                onChange={(e) =>
-                  setCallRemarks(
-                    e.target.value
-                  )
-                }
-              />
+                        </td>
+
+
+                        {/* FRESH DISPOSED */}
+
+                        <td>
+
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.fresh_disposed
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "fresh_disposed",
+                                e.target.value
+                              )
+                            }
+                          />
+
+                        </td>
+
+
+                        {/* DC DISPOSED */}
+
+                        <td>
+
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.dc_disposed
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "dc_disposed",
+                                e.target.value
+                              )
+                            }
+                          />
+
+                        </td>
+
+
+                        {/* CANCELLATION DISPOSED */}
+
+                        <td>
+
+                          <input
+                            type="number"
+                            min="0"
+                            value={
+                              row.cancellation_disposed
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "cancellation_disposed",
+                                e.target.value
+                              )
+                            }
+                          />
+
+                        </td>
+
+
+                        {/* REMARKS */}
+
+                        <td>
+
+                          <input
+                            type="text"
+                            className="table-remarks-input"
+                            placeholder="Reason / remarks"
+                            value={
+                              row.remarks
+                            }
+                            onChange={(e) =>
+                              updateCell(
+                                row.agent_name,
+                                "remarks",
+                                e.target.value
+                              )
+                            }
+                          />
+
+                        </td>
+
+                      </tr>
+
+                    )
+                  )}
+
+
+                  {filteredRows.length === 0 && (
+
+                    <tr>
+
+                      <td
+                        colSpan="8"
+                        className="empty-register"
+                      >
+                        No agents found.
+
+                      </td>
+
+                    </tr>
+
+                  )}
+
+                </tbody>
+
+              </table>
 
             </div>
 
-
-            {/* =================================
-                SAVE
-            ================================== */}
-
-            <div className="form-actions">
-
-              <button
-                type="submit"
-                className="save-btn"
-                disabled={
-                  savingReport ||
-                  loadingReport
-                }
-              >
-
-                {savingReport
-                  ? "Saving..."
-                  : loadingReport
-                  ? "Loading..."
-                  : "Save Call Data"}
-
-              </button>
-
-            </div>
-
-          </form>
+          )}
 
         </section>
 
 
-        {/* =================================
-            EXISTING SERVICE REQUEST
-        ================================= */}
+        {/* =============================================
+            DISPOSED SUMMARY
+        ============================================== */}
 
-        <section className="reception-form-section">
+        <section className="reception-disposed-summary">
 
-          <div className="section-heading">
+          <h2>
+            Disposed Calls Summary
+          </h2>
+
+
+          <div className="reception-disposed-grid">
 
             <div>
 
-              <h2>
-                Create Service Request
-              </h2>
+              <span>
+                Fresh Call Disposed
+              </span>
 
-              <p>
-                Separate from the daily
-                agent call register
-              </p>
+              <strong>
+                {totals.freshDisposed}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                DC Disposed
+              </span>
+
+              <strong>
+                {totals.dcDisposed}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Cancellation Disposed
+              </span>
+
+              <strong>
+                {totals.cancellationDisposed}
+              </strong>
 
             </div>
 
           </div>
-
-
-          <form
-            className="reception-form"
-            onSubmit={
-              handleSaveServiceRequest
-            }
-          >
-
-
-            {/* SOURCE */}
-
-            <div className="form-group">
-
-              <label>
-                Source
-              </label>
-
-              <select
-                value={source}
-                onChange={(e) =>
-                  setSource(
-                    e.target.value
-                  )
-                }
-              >
-
-                <option value="Phone">
-                  Phone
-                </option>
-
-                <option value="Email">
-                  Email
-                </option>
-
-              </select>
-
-            </div>
-
-
-            {/* REQUEST TYPE */}
-
-            <div className="form-group">
-
-              <label>
-                Request Type
-              </label>
-
-              <select
-                value={callType}
-                onChange={(e) =>
-                  setCallType(
-                    e.target.value
-                  )
-                }
-              >
-
-                <option value="Fresh Booking">
-                  Fresh Booking
-                </option>
-
-                <option value="Name Call">
-                  Name Call
-                </option>
-
-                <option value="MAC Call">
-                  MAC Call
-                </option>
-
-                <option value="Date Change">
-                  Date Change
-                </option>
-
-                <option value="Cancellation">
-                  Cancellation
-                </option>
-
-                <option value="Schedule Change">
-                  Schedule Change
-                </option>
-
-                <option value="Fare Quote">
-                  Fare Quote
-                </option>
-
-                <option value="Itinerary Request">
-                  Itinerary Request
-                </option>
-
-              </select>
-
-            </div>
-
-
-            {/* TRAVEL TYPE */}
-
-            <div className="form-group">
-
-              <label>
-                Travel Type
-              </label>
-
-              <select
-                value={sector}
-                onChange={(e) =>
-                  setSector(
-                    e.target.value
-                  )
-                }
-              >
-
-                <option value="Ex-USA">
-                  Ex-USA
-                </option>
-
-                <option value="Ex-India">
-                  Ex-India
-                </option>
-
-              </select>
-
-            </div>
-
-
-            {/* REQUESTED AGENT */}
-
-            <div className="form-group">
-
-              <label>
-                Requested Agent
-              </label>
-
-              <input
-                type="text"
-                placeholder="Enter agent name"
-                value={
-                  requestedAgent
-                }
-                onChange={(e) =>
-                  setRequestedAgent(
-                    e.target.value
-                  )
-                }
-              />
-
-            </div>
-
-
-            {/* SERVICE REMARKS */}
-
-            <div className="form-group full-width">
-
-              <label>
-                Remarks
-              </label>
-
-              <textarea
-                rows="4"
-                placeholder="Add relevant service request remarks..."
-                value={remarks}
-                onChange={(e) =>
-                  setRemarks(
-                    e.target.value
-                  )
-                }
-              />
-
-            </div>
-
-
-            {/* SAVE SERVICE REQUEST */}
-
-            <div className="form-actions">
-
-              <button
-                type="submit"
-                className="save-btn"
-                disabled={
-                  savingRequest
-                }
-              >
-
-                {savingRequest
-                  ? "Saving..."
-                  : "Save Service Request"}
-
-              </button>
-
-            </div>
-
-          </form>
 
         </section>
 
