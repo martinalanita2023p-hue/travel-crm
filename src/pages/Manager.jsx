@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 
+import TeamManagement from "../components/TeamManagement";
 import Layout from "../components/Layout";
 
 import ManagerHeader from "../components/manager/ManagerHeader";
@@ -463,13 +464,6 @@ export default function Manager() {
 
   /* =====================================================
      TEAM CONVERSION
-
-     Fresh Tickets CAN exceed Fresh Calls.
-
-     Example:
-     10 fresh calls
-     14 fresh tickets
-     = 140%
   ===================================================== */
 
   const teamConversion =
@@ -965,6 +959,8 @@ export default function Manager() {
 
       <Layout title="Manager Dashboard">
 
+        <TeamManagement />
+
         <div className="page-state error">
 
           <h2>
@@ -1073,6 +1069,13 @@ export default function Manager() {
               </div>
 
             </div>
+
+
+            {/* =============================================
+                TEAM MANAGEMENT
+            ============================================== */}
+
+            <TeamManagement />
 
 
             {/* =============================================
