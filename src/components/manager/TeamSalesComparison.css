@@ -1,0 +1,339 @@
+/* =========================================================
+   TEAM SALES COMPARISON
+========================================================= */
+
+.team-sales-comparison {
+  width: 100%;
+  margin: 28px 0 40px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.07);
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.team-comparison-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 28px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.comparison-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #6366f1;
+}
+
+.team-comparison-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.team-comparison-header p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.team-comparison-header p strong {
+  color: #334155;
+}
+
+
+.comparison-period {
+  min-width: 180px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-align: right;
+}
+
+.comparison-period span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #64748b;
+}
+
+.comparison-period strong {
+  font-size: 15px;
+  color: #111827;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.team-comparison-table {
+  width: 100%;
+}
+
+
+/* =========================================================
+   TEAM HEADER
+========================================================= */
+
+.team-comparison-team-header {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  min-height: 110px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  padding: 22px 30px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+.aarav-header,
+.eric-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  text-align: center;
+}
+
+.aarav-header {
+  background: #eef2ff;
+  border-left: 1px solid #e5e7eb;
+}
+
+.eric-header {
+  background: #f8fafc;
+  border-left: 1px solid #e5e7eb;
+}
+
+.aarav-header span,
+.eric-header span {
+  margin-bottom: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #64748b;
+}
+
+.aarav-header strong,
+.eric-header strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.aarav-header small,
+.eric-header small {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+
+/* =========================================================
+   SECTION HEADERS
+========================================================= */
+
+.comparison-section-title {
+  padding: 10px 30px;
+  background: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #475569;
+}
+
+
+/* =========================================================
+   METRIC ROW
+========================================================= */
+
+.team-comparison-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  min-height: 58px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.team-comparison-row:last-child {
+  border-bottom: none;
+}
+
+
+.team-metric-name {
+  display: flex;
+  align-items: center;
+  padding: 16px 30px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+}
+
+
+.team-metric-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 16px;
+
+  border-left: 1px solid #eef2f7;
+
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+
+  background: #ffffff;
+}
+
+
+.team-metric-value small {
+  font-size: 11px;
+  color: #16a34a;
+}
+
+
+/* =========================================================
+   WINNER
+========================================================= */
+
+.team-metric-value.winner {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.team-metric-value.winner small {
+  color: #16a34a;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.team-comparison-loading {
+  padding: 70px 30px;
+  text-align: center;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.team-comparison-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding: 14px 30px;
+
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+
+  font-size: 11px;
+  color: #64748b;
+}
+
+.team-comparison-footer span:first-child {
+  font-weight: 700;
+  color: #16a34a;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .team-comparison-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .comparison-period {
+    width: 100%;
+    text-align: left;
+  }
+
+  .team-comparison-team-header,
+  .team-comparison-row {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .team-sales-comparison {
+    border-radius: 12px;
+  }
+
+  .team-comparison-header {
+    padding: 22px 18px;
+  }
+
+  .team-comparison-header h2 {
+    font-size: 20px;
+  }
+
+  .metric-header,
+  .team-metric-name {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .comparison-section-title {
+    padding-left: 18px;
+  }
+
+  .team-comparison-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px 18px;
+  }
+
+  .aarav-header strong,
+  .eric-header strong {
+    font-size: 14px;
+  }
+
+}

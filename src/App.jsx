@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Reports from "./pages/Reports";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
-import Reception from "./pages/Reception";
-import Manager from "./pages/Manager";
 import Agent from "./pages/Agent";
+import Manager from "./pages/Manager";
+import Reception from "./pages/Reception";
+import Reports from "./pages/Reports";
+import Admin from "./pages/Admin";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 function App() {
@@ -17,7 +19,7 @@ function App() {
       <Routes>
 
         {/* =====================================
-            COMMON LOGIN
+            LOGIN
         ===================================== */}
 
         <Route
@@ -32,14 +34,14 @@ function App() {
 
 
         {/* =====================================
-            AGENT
+            ADMIN
         ===================================== */}
 
         <Route
-          path="/agent"
+          path="/admin"
           element={
-            <ProtectedRoute role="Agent">
-              <Agent />
+            <ProtectedRoute role="Admin">
+              <Admin />
             </ProtectedRoute>
           }
         />
@@ -60,14 +62,14 @@ function App() {
 
 
         {/* =====================================
-            REPORTS
+            AGENT
         ===================================== */}
 
         <Route
-          path="/reports"
+          path="/agent"
           element={
-            <ProtectedRoute role="Manager">
-              <Reports />
+            <ProtectedRoute role="Agent">
+              <Agent />
             </ProtectedRoute>
           }
         />
@@ -86,6 +88,30 @@ function App() {
           }
         />
 
+
+        {/* =====================================
+            REPORTS
+        ===================================== */}
+
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute role="Manager">
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* =====================================
+            FALLBACK
+        ===================================== */}
+
+        <Route
+          path="*"
+          element={<Login />}
+        />
+
       </Routes>
 
     </BrowserRouter>
@@ -93,5 +119,6 @@ function App() {
   );
 
 }
+
 
 export default App;

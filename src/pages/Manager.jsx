@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
+import TeamSalesComparison from "../components/manager/TeamSalesComparison";
 
-import TeamManagement from "../components/TeamManagement";
 import Layout from "../components/Layout";
 
 import ManagerHeader from "../components/manager/ManagerHeader";
 import aggregateReports from "../utils/aggregateReports";
 import AgentOverview from "../components/manager/AgentOverview/AgentOverview";
-
+import {
+  getBostonDate,
+  getBostonMonthStart,
+} from "../utils/bostonTime";
 import AttentionCenter from "../components/dashboard/AttentionCenter";
 import TeamTable from "../components/manager/TeamTable/TeamTable";
 
@@ -18,6 +21,7 @@ import DeleteReportModal from "../components/dashboard/DeleteReportModal";
 import useManagerData from "../hooks/useManagerData";
 import { getAllAgents } from "../services/userService";
 import { getReportsBetweenDates } from "../services/managerService";
+import { getReceptionVerification } from "../services/receptionVerificationService";
 
 import calculateStats from "../utils/calculateStats";
 import buildAlerts from "../utils/buildAlerts";
@@ -37,11 +41,7 @@ export default function Manager() {
     useState("all");
 
   const [selectedDate, setSelectedDate] =
-    useState(
-      new Date()
-        .toISOString()
-        .split("T")[0]
-    );
+  useState(getBostonDate);
 
   const [viewMode, setViewMode] =
     useState("day");
@@ -62,6 +62,20 @@ export default function Manager() {
     useState(null);
 
 
+      /* =====================================================
+     RECEPTION VS AGENT VERIFICATION
+  ===================================================== */
+
+  const [verificationData, setVerificationData] =
+    useState(null);
+
+  const [verificationLoading, setVerificationLoading] =
+    useState(false);
+
+  const [verificationError, setVerificationError] =
+    useState(null);
+
+
   /* =====================================================
      MEETING TEAM STATE
 
@@ -79,15 +93,9 @@ export default function Manager() {
     useState("");
 
   const [teamFromDate, setTeamFromDate] =
-    useState(() => {
+  useState(getBostonMonthStart);
 
-      const today = new Date();
-
-      return `${today.getFullYear()}-${String(
-        today.getMonth() + 1
-      ).padStart(2, "0")}-01`;
-
-    });
+  
 
   const [teamToDate, setTeamToDate] =
     useState(
@@ -155,6 +163,56 @@ export default function Manager() {
   useEffect(() => {
 
     setTeamToDate(selectedDate);
+
+  }, [selectedDate]);
+
+    /* =====================================================
+     LOAD RECEPTION VS AGENT VERIFICATION
+  ===================================================== */
+
+  useEffect(() => {
+
+    async function loadVerification() {
+
+      if (!selectedDate) {
+        return;
+      }
+
+      try {
+
+        setVerificationLoading(true);
+        setVerificationError(null);
+
+        const data =
+          await getReceptionVerification(
+            selectedDate
+          );
+
+        setVerificationData(data);
+
+      } catch (err) {
+
+        console.error(
+          "Failed to load Reception verification:",
+          err
+        );
+
+        setVerificationError(
+          err.message ||
+          "Failed to load Reception verification."
+        );
+
+        setVerificationData(null);
+
+      } finally {
+
+        setVerificationLoading(false);
+
+      }
+
+    }
+
+    loadVerification();
 
   }, [selectedDate]);
 
@@ -959,7 +1017,7 @@ export default function Manager() {
 
       <Layout title="Manager Dashboard">
 
-        <TeamManagement />
+        
 
         <div className="page-state error">
 
@@ -1070,13 +1128,461 @@ export default function Manager() {
 
             </div>
 
+                            {/* =============================================
+                    RECEPTION VS AGENT ALERT
+                ============================================== */}
+
+                {!verificationLoading &&
+                  verificationData &&
+                  verificationData.summary.mismatch_agents > 0 && (
+
+                  <div className="reception-verification-alert">
+
+                    <div className="reception-verification-alert-icon">
+                      ⚠️
+                    </div>
+
+                    <div className="reception-verification-alert-content">
+
+                      <strong>
+                        Reception vs Agent mismatch
+                      </strong>
+
+                      <span>
+                        {verificationData.summary.mismatch_agents}{" "}
+                        agent
+                        {verificationData.summary.mismatch_agents !== 1
+                          ? "s"
+                          : ""}{" "}
+                        require
+                        {verificationData.summary.mismatch_agents === 1
+                          ? "s"
+                          : ""}{" "}
+                        verification for {selectedDate}.
+                      </span>
+
+                    </div>
+
+                    <div className="reception-verification-alert-count">
+                      {verificationData.summary.mismatch_agents}
+                    </div>
+
+                  </div>
+
+                )}
+
 
             {/* =============================================
-                TEAM MANAGEMENT
+    TEAM SALES COMPARISON
+============================================== */}
+
+<TeamSalesComparison />
+
+            {/* =============================================
+                RECEPTION VS AGENT VERIFICATION
             ============================================== */}
 
-            <TeamManagement />
+            <section className="reception-verification-section">
 
+              <div className="reception-verification-header">
+
+                <div>
+
+                  <span className="reception-verification-eyebrow">
+                    OPERATIONS CONTROL
+                  </span>
+
+                  <h2>
+                    Reception vs Agent Verification
+                  </h2>
+
+                  <p>
+                    Compare call activity recorded by Reception
+                    with the corresponding Agent daily reports.
+                  </p>
+
+                </div>
+
+                <div className="verification-date-badge">
+                  {selectedDate}
+                </div>
+
+              </div>
+
+
+              {verificationLoading && (
+
+                <div className="verification-state">
+                  Checking Reception and Agent reports...
+                </div>
+
+              )}
+
+
+              {verificationError && (
+
+                <div className="verification-state verification-error">
+                  {verificationError}
+                </div>
+
+              )}
+
+
+              {!verificationLoading &&
+                !verificationError &&
+                verificationData && (
+
+                <>
+
+                  {/* SUMMARY */}
+
+                  <div className="verification-summary-grid">
+
+                    <div className="verification-summary-card">
+
+                      <span>
+                        Agents Checked
+                      </span>
+
+                      <strong>
+                        {
+                          verificationData.summary
+                            .total_agents
+                        }
+                      </strong>
+
+                    </div>
+
+
+                    <div className="verification-summary-card verified">
+
+                      <span>
+                        Verified
+                      </span>
+
+                      <strong>
+                        {
+                          verificationData.summary
+                            .verified_agents
+                        }
+                      </strong>
+
+                    </div>
+
+
+                    <div className="verification-summary-card mismatch">
+
+                      <span>
+                        Mismatches
+                      </span>
+
+                      <strong>
+                        {
+                          verificationData.summary
+                            .mismatch_agents
+                        }
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* TABLE */}
+
+                  <div className="verification-table-wrapper">
+
+                    <table className="verification-table">
+
+                      <thead>
+
+                        <tr>
+
+                          <th>
+                            Agent
+                          </th>
+
+                          <th>
+                            Metric
+                          </th>
+
+                          <th>
+                            Reception
+                          </th>
+
+                          <th>
+                            Agent
+                          </th>
+
+                          <th>
+                            Difference
+                          </th>
+
+                          <th>
+                            Status
+                          </th>
+
+                        </tr>
+
+                      </thead>
+
+
+                      <tbody>
+
+                        {verificationData.verification.length === 0 ? (
+
+                          <tr>
+
+                            <td
+                              colSpan="6"
+                              className="verification-empty"
+                            >
+                              No Reception or Agent reports found
+                              for this date.
+                            </td>
+
+                          </tr>
+
+                        ) : (
+
+                          verificationData.verification.flatMap(
+                            (item) => [
+
+                              <tr
+                                key={`${item.agent_name}-fresh`}
+                              >
+
+                                <td
+                                  rowSpan="3"
+                                  className="verification-agent-name"
+                                >
+                                  {item.agent_name}
+                                </td>
+
+                                <td>
+                                  Fresh Calls
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .fresh_calls
+                                      .reception
+                                  }
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .fresh_calls
+                                      .agent
+                                  }
+                                </td>
+
+                                <td
+                                  className={
+                                    item.metrics
+                                      .fresh_calls
+                                      .difference === 0
+                                      ? "verification-difference"
+                                      : "verification-difference mismatch"
+                                  }
+                                >
+                                  {
+                                    item.metrics
+                                      .fresh_calls
+                                      .difference > 0
+                                      ? "+"
+                                      : ""
+                                  }
+
+                                  {
+                                    item.metrics
+                                      .fresh_calls
+                                      .difference
+                                  }
+                                </td>
+
+                                <td>
+
+                                  {item.metrics
+                                    .fresh_calls
+                                    .verified ? (
+
+                                    <span className="verification-status verified">
+                                      ✓ Verified
+                                    </span>
+
+                                  ) : (
+
+                                    <span className="verification-status mismatch">
+                                      ⚠ Mismatch
+                                    </span>
+
+                                  )}
+
+                                </td>
+
+                              </tr>,
+
+
+                              <tr
+                                key={`${item.agent_name}-dc`}
+                              >
+
+                                <td>
+                                  DC Calls
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .dc_calls
+                                      .reception
+                                  }
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .dc_calls
+                                      .agent
+                                  }
+                                </td>
+
+                                <td
+                                  className={
+                                    item.metrics
+                                      .dc_calls
+                                      .difference === 0
+                                      ? "verification-difference"
+                                      : "verification-difference mismatch"
+                                  }
+                                >
+                                  {
+                                    item.metrics
+                                      .dc_calls
+                                      .difference > 0
+                                      ? "+"
+                                      : ""
+                                  }
+
+                                  {
+                                    item.metrics
+                                      .dc_calls
+                                      .difference
+                                  }
+                                </td>
+
+                                <td>
+
+                                  {item.metrics
+                                    .dc_calls
+                                    .verified ? (
+
+                                    <span className="verification-status verified">
+                                      ✓ Verified
+                                    </span>
+
+                                  ) : (
+
+                                    <span className="verification-status mismatch">
+                                      ⚠ Mismatch
+                                    </span>
+
+                                  )}
+
+                                </td>
+
+                              </tr>,
+
+
+                              <tr
+                                key={`${item.agent_name}-cancellation`}
+                              >
+
+                                <td>
+                                  Cancellation Calls
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .cancellation_calls
+                                      .reception
+                                  }
+                                </td>
+
+                                <td>
+                                  {
+                                    item.metrics
+                                      .cancellation_calls
+                                      .agent
+                                  }
+                                </td>
+
+                                <td
+                                  className={
+                                    item.metrics
+                                      .cancellation_calls
+                                      .difference === 0
+                                      ? "verification-difference"
+                                      : "verification-difference mismatch"
+                                  }
+                                >
+                                  {
+                                    item.metrics
+                                      .cancellation_calls
+                                      .difference > 0
+                                      ? "+"
+                                      : ""
+                                  }
+
+                                  {
+                                    item.metrics
+                                      .cancellation_calls
+                                      .difference
+                                  }
+                                </td>
+
+                                <td>
+
+                                  {item.metrics
+                                    .cancellation_calls
+                                    .verified ? (
+
+                                    <span className="verification-status verified">
+                                      ✓ Verified
+                                    </span>
+
+                                  ) : (
+
+                                    <span className="verification-status mismatch">
+                                      ⚠ Mismatch
+                                    </span>
+
+                                  )}
+
+                                </td>
+
+                              </tr>
+
+                            ]
+                          )
+
+                        )}
+
+                      </tbody>
+
+                    </table>
+
+                  </div>
+
+                </>
+
+              )}
+
+            </section>
 
             {/* =============================================
                 MEETING TEAM

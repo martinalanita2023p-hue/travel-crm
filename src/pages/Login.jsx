@@ -32,31 +32,27 @@ function Login() {
          SEND USER TO THEIR DASHBOARD
       ===================================== */
 
-      if (user.role === "Manager") {
+    if (user.role === "Admin") {
+  navigate("/admin");
+}
 
-        navigate("/manager");
+else if (user.role === "Manager") {
+  navigate("/manager");
+}
 
-      }
+else if (user.role === "Agent") {
+  navigate("/agent");
+}
 
-      else if (user.role === "Agent") {
+else if (user.role === "Reception") {
+  navigate("/reception");
+}
 
-        navigate("/agent");
+else {
+  alert("Invalid user role. Please contact the manager.");
+}
 
-      }
 
-      else if (user.role === "Reception") {
-
-        navigate("/reception");
-
-      }
-
-      else {
-
-        alert(
-          "Invalid user role. Please contact the manager."
-        );
-
-      }
 
     }
 

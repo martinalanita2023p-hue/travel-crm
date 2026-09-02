@@ -108,12 +108,7 @@ export default function AgentReportForm({
 
           
 
-          <FormInput
-            label="PNRs Created"
-            name="pnrs_created"
-            value={report.pnrs_created}
-            onChange={handleChange}
-          />
+          
 
           <FormInput
             label="B2C Sales"

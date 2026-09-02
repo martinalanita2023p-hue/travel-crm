@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Layout from "../components/Layout";
 import "../styles/reception.css";
@@ -12,594 +12,291 @@ import {
 import { getUser } from "../services/authService";
 
 
-/* =====================================================
-   EASTERN / BOSTON DATE
-===================================================== */
-
 function getEasternDate() {
-
-  return new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone: "America/New_York",
-
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }
-  ).format(new Date());
-
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 
-/* =====================================================
-   EMPTY ROW
-===================================================== */
-
 function createEmptyRow(agent) {
-
   return {
-
-    agent_id:
-      agent.id,
-
-    agent_name:
-      agent.name,
+    agent_id: agent.id,
+    agent_name: agent.name,
 
     fresh_calls: 0,
-
     dc_calls: 0,
-
     cancellation_calls: 0,
 
     fresh_disposed: 0,
-
     dc_disposed: 0,
-
     cancellation_disposed: 0,
 
     remarks: "",
 
     reception_record_id: null,
-
     dirty: false,
-
   };
-
 }
 
 
-/* =====================================================
-   RECEPTION PAGE
-===================================================== */
-
 function Reception() {
-
-  const currentUser =
-    getUser();
-
-
-  /* ===================================================
-     DATE
-  =================================================== */
+  const currentUser = getUser();
 
   const [reportDate, setReportDate] =
-    useState(
-      getEasternDate()
-    );
+    useState(getEasternDate());
 
+  const [agents, setAgents] = useState([]);
+  const [loadingAgents, setLoadingAgents] = useState(true);
 
-  /* ===================================================
-     AGENTS
-  =================================================== */
+  const [rows, setRows] = useState([]);
+  const [loadingRows, setLoadingRows] = useState(true);
 
-  const [agents, setAgents] =
-    useState([]);
-
-  const [loadingAgents, setLoadingAgents] =
-    useState(true);
-
-
-  /* ===================================================
-     GRID DATA
-  =================================================== */
-
-  const [rows, setRows] =
-    useState([]);
-
-  const [loadingRows, setLoadingRows] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
-
-
-  /* ===================================================
-     SEARCH
-  =================================================== */
-
-  const [search, setSearch] =
-    useState("");
-
-
-  /* ===================================================
-     LOAD AGENTS
-  =================================================== */
+  const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-
     async function loadAgents() {
-
       try {
-
         setLoadingAgents(true);
 
-        const data =
-          await getAgents();
+        const data = await getAgents();
 
-        setAgents(
-          data || []
-        );
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Failed to load agents:",
-          error
-        );
-
-        alert(
-          "Unable to load agents."
-        );
-
-      }
-
-      finally {
-
+        setAgents(data || []);
+      } catch (error) {
+        console.error("Failed to load agents:", error);
+        alert("Unable to load agents.");
+      } finally {
         setLoadingAgents(false);
-
       }
-
     }
 
-
     loadAgents();
-
   }, []);
 
 
-  /* ===================================================
-     LOAD RECEPTION DATA FOR SELECTED DATE
-  =================================================== */
-
   useEffect(() => {
-
     async function loadRows() {
-
-      if (
-        !agents ||
-        agents.length === 0
-      ) {
-
-        return;
-
-      }
-
+      if (!agents.length) return;
 
       try {
-
         setLoadingRows(true);
 
-
         const existing =
-          await getReceptionCallsForDate(
-            reportDate
+          await getReceptionCallsForDate(reportDate);
+
+        const existingMap = new Map();
+
+        (existing || []).forEach((record) => {
+          existingMap.set(
+            record.agent_name?.trim().toLowerCase(),
+            record
           );
+        });
 
-
-        const existingMap =
-          new Map();
-
-
-        (existing || []).forEach(
-          (record) => {
-
-            existingMap.set(
-              record.agent_name
-                ?.trim()
-                .toLowerCase(),
-
-              record
+        const newRows = agents.map((agent) => {
+          const record =
+            existingMap.get(
+              agent.name?.trim().toLowerCase()
             );
 
+          if (!record) {
+            return createEmptyRow(agent);
           }
-        );
 
+          return {
+            agent_id: agent.id,
+            agent_name: agent.name,
 
-        const newRows =
-          agents.map(
-            (agent) => {
+            fresh_calls: record.fresh_calls ?? 0,
+            dc_calls: record.dc_calls ?? 0,
+            cancellation_calls:
+              record.cancellation_calls ?? 0,
 
-              const record =
-                existingMap.get(
-                  agent.name
-                    ?.trim()
-                    .toLowerCase()
-                );
+            fresh_disposed:
+              record.fresh_disposed ?? 0,
 
+            dc_disposed:
+              record.dc_disposed ?? 0,
 
-              if (!record) {
+            cancellation_disposed:
+              record.cancellation_disposed ?? 0,
 
-                return createEmptyRow(
-                  agent
-                );
+            remarks: record.remarks ?? "",
 
-              }
+            reception_record_id: record.id,
 
+            dirty: false,
+          };
+        });
 
-              return {
-
-                agent_id:
-                  agent.id,
-
-                agent_name:
-                  agent.name,
-
-                fresh_calls:
-                  record.fresh_calls ?? 0,
-
-                dc_calls:
-                  record.dc_calls ?? 0,
-
-                cancellation_calls:
-                  record.cancellation_calls ?? 0,
-
-                fresh_disposed:
-                  record.fresh_disposed ?? 0,
-
-                dc_disposed:
-                  record.dc_disposed ?? 0,
-
-                cancellation_disposed:
-                  record.cancellation_disposed ?? 0,
-
-                remarks:
-                  record.remarks ?? "",
-
-                reception_record_id:
-                  record.id,
-
-                dirty: false,
-
-              };
-
-            }
-          );
-
-
-        setRows(
-          newRows
-        );
-
-      }
-
-      catch (error) {
-
+        setRows(newRows);
+      } catch (error) {
         console.error(
-          "Failed to load Reception daily data:",
+          "Failed to load Reception data:",
           error
         );
 
         alert(
           "Unable to load the Reception call register."
         );
-
-      }
-
-      finally {
-
+      } finally {
         setLoadingRows(false);
-
       }
-
     }
 
-
     loadRows();
-
-  }, [
-    agents,
-    reportDate,
-  ]);
+  }, [agents, reportDate]);
 
 
-  /* ===================================================
-     UPDATE CELL
-  =================================================== */
+  function updateCell(agentName, field, value) {
+    setRows((currentRows) =>
+      currentRows.map((row) => {
+        if (row.agent_name !== agentName) {
+          return row;
+        }
 
-  function updateCell(
-    agentName,
-    field,
-    value
-  ) {
+        let finalValue = value;
 
-    setRows(
-      (currentRows) =>
+        if (field !== "remarks") {
+          finalValue = value === ""
+            ? ""
+            : Math.max(0, Number(value) || 0);
+        }
 
-        currentRows.map(
-          (row) => {
-
-            if (
-              row.agent_name !==
-              agentName
-            ) {
-
-              return row;
-
-            }
-
-
-            let finalValue =
-              value;
-
-
-            if (
-              field !== "remarks"
-            ) {
-
-              finalValue =
-                Math.max(
-                  0,
-                  Number(value) || 0
-                );
-
-            }
-
-
-            return {
-
-              ...row,
-
-              [field]:
-                finalValue,
-
-              dirty: true,
-
-            };
-
-          }
-        )
+        return {
+          ...row,
+          [field]: finalValue,
+          dirty: true,
+        };
+      })
     );
-
   }
 
 
-  /* ===================================================
-     SAVE ALL
-  =================================================== */
-
   async function handleSaveAll() {
-
     const changedRows =
-      rows.filter(
-        (row) => row.dirty
-      );
+      rows.filter((row) => row.dirty);
 
-
-    if (
-      changedRows.length === 0
-    ) {
-
-      alert(
-        "There are no changes to save."
-      );
-
+    if (!changedRows.length) {
+      alert("There are no changes to save.");
       return;
-
     }
 
-
-    /* -----------------------------------------------
-       CHECK DISPOSED REMARKS
-    ----------------------------------------------- */
-
-    for (
-      const row of changedRows
-    ) {
-
+    for (const row of changedRows) {
       const disposedTotal =
-        Number(
-          row.fresh_disposed || 0
-        ) +
-
-        Number(
-          row.dc_disposed || 0
-        ) +
-
-        Number(
-          row.cancellation_disposed ||
-          0
-        );
-
+        Number(row.fresh_disposed || 0) +
+        Number(row.dc_disposed || 0) +
+        Number(row.cancellation_disposed || 0);
 
       if (
         disposedTotal > 0 &&
         !row.remarks?.trim()
       ) {
-
         alert(
           `Remarks are required for disposed calls for ${row.agent_name}.`
         );
-
         return;
-
       }
-
     }
 
-
     try {
-
       setSaving(true);
 
-
-      for (
-        const row of changedRows
-      ) {
-
+      for (const row of changedRows) {
         await saveReceptionDailyCall({
+          report_date: reportDate,
 
-          report_date:
-            reportDate,
-
-          agent_name:
-            row.agent_name,
+          agent_name: row.agent_name,
 
           fresh_calls:
-            Number(
-              row.fresh_calls || 0
-            ),
+            Number(row.fresh_calls || 0),
 
           dc_calls:
-            Number(
-              row.dc_calls || 0
-            ),
+            Number(row.dc_calls || 0),
 
           cancellation_calls:
-            Number(
-              row.cancellation_calls || 0
-            ),
+            Number(row.cancellation_calls || 0),
 
           fresh_disposed:
-            Number(
-              row.fresh_disposed || 0
-            ),
+            Number(row.fresh_disposed || 0),
 
           dc_disposed:
-            Number(
-              row.dc_disposed || 0
-            ),
+            Number(row.dc_disposed || 0),
 
           cancellation_disposed:
-            Number(
-              row.cancellation_disposed ||
-              0
-            ),
+            Number(row.cancellation_disposed || 0),
 
           remarks:
-            row.remarks?.trim() ||
-            null,
+            row.remarks?.trim() || null,
 
           reception_user:
-            currentUser?.id ||
-            null,
-
+            currentUser?.id || null,
         });
-
       }
 
-
-      setRows(
-        (currentRows) =>
-          currentRows.map(
-            (row) => ({
-              ...row,
-              dirty: false,
-            })
-          )
+      setRows((currentRows) =>
+        currentRows.map((row) => ({
+          ...row,
+          dirty: false,
+        }))
       );
-
 
       alert(
         "Reception call data saved successfully."
       );
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "Failed to save Reception data:",
-        error
-      );
+    } catch (error) {
+      console.error(error);
 
       alert(
         error?.message ||
         "Failed to save Reception data."
       );
-
-    }
-
-    finally {
-
+    } finally {
       setSaving(false);
-
     }
-
   }
 
 
-  /* ===================================================
-     FILTER ROWS
-  =================================================== */
+  const filteredRows = useMemo(() => {
+    const query =
+      search.trim().toLowerCase();
 
-  const filteredRows =
-    rows.filter(
-      (row) =>
-        row.agent_name
-          ?.toLowerCase()
-          .includes(
-            search
-              .trim()
-              .toLowerCase()
-          )
+    if (!query) return rows;
+
+    return rows.filter((row) =>
+      row.agent_name
+        ?.toLowerCase()
+        .includes(query)
     );
+  }, [rows, search]);
 
 
-  /* ===================================================
-     SUMMARY TOTALS
-  =================================================== */
-
-  const totals =
-    rows.reduce(
+  const totals = useMemo(() => {
+    return rows.reduce(
       (total, row) => {
-
         total.fresh +=
-          Number(
-            row.fresh_calls || 0
-          );
+          Number(row.fresh_calls || 0);
 
         total.dc +=
-          Number(
-            row.dc_calls || 0
-          );
+          Number(row.dc_calls || 0);
 
         total.cancellation +=
-          Number(
-            row.cancellation_calls ||
-            0
-          );
+          Number(row.cancellation_calls || 0);
 
         total.freshDisposed +=
-          Number(
-            row.fresh_disposed || 0
-          );
+          Number(row.fresh_disposed || 0);
 
         total.dcDisposed +=
-          Number(
-            row.dc_disposed || 0
-          );
+          Number(row.dc_disposed || 0);
 
         total.cancellationDisposed +=
-          Number(
-            row.cancellation_disposed ||
-            0
-          );
+          Number(row.cancellation_disposed || 0);
 
         return total;
-
       },
       {
         fresh: 0,
@@ -610,6 +307,7 @@ function Reception() {
         cancellationDisposed: 0,
       }
     );
+  }, [rows]);
 
 
   const totalCalls =
@@ -618,215 +316,214 @@ function Reception() {
     totals.cancellation;
 
 
-  /* ===================================================
-     PAGE
-  =================================================== */
+  const totalDisposed =
+    totals.freshDisposed +
+    totals.dcDisposed +
+    totals.cancellationDisposed;
+
 
   return (
-
     <Layout title="Reception Dashboard">
 
       <div className="reception-page">
 
+        {/* HEADER */}
 
-        {/* =============================================
-            HEADER
-        ============================================== */}
+        <section className="reception-hero">
 
-        <div className="reception-heading">
+  <div>
+    <span className="reception-eyebrow">
+      OPERATIONS
+    </span>
 
-          <div>
+    <p>
+      Daily panel call register and disposition tracking
+    </p>
+  </div>
 
-            <h1>
-              Reception Dashboard
-            </h1>
+  <div className="reception-date-card">
 
-            <p>
-              Daily call register
-            </p>
+    <span>
+      REPORT DATE
+    </span>
 
-          </div>
+    <strong>
+      {new Intl.DateTimeFormat(
+        "en-US",
+        {
+          timeZone: "America/New_York",
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }
+      ).format(new Date(reportDate + "T12:00:00"))}
+    </strong>
 
+  </div>
 
-          <div className="reception-date">
-
-            {new Intl.DateTimeFormat(
-              "en-US",
-              {
-                timeZone:
-                  "America/New_York",
-
-                weekday: "long",
-
-                month: "long",
-
-                day: "numeric",
-
-                year: "numeric",
-              }
-            ).format(
-              new Date()
-            )}
-
-          </div>
-
-        </div>
+</section>
 
 
-        {/* =============================================
-            CONTROLS
-        ============================================== */}
-
-        <section className="reception-register-controls">
-
-          <div className="reception-control-group">
-
-            <label>
-              Report Date
-            </label>
-
-            <input
-              type="date"
-              value={reportDate}
-              onChange={(e) =>
-                setReportDate(
-                  e.target.value
-                )
-              }
-            />
-
-          </div>
-
-
-          <div className="reception-control-group search-control">
-
-            <label>
-              Search Agent
-            </label>
-
-            <input
-              type="text"
-              placeholder="Search agent..."
-              value={search}
-              onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
-              }
-            />
-
-          </div>
-
-
-          <button
-            type="button"
-            className="save-all-btn"
-            onClick={handleSaveAll}
-            disabled={
-              saving ||
-              loadingRows
-            }
-          >
-
-            {saving
-              ? "Saving..."
-              : "Save All Changes"}
-
-          </button>
-
-        </section>
-
-
-        {/* =============================================
-            SUMMARY
-        ============================================== */}
+        {/* KPI CARDS */}
 
         <section className="reception-summary-grid">
 
-          <div className="reception-summary-card">
+          <div className="reception-kpi total">
+            <div className="kpi-icon">☎</div>
 
-            <span>
-              Total Calls
-            </span>
-
-            <strong>
-              {totalCalls}
-            </strong>
-
+            <div>
+              <span>Total Calls</span>
+              <strong>{totalCalls}</strong>
+            </div>
           </div>
 
 
-          <div className="reception-summary-card">
+          <div className="reception-kpi fresh">
+            <div className="kpi-icon">↗</div>
 
-            <span>
-              Fresh Calls
-            </span>
-
-            <strong>
-              {totals.fresh}
-            </strong>
-
+            <div>
+              <span>Fresh Calls</span>
+              <strong>{totals.fresh}</strong>
+            </div>
           </div>
 
 
-          <div className="reception-summary-card">
+          <div className="reception-kpi dc">
+            <div className="kpi-icon">⇄</div>
 
-            <span>
-              DC Calls
-            </span>
-
-            <strong>
-              {totals.dc}
-            </strong>
-
+            <div>
+              <span>DC Calls</span>
+              <strong>{totals.dc}</strong>
+            </div>
           </div>
 
 
-          <div className="reception-summary-card">
+          <div className="reception-kpi cancellation">
+            <div className="kpi-icon">×</div>
 
-            <span>
-              Cancellation Calls
-            </span>
+            <div>
+              <span>Cancellation</span>
+              <strong>
+                {totals.cancellation}
+              </strong>
+            </div>
+          </div>
 
-            <strong>
-              {totals.cancellation}
-            </strong>
 
+          <div className="reception-kpi disposed">
+            <div className="kpi-icon">!</div>
+
+            <div>
+              <span>Disposed</span>
+              <strong>{totalDisposed}</strong>
+            </div>
           </div>
 
         </section>
 
 
-        {/* =============================================
-            MAIN REGISTER
-        ============================================== */}
+        {/* REGISTER */}
 
         <section className="reception-register">
 
-          <div className="reception-register-header">
+          <div className="reception-register-top">
 
             <div>
+              <span className="section-label">
+                DAILY REGISTER
+              </span>
 
               <h2>
-                Agent Daily Call Register
+                Agent Call Register
               </h2>
 
               <p>
-                {reportDate}
+                Enter the call counts received
+                from the panel for each agent.
               </p>
+            </div>
+
+            <div className="register-status">
+
+              <span className="status-dot" />
+
+              Eastern Time
 
             </div>
 
           </div>
 
 
+          {/* CONTROLS */}
+
+          <div className="reception-controls">
+
+            <div className="reception-control">
+
+              <label>
+                Report Date
+              </label>
+
+              <input
+                type="date"
+                value={reportDate}
+                onChange={(e) =>
+                  setReportDate(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            <div className="reception-control search-control">
+
+              <label>
+                Search Agent
+              </label>
+
+              <div className="search-box">
+
+                <span>⌕</span>
+
+                <input
+                  type="text"
+                  placeholder="Search agent..."
+                  value={search}
+                  onChange={(e) =>
+                    setSearch(e.target.value)
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
+            <button
+              className="save-all-btn"
+              onClick={handleSaveAll}
+              disabled={
+                saving ||
+                loadingRows
+              }
+            >
+              {saving
+                ? "Saving..."
+                : "✓ Save All Changes"}
+            </button>
+
+          </div>
+
+
+          {/* TABLE */}
+
           {loadingAgents ||
           loadingRows ? (
 
-            <div className="reception-register-loading">
-
+            <div className="reception-loading">
+              <div className="loading-spinner" />
               Loading call register...
-
             </div>
 
           ) : (
@@ -836,230 +533,226 @@ function Reception() {
               <table className="reception-table">
 
                 <thead>
-
                   <tr>
 
-                    <th>
+                    <th className="agent-column">
                       Agent
                     </th>
 
-                    <th>
+                    <th className="fresh-column">
                       Fresh Calls
                     </th>
 
-                    <th>
+                    <th className="dc-column">
                       DC Calls
                     </th>
 
-                    <th>
+                    <th className="cancel-column">
                       Cancellation
                     </th>
 
                     <th>
-                      Fresh Disposed
+                      Fresh
+                      <br />
+                      Disposed
                     </th>
 
                     <th>
-                      DC Disposed
+                      DC
+                      <br />
+                      Disposed
                     </th>
 
                     <th>
-                      Cancellation Disposed
+                      Cancellation
+                      <br />
+                      Disposed
                     </th>
 
-                    <th>
+                    <th className="remarks-column">
                       Remarks
                     </th>
 
                   </tr>
-
                 </thead>
 
 
                 <tbody>
 
-                  {filteredRows.map(
-                    (row) => (
+                  {filteredRows.map((row) => (
 
-                      <tr
-                        key={row.agent_id}
-                        className={
-                          row.dirty
-                            ? "row-dirty"
-                            : ""
-                        }
-                      >
+                    <tr
+                      key={row.agent_id}
+                      className={
+                        row.dirty
+                          ? "row-dirty"
+                          : ""
+                      }
+                    >
 
-                        {/* AGENT */}
+                      <td className="agent-name-cell">
 
-                        <td className="agent-name-cell">
+                        <div className="agent-cell">
 
-                          {row.agent_name}
+                          <div className="agent-avatar">
+                            {row.agent_name
+                              ?.charAt(0)
+                              ?.toUpperCase()}
+                          </div>
 
-                        </td>
+                          <div>
+                            <strong>
+                              {row.agent_name}
+                            </strong>
 
+                            {row.dirty && (
+                              <span className="unsaved-label">
+                                Unsaved
+                              </span>
+                            )}
+                          </div>
 
-                        {/* FRESH */}
+                        </div>
 
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.fresh_calls
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "fresh_calls",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      </td>
 
 
-                        {/* DC */}
-
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.dc_calls
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "dc_calls",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={row.fresh_calls}
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "fresh_calls",
+                              e.target.value
+                            )
+                          }
+                          aria-label={`${row.agent_name} fresh calls`}
+                        />
+                      </td>
 
 
-                        {/* CANCELLATION */}
-
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.cancellation_calls
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "cancellation_calls",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={row.dc_calls}
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "dc_calls",
+                              e.target.value
+                            )
+                          }
+                          aria-label={`${row.agent_name} DC calls`}
+                        />
+                      </td>
 
 
-                        {/* FRESH DISPOSED */}
-
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.fresh_disposed
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "fresh_disposed",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={
+                            row.cancellation_calls
+                          }
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "cancellation_calls",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
 
 
-                        {/* DC DISPOSED */}
-
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.dc_disposed
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "dc_disposed",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={
+                            row.fresh_disposed
+                          }
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "fresh_disposed",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
 
 
-                        {/* CANCELLATION DISPOSED */}
-
-                        <td>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={
-                              row.cancellation_disposed
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "cancellation_disposed",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={
+                            row.dc_disposed
+                          }
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "dc_disposed",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
 
 
-                        {/* REMARKS */}
-
-                        <td>
-
-                          <input
-                            type="text"
-                            className="table-remarks-input"
-                            placeholder="Reason / remarks"
-                            value={
-                              row.remarks
-                            }
-                            onChange={(e) =>
-                              updateCell(
-                                row.agent_name,
-                                "remarks",
-                                e.target.value
-                              )
-                            }
-                          />
-
-                        </td>
-
-                      </tr>
-
-                    )
-                  )}
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          value={
+                            row.cancellation_disposed
+                          }
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "cancellation_disposed",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
 
 
-                  {filteredRows.length === 0 && (
+                      <td>
+
+                        <input
+                          type="text"
+                          className="table-remarks-input"
+                          placeholder={
+                            row.fresh_disposed ||
+                            row.dc_disposed ||
+                            row.cancellation_disposed
+                              ? "Required"
+                              : "Optional remarks"
+                          }
+                          value={row.remarks}
+                          onChange={(e) =>
+                            updateCell(
+                              row.agent_name,
+                              "remarks",
+                              e.target.value
+                            )
+                          }
+                        />
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+
+                  {!filteredRows.length && (
 
                     <tr>
 
@@ -1086,20 +779,39 @@ function Reception() {
         </section>
 
 
-        {/* =============================================
-            DISPOSED SUMMARY
-        ============================================== */}
+        {/* DISPOSED */}
 
         <section className="reception-disposed-summary">
 
-          <h2>
-            Disposed Calls Summary
-          </h2>
+          <div className="disposed-header">
+
+            <div>
+
+              <span className="section-label">
+                DISPOSITION
+              </span>
+
+              <h2>
+                Disposed Calls
+              </h2>
+
+              <p>
+                Calls that could not be serviced.
+              </p>
+
+            </div>
+
+            <div className="disposed-total">
+              <span>Total</span>
+              <strong>{totalDisposed}</strong>
+            </div>
+
+          </div>
 
 
           <div className="reception-disposed-grid">
 
-            <div>
+            <div className="disposed-card fresh-disposed">
 
               <span>
                 Fresh Call Disposed
@@ -1112,7 +824,7 @@ function Reception() {
             </div>
 
 
-            <div>
+            <div className="disposed-card dc-disposed">
 
               <span>
                 DC Disposed
@@ -1125,7 +837,7 @@ function Reception() {
             </div>
 
 
-            <div>
+            <div className="disposed-card cancellation-disposed">
 
               <span>
                 Cancellation Disposed
@@ -1141,13 +853,9 @@ function Reception() {
 
         </section>
 
-
       </div>
-
     </Layout>
-
   );
-
 }
 
 
