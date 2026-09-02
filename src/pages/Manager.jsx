@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import TeamSalesComparison from "../components/manager/TeamSalesComparison";
-
+import { getReceptionVerification } from "../services/receptionVerificationService";
 import Layout from "../components/Layout";
 
 import ManagerHeader from "../components/manager/ManagerHeader";
@@ -46,6 +46,8 @@ export default function Manager() {
   const [viewMode, setViewMode] =
     useState("day");
 
+    
+
   const [selectedAgent, setSelectedAgent] =
     useState("All Agents");
 
@@ -60,6 +62,7 @@ export default function Manager() {
 
   const [deletingReport, setDeletingReport] =
     useState(null);
+    
 
 
       /* =====================================================
@@ -109,6 +112,8 @@ export default function Manager() {
 
   const [teamLoading, setTeamLoading] =
     useState(false);
+
+    
 
 
   /* =====================================================
