@@ -1,430 +1,340 @@
 import supabase from "../supabase/client";
 
-/* =========================================
-   GET RECEPTION DATA FOR ONE DATE
-========================================= */
-
-async function getReceptionData(reportDate) {
-  const { data, error } = await supabase
-    .from("reception_daily_calls")
-    .select(
-      "agent_name, fresh_calls, dc_calls, cancellation_calls"
-    )
-    .eq("report_date", reportDate);
-
-  if (error) {
-    console.error(
-      "Failed to load Reception verification data:",
-      error
-    );
-
-    throw error;
-  }
-
-  return data || [];
-}
-
-
-/* =========================================
-   GET AGENT DATA FOR ONE DATE
-========================================= */
-
-async function getAgentData(reportDate) {
-  const { data, error } = await supabase
-    .from("daily_agent_reports")
-    .select(
-      "agent_name, fresh_calls, dc_calls, cancellation_calls"
-    )
-    .eq("report_date", reportDate);
-
-  if (error) {
-    console.error(
-      "Failed to load Agent verification data:",
-      error
-    );
-
-    throw error;
-  }
-
-  return data || [];
-}
-
-
-/* =========================================
-   NORMALIZE NUMBER
-========================================= */
 
 function toNumber(value) {
-  if (
-    value === "" ||
-    value === null ||
-    value === undefined
-  ) {
-    return 0;
-  }
-
-  const number = Number(value);
-
-  return Number.isFinite(number) ? number : 0;
+  return Number(value || 0);
 }
 
 
-/* =========================================
-   VERIFY RECEPTION VS AGENT
-========================================= */
-
-export async function getReceptionVerification(
-  reportDate
-) {
-  if (!reportDate) {
-    throw new Error("Report date is required.");
-  }
+export async function getReceptionVerification(reportDate) {
 
   const [
-    receptionData,
-    agentData,
+    { data: receptionData, error: receptionError },
+    { data: agentData, error: agentError },
   ] = await Promise.all([
-    getReceptionData(reportDate),
-    getAgentData(reportDate),
+
+    supabase
+      .from("reception_daily_calls")
+      .select(
+        "agent_name, fresh_calls, dc_calls, cancellation_calls"
+      )
+      .eq("report_date", reportDate),
+
+    supabase
+      .from("daily_agent_reports")
+      .select(
+        "agent_name, fresh_calls, dc_calls, cancellation_calls"
+      )
+      .eq("report_date", reportDate),
+
   ]);
 
 
-  /* ---------------------------------------
-     Create agent map
-  --------------------------------------- */
-
-  const agentMap = new Map();
-
-  agentData.forEach((report) => {
-    const agentName =
-      report.agent_name?.trim();
-
-    if (!agentName) return;
-
-    agentMap.set(
-      agentName.toLowerCase(),
-      report
+  if (receptionError) {
+    console.error(
+      "Failed to load Reception verification data:",
+      receptionError
     );
+
+    throw receptionError;
+  }
+
+
+  if (agentError) {
+    console.error(
+      "Failed to load Agent verification data:",
+      agentError
+    );
+
+    throw agentError;
+  }
+
+
+  const receptionMap = new Map();
+
+  (receptionData || []).forEach((record) => {
+
+    const key =
+      record.agent_name
+        ?.trim()
+        .toLowerCase();
+
+    if (!key) return;
+
+    receptionMap.set(key, record);
+
   });
 
 
-  /* ---------------------------------------
-     Compare Reception records
-  --------------------------------------- */
+  const agentMap = new Map();
 
-  const verification = receptionData.map(
-    (reception) => {
-
-      const agentName =
-        reception.agent_name?.trim();
-
-      const agent =
-        agentMap.get(
-          agentName?.toLowerCase()
-        );
-
-
-      const receptionFresh =
-        toNumber(reception.fresh_calls);
-
-      const agentFresh =
-        toNumber(agent?.fresh_calls);
-
-
-      const receptionDC =
-        toNumber(reception.dc_calls);
-
-      const agentDC =
-        toNumber(agent?.dc_calls);
-
-
-      const receptionCancellation =
-        toNumber(
-          reception.cancellation_calls
-        );
-
-      const agentCancellation =
-        toNumber(
-          agent?.cancellation_calls
-        );
-
-
-      const freshDifference =
-        agentFresh - receptionFresh;
-
-      const dcDifference =
-        agentDC - receptionDC;
-
-      const cancellationDifference =
-        agentCancellation -
-        receptionCancellation;
-
-
-      const freshVerified =
-        freshDifference === 0;
-
-      const dcVerified =
-        dcDifference === 0;
-
-      const cancellationVerified =
-        cancellationDifference === 0;
-
-
-      const fullyVerified =
-        freshVerified &&
-        dcVerified &&
-        cancellationVerified;
-
-
-      return {
-        agent_name: agentName,
-
-        reception_exists: true,
-        agent_exists: Boolean(agent),
-
-        reception: {
-          fresh_calls: receptionFresh,
-          dc_calls: receptionDC,
-          cancellation_calls:
-            receptionCancellation,
-        },
-
-        agent: {
-          fresh_calls: agentFresh,
-          dc_calls: agentDC,
-          cancellation_calls:
-            agentCancellation,
-        },
-
-        difference: {
-          fresh_calls:
-            freshDifference,
-
-          dc_calls:
-            dcDifference,
-
-          cancellation_calls:
-            cancellationDifference,
-        },
-
-        status:
-          fullyVerified
-            ? "Verified"
-            : "Mismatch",
-
-        metrics: {
-          fresh_calls: {
-            reception: receptionFresh,
-            agent: agentFresh,
-            difference:
-              freshDifference,
-            verified:
-              freshVerified,
-          },
-
-          dc_calls: {
-            reception: receptionDC,
-            agent: agentDC,
-            difference:
-              dcDifference,
-            verified:
-              dcVerified,
-          },
-
-          cancellation_calls: {
-            reception:
-              receptionCancellation,
-
-            agent:
-              agentCancellation,
-
-            difference:
-              cancellationDifference,
-
-            verified:
-              cancellationVerified,
-          },
-        },
-      };
-    }
-  );
-
-
-  /* ---------------------------------------
-     Find agents who submitted a report
-     but have no Reception record
-  --------------------------------------- */
-
-  const receptionAgentNames =
-    new Set(
-      receptionData
-        .map((item) =>
-          item.agent_name
-            ?.trim()
-            .toLowerCase()
-        )
-        .filter(Boolean)
-    );
-
-
-  agentData.forEach((agent) => {
-
-    const agentName =
-      agent.agent_name?.trim();
-
-    if (!agentName) return;
+  (agentData || []).forEach((record) => {
 
     const key =
-      agentName.toLowerCase();
+      record.agent_name
+        ?.trim()
+        .toLowerCase();
 
-    if (
-      receptionAgentNames.has(key)
-    ) {
-      return;
-    }
+    if (!key) return;
+
+    agentMap.set(key, record);
+
+  });
 
 
-    const agentFresh =
-      toNumber(agent.fresh_calls);
+  const agentNames = new Set([
+    ...receptionMap.keys(),
+    ...agentMap.keys(),
+  ]);
 
-    const agentDC =
-      toNumber(agent.dc_calls);
 
-    const agentCancellation =
-      toNumber(
-        agent.cancellation_calls
+  const verification = [];
+
+
+  agentNames.forEach((key) => {
+
+    const reception =
+      receptionMap.get(key);
+
+    const agent =
+      agentMap.get(key);
+
+
+    const receptionMetrics = {
+      fresh_calls:
+        toNumber(reception?.fresh_calls),
+
+      dc_calls:
+        toNumber(reception?.dc_calls),
+
+      cancellation_calls:
+        toNumber(reception?.cancellation_calls),
+    };
+
+
+    const agentMetrics = {
+      fresh_calls:
+        toNumber(agent?.fresh_calls),
+
+      dc_calls:
+        toNumber(agent?.dc_calls),
+
+      cancellation_calls:
+        toNumber(agent?.cancellation_calls),
+    };
+
+
+    const differences = {
+      fresh_calls:
+        agentMetrics.fresh_calls -
+        receptionMetrics.fresh_calls,
+
+      dc_calls:
+        agentMetrics.dc_calls -
+        receptionMetrics.dc_calls,
+
+      cancellation_calls:
+        agentMetrics.cancellation_calls -
+        receptionMetrics.cancellation_calls,
+    };
+
+
+    const freshVerified =
+      !reception ||
+      !agent ||
+      receptionMetrics.fresh_calls ===
+        agentMetrics.fresh_calls;
+
+
+    const dcVerified =
+      !reception ||
+      !agent ||
+      receptionMetrics.dc_calls ===
+        agentMetrics.dc_calls;
+
+
+    const cancellationVerified =
+      !reception ||
+      !agent ||
+      receptionMetrics.cancellation_calls ===
+        agentMetrics.cancellation_calls;
+
+
+    const hasMismatch =
+      reception &&
+      agent &&
+      (
+        !freshVerified ||
+        !dcVerified ||
+        !cancellationVerified
       );
 
 
     verification.push({
-      agent_name: agentName,
 
-      reception_exists: false,
-      agent_exists: true,
+      agent_name:
+        reception?.agent_name ||
+        agent?.agent_name ||
+        key,
 
-      reception: {
-        fresh_calls: 0,
-        dc_calls: 0,
-        cancellation_calls: 0,
-      },
+      reception_exists:
+        Boolean(reception),
 
-      agent: {
-        fresh_calls: agentFresh,
-        dc_calls: agentDC,
-        cancellation_calls:
-          agentCancellation,
-      },
+      agent_exists:
+        Boolean(agent),
 
-      difference: {
-        fresh_calls: agentFresh,
-        dc_calls: agentDC,
-        cancellation_calls:
-          agentCancellation,
-      },
+      reception: receptionMetrics,
 
-      status: "Mismatch",
+      agent: agentMetrics,
+
+      differences,
+
+      status:
+        hasMismatch
+          ? "Mismatch"
+          : "Verified",
 
       metrics: {
+
         fresh_calls: {
-          reception: 0,
-          agent: agentFresh,
-          difference: agentFresh,
-          verified: agentFresh === 0,
+          reception:
+            receptionMetrics.fresh_calls,
+
+          agent:
+            agentMetrics.fresh_calls,
+
+          difference:
+            differences.fresh_calls,
+
+          status:
+            freshVerified
+              ? "Verified"
+              : "Mismatch",
         },
 
         dc_calls: {
-          reception: 0,
-          agent: agentDC,
-          difference: agentDC,
-          verified: agentDC === 0,
+          reception:
+            receptionMetrics.dc_calls,
+
+          agent:
+            agentMetrics.dc_calls,
+
+          difference:
+            differences.dc_calls,
+
+          status:
+            dcVerified
+              ? "Verified"
+              : "Mismatch",
         },
 
         cancellation_calls: {
-          reception: 0,
-          agent: agentCancellation,
-          difference: agentCancellation,
-          verified:
-            agentCancellation === 0,
+          reception:
+            receptionMetrics.cancellation_calls,
+
+          agent:
+            agentMetrics.cancellation_calls,
+
+          difference:
+            differences.cancellation_calls,
+
+          status:
+            cancellationVerified
+              ? "Verified"
+              : "Mismatch",
         },
+
       },
+
     });
+
   });
 
 
-  /* ---------------------------------------
-     Summary
-  --------------------------------------- */
+  const verifiedAgents =
+    verification.filter(
+      (item) =>
+        item.reception_exists &&
+        item.agent_exists &&
+        item.status === "Verified"
+    );
+
+
+  const mismatchAgents =
+    verification.filter(
+      (item) =>
+        item.reception_exists &&
+        item.agent_exists &&
+        item.status === "Mismatch"
+    );
+
 
   const summary = {
+
     total_agents:
       verification.length,
 
     verified_agents:
-      verification.filter(
-        (item) =>
-          item.status === "Verified"
-      ).length,
+      verifiedAgents.length,
 
     mismatch_agents:
-      verification.filter(
-        (item) =>
-          item.status === "Mismatch"
-      ).length,
+      mismatchAgents.length,
 
-    fresh_calls: {
-      reception: verification.reduce(
-        (total, item) =>
-          total +
-          item.reception.fresh_calls,
-        0
-      ),
+    reception_totals: {
 
-      agent: verification.reduce(
-        (total, item) =>
-          total +
-          item.agent.fresh_calls,
-        0
-      ),
+      fresh_calls:
+        (receptionData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.fresh_calls),
+          0
+        ),
+
+      dc_calls:
+        (receptionData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.dc_calls),
+          0
+        ),
+
+      cancellation_calls:
+        (receptionData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.cancellation_calls),
+          0
+        ),
+
     },
 
-    dc_calls: {
-      reception: verification.reduce(
-        (total, item) =>
-          total +
-          item.reception.dc_calls,
-        0
-      ),
+    agent_totals: {
 
-      agent: verification.reduce(
-        (total, item) =>
-          total +
-          item.agent.dc_calls,
-        0
-      ),
+      fresh_calls:
+        (agentData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.fresh_calls),
+          0
+        ),
+
+      dc_calls:
+        (agentData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.dc_calls),
+          0
+        ),
+
+      cancellation_calls:
+        (agentData || []).reduce(
+          (sum, item) =>
+            sum + toNumber(item.cancellation_calls),
+          0
+        ),
+
     },
 
-    cancellation_calls: {
-      reception: verification.reduce(
-        (total, item) =>
-          total +
-          item.reception
-            .cancellation_calls,
-        0
-      ),
-
-      agent: verification.reduce(
-        (total, item) =>
-          total +
-          item.agent
-            .cancellation_calls,
-        0
-      ),
-    },
   };
 
 
   return {
-    reportDate,
+    report_date: reportDate,
     verification,
     summary,
   };

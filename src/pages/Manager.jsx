@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import TeamSalesComparison from "../components/manager/TeamSalesComparison";
-import { getReceptionVerification } from "../services/receptionVerificationService";
+
 import Layout from "../components/Layout";
 
 import ManagerHeader from "../components/manager/ManagerHeader";
