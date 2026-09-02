@@ -11,15 +11,7 @@ import {
 
 import { getUser } from "../services/authService";
 
-
-function getEasternDate() {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/New_York",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
+import { getBostonDate } from "../utils/bostonTime";
 
 
 function createEmptyRow(agent) {
@@ -47,7 +39,7 @@ function Reception() {
   const currentUser = getUser();
 
   const [reportDate, setReportDate] =
-    useState(getEasternDate());
+    useState(getBostonDate());
 
   const [agents, setAgents] = useState([]);
   const [loadingAgents, setLoadingAgents] = useState(true);
@@ -57,6 +49,7 @@ function Reception() {
 
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
+
 
   useEffect(() => {
     async function loadAgents() {
@@ -162,9 +155,10 @@ function Reception() {
         let finalValue = value;
 
         if (field !== "remarks") {
-          finalValue = value === ""
-            ? ""
-            : Math.max(0, Number(value) || 0);
+          finalValue =
+            value === ""
+              ? ""
+              : Math.max(0, Number(value) || 0);
         }
 
         return {
@@ -331,38 +325,43 @@ function Reception() {
 
         <section className="reception-hero">
 
-  <div>
-    <span className="reception-eyebrow">
-      OPERATIONS
-    </span>
+          <div>
 
-    <p>
-      Daily panel call register and disposition tracking
-    </p>
-  </div>
+            <span className="reception-eyebrow">
+              OPERATIONS
+            </span>
 
-  <div className="reception-date-card">
+            <p>
+              Daily panel call register and disposition tracking
+            </p>
 
-    <span>
-      REPORT DATE
-    </span>
+          </div>
 
-    <strong>
-      {new Intl.DateTimeFormat(
-        "en-US",
-        {
-          timeZone: "America/New_York",
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        }
-      ).format(new Date(reportDate + "T12:00:00"))}
-    </strong>
 
-  </div>
+          <div className="reception-date-card">
 
-</section>
+            <span>
+              REPORT DATE
+            </span>
+
+            <strong>
+              {new Intl.DateTimeFormat(
+                "en-US",
+                {
+                  timeZone: "America/New_York",
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              ).format(
+                new Date(reportDate + "T12:00:00")
+              )}
+            </strong>
+
+          </div>
+
+        </section>
 
 
         {/* KPI CARDS */}
@@ -370,54 +369,107 @@ function Reception() {
         <section className="reception-summary-grid">
 
           <div className="reception-kpi total">
-            <div className="kpi-icon">☎</div>
+
+            <div className="kpi-icon">
+              ☎
+            </div>
 
             <div>
-              <span>Total Calls</span>
-              <strong>{totalCalls}</strong>
+
+              <span>
+                Total Calls
+              </span>
+
+              <strong>
+                {totalCalls}
+              </strong>
+
             </div>
+
           </div>
 
 
           <div className="reception-kpi fresh">
-            <div className="kpi-icon">↗</div>
+
+            <div className="kpi-icon">
+              ↗
+            </div>
 
             <div>
-              <span>Fresh Calls</span>
-              <strong>{totals.fresh}</strong>
+
+              <span>
+                Fresh Calls
+              </span>
+
+              <strong>
+                {totals.fresh}
+              </strong>
+
             </div>
+
           </div>
 
 
           <div className="reception-kpi dc">
-            <div className="kpi-icon">⇄</div>
+
+            <div className="kpi-icon">
+              ⇄
+            </div>
 
             <div>
-              <span>DC Calls</span>
-              <strong>{totals.dc}</strong>
+
+              <span>
+                DC Calls
+              </span>
+
+              <strong>
+                {totals.dc}
+              </strong>
+
             </div>
+
           </div>
 
 
           <div className="reception-kpi cancellation">
-            <div className="kpi-icon">×</div>
+
+            <div className="kpi-icon">
+              ×
+            </div>
 
             <div>
-              <span>Cancellation</span>
+
+              <span>
+                Cancellation
+              </span>
+
               <strong>
                 {totals.cancellation}
               </strong>
+
             </div>
+
           </div>
 
 
           <div className="reception-kpi disposed">
-            <div className="kpi-icon">!</div>
+
+            <div className="kpi-icon">
+              !
+            </div>
 
             <div>
-              <span>Disposed</span>
-              <strong>{totalDisposed}</strong>
+
+              <span>
+                Disposed
+              </span>
+
+              <strong>
+                {totalDisposed}
+              </strong>
+
             </div>
+
           </div>
 
         </section>
@@ -430,6 +482,7 @@ function Reception() {
           <div className="reception-register-top">
 
             <div>
+
               <span className="section-label">
                 DAILY REGISTER
               </span>
@@ -442,13 +495,15 @@ function Reception() {
                 Enter the call counts received
                 from the panel for each agent.
               </p>
+
             </div>
+
 
             <div className="register-status">
 
               <span className="status-dot" />
 
-              Eastern Time
+              Boston Time
 
             </div>
 
@@ -484,7 +539,9 @@ function Reception() {
 
               <div className="search-box">
 
-                <span>⌕</span>
+                <span>
+                  ⌕
+                </span>
 
                 <input
                   type="text"
@@ -508,9 +565,11 @@ function Reception() {
                 loadingRows
               }
             >
+
               {saving
                 ? "Saving..."
                 : "✓ Save All Changes"}
+
             </button>
 
           </div>
@@ -522,8 +581,11 @@ function Reception() {
           loadingRows ? (
 
             <div className="reception-loading">
+
               <div className="loading-spinner" />
+
               Loading call register...
+
             </div>
 
           ) : (
@@ -533,6 +595,7 @@ function Reception() {
               <table className="reception-table">
 
                 <thead>
+
                   <tr>
 
                     <th className="agent-column">
@@ -574,6 +637,7 @@ function Reception() {
                     </th>
 
                   </tr>
+
                 </thead>
 
 
@@ -595,21 +659,27 @@ function Reception() {
                         <div className="agent-cell">
 
                           <div className="agent-avatar">
+
                             {row.agent_name
                               ?.charAt(0)
                               ?.toUpperCase()}
+
                           </div>
 
                           <div>
+
                             <strong>
                               {row.agent_name}
                             </strong>
 
                             {row.dirty && (
+
                               <span className="unsaved-label">
                                 Unsaved
                               </span>
+
                             )}
+
                           </div>
 
                         </div>
@@ -618,6 +688,7 @@ function Reception() {
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -631,10 +702,12 @@ function Reception() {
                           }
                           aria-label={`${row.agent_name} fresh calls`}
                         />
+
                       </td>
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -648,10 +721,12 @@ function Reception() {
                           }
                           aria-label={`${row.agent_name} DC calls`}
                         />
+
                       </td>
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -666,10 +741,12 @@ function Reception() {
                             )
                           }
                         />
+
                       </td>
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -684,10 +761,12 @@ function Reception() {
                             )
                           }
                         />
+
                       </td>
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -702,10 +781,12 @@ function Reception() {
                             )
                           }
                         />
+
                       </td>
 
 
                       <td>
+
                         <input
                           type="number"
                           min="0"
@@ -720,6 +801,7 @@ function Reception() {
                             )
                           }
                         />
+
                       </td>
 
 
@@ -760,6 +842,7 @@ function Reception() {
                         colSpan="8"
                         className="empty-register"
                       >
+
                         No agents found.
 
                       </td>
@@ -801,9 +884,17 @@ function Reception() {
 
             </div>
 
+
             <div className="disposed-total">
-              <span>Total</span>
-              <strong>{totalDisposed}</strong>
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                {totalDisposed}
+              </strong>
+
             </div>
 
           </div>
@@ -854,6 +945,7 @@ function Reception() {
         </section>
 
       </div>
+
     </Layout>
   );
 }

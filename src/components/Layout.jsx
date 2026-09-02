@@ -9,6 +9,11 @@ import {
   logout,
 } from "../services/authService";
 
+import {
+  formatBostonDate,
+  formatBostonTime,
+} from "../utils/bostonTime";
+
 export default function Layout({
   title,
   children,
@@ -20,17 +25,14 @@ export default function Layout({
 
   const now = new Date();
 
-  const date = now.toLocaleDateString("en-US", {
+  const date = formatBostonDate(now, {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
   });
 
-  const time = now.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const time = formatBostonTime(now);
 
   function handleLogout() {
 
@@ -86,13 +88,14 @@ export default function Layout({
 
               <div>
 
-  <h4>
+                <h4>
 
-    {user?.username || "User"}
+                  {user?.username || "User"}
 
-  </h4>
+                </h4>
 
-</div>
+              </div>
+
             </div>
 
             <button

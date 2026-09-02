@@ -6,25 +6,10 @@ import {
 
 import { getUser } from "../services/authService";
 
-
-/* =====================================================
-   EASTERN / BOSTON DATE
-===================================================== */
-
-function getEasternDate() {
-
-  return new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone: "America/New_York",
-
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }
-  ).format(new Date());
-
-}
+import {
+  getBostonDate,
+  getBostonMonthStart,
+} from "../utils/bostonTime";
 
 
 /* =====================================================
@@ -40,37 +25,21 @@ export default function useAgentPerformance() {
 
 
   /* ===================================================
-     CURRENT EASTERN DATE
+     CURRENT BOSTON DATE
   =================================================== */
 
   const today =
-    getEasternDate();
+    getBostonDate();
 
 
   /* ===================================================
-     FIRST DAY OF CURRENT MONTH
+     FIRST DAY OF CURRENT BOSTON MONTH
   =================================================== */
 
   const monthStart =
     useMemo(() => {
 
-      const date =
-        new Date(
-          `${today}T00:00:00`
-        );
-
-
-      const year =
-        date.getFullYear();
-
-
-      const month =
-        String(
-          date.getMonth() + 1
-        ).padStart(2, "0");
-
-
-      return `${year}-${month}-01`;
+      return getBostonMonthStart(today);
 
     }, [today]);
 
