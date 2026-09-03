@@ -404,13 +404,15 @@ export default function AgentOverview({
 
   if (!report) {
     return (
-      <div className="agent-overview-empty">
-        <h3>No report found</h3>
+      <div className="agent-overview">
+        <div className="agent-overview-empty">
+          <h3>No report found</h3>
 
-        <p>
-          There is no report available
-          for this agent.
-        </p>
+          <p>
+            There is no report available
+            for this agent.
+          </p>
+        </div>
       </div>
     );
   }
@@ -621,6 +623,7 @@ export default function AgentOverview({
           <div className="section-heading">
 
             <div>
+
               <h3>
                 📊 Fresh Calls vs Fresh Tickets
               </h3>
@@ -630,6 +633,7 @@ export default function AgentOverview({
                 {" "}
                 {conversion.toFixed(1)}%
               </span>
+
             </div>
 
           </div>
@@ -696,6 +700,7 @@ export default function AgentOverview({
           <div className="section-heading">
 
             <div>
+
               <h3>
                 📈 Daily Performance Trend
               </h3>
@@ -703,6 +708,7 @@ export default function AgentOverview({
               <span>
                 Fresh Calls vs Fresh Tickets
               </span>
+
             </div>
 
 
@@ -852,46 +858,67 @@ export default function AgentOverview({
 
       <div className="agent-secondary-grid">
 
-        {/* DC Calls */}
+        {/* ==============================================
+            DC CALLS & DC SALES
+            COMBINED INTO ONE CARD
+        =============================================== */}
 
-        <div className="agent-kpi-card">
+        <div className="agent-kpi-card agent-dc-combined-card">
+
           <span>
-            DC Calls
+            DC Calls & Sales
           </span>
 
-          <strong>
-            {totals.dcCalls}
-          </strong>
-        </div>
+          <div className="dc-combined-values">
+
+            <div>
+
+              <small>
+                DC Calls
+              </small>
+
+              <strong>
+                {totals.dcCalls}
+              </strong>
+
+            </div>
 
 
-        {/* DC Sales */}
+            <div className="dc-combined-divider" />
 
-        <div className="agent-kpi-card">
-          <span>
-            DC Sales
-          </span>
 
-          <strong>
-            {totals.dcSales}
-          </strong>
+            <div>
 
-          <small
-            className={
-              performanceAnalysis.dcStatus ===
-              "Sales Active"
-                ? "status-good"
-                : "status-warning"
-            }
-          >
-            {performanceAnalysis.dcStatus}
-          </small>
+              <small>
+                DC Sales
+              </small>
+
+              <strong>
+                {totals.dcSales}
+              </strong>
+
+              <em
+                className={
+                  performanceAnalysis.dcStatus ===
+                  "Sales Active"
+                    ? "status-good"
+                    : "status-warning"
+                }
+              >
+                {performanceAnalysis.dcStatus}
+              </em>
+
+            </div>
+
+          </div>
+
         </div>
 
 
         {/* B2C Sales */}
 
         <div className="agent-kpi-card">
+
           <span>
             B2C Sales
           </span>
@@ -899,12 +926,14 @@ export default function AgentOverview({
           <strong>
             {totals.b2cSales}
           </strong>
+
         </div>
 
 
         {/* MAC Calls */}
 
         <div className="agent-kpi-card">
+
           <span>
             MAC Calls
           </span>
@@ -912,12 +941,14 @@ export default function AgentOverview({
           <strong>
             {totals.macCalls}
           </strong>
+
         </div>
 
 
         {/* PNRs */}
 
         <div className="agent-kpi-card">
+
           <span>
             PNRs Created
           </span>
@@ -925,12 +956,14 @@ export default function AgentOverview({
           <strong>
             {totals.pnrs}
           </strong>
+
         </div>
 
 
         {/* TOA */}
 
         <div className="agent-kpi-card">
+
           <span>
             TOA
           </span>
@@ -939,12 +972,14 @@ export default function AgentOverview({
             $
             {totals.toa.toFixed(2)}
           </strong>
+
         </div>
 
 
         {/* Google Reviews */}
 
         <div className="agent-kpi-card">
+
           <span>
             Google Reviews
           </span>
@@ -963,12 +998,14 @@ export default function AgentOverview({
           >
             {performanceAnalysis.googleStatus}
           </small>
+
         </div>
 
 
         {/* Trustpilot */}
 
         <div className="agent-kpi-card">
+
           <span>
             Trustpilot
           </span>
@@ -987,6 +1024,7 @@ export default function AgentOverview({
           >
             {performanceAnalysis.trustpilotStatus}
           </small>
+
         </div>
 
       </div>
@@ -1099,6 +1137,7 @@ export default function AgentOverview({
 function AgentHeaderBlock({
   agentName,
 }) {
+
   return (
     <div className="agent-overview-header">
 
@@ -1109,6 +1148,7 @@ function AgentHeaderBlock({
       </div>
 
       <div>
+
         <h2>
           {agentName}
         </h2>
@@ -1116,6 +1156,7 @@ function AgentHeaderBlock({
         <p>
           Individual Performance Center
         </p>
+
       </div>
 
     </div>
@@ -1133,6 +1174,7 @@ function DateRangeBlock({
   setFromDate,
   setToDate,
 }) {
+
   return (
     <div className="agent-date-panel">
 
@@ -1187,6 +1229,7 @@ function DetailRow({
   value,
   status,
 }) {
+
   return (
     <div className="agent-detail-row">
 

@@ -49,35 +49,56 @@ export default function AgentSalesPerformance({
 
       <div className="agent-sales-grid">
 
-        <div className="agent-sales-card">
-          <span>DC Calls</span>
+        {/* DC CALLS & DC SALES */}
 
-          <strong>
-            {stats.dcCalls}
-          </strong>
+        <div className="agent-sales-card dc-combined-card">
+
+          <span>DC Calls &amp; Sales</span>
+
+          <div className="dc-combined-values">
+
+            <div className="dc-value">
+
+              <small>DC Calls</small>
+
+              <strong>
+                {stats.dcCalls}
+              </strong>
+
+            </div>
+
+
+            <div className="dc-divider"></div>
+
+
+            <div className="dc-value">
+
+              <small>DC Sales</small>
+
+              <strong>
+                {stats.dcSales}
+              </strong>
+
+              <small
+                className={
+                  stats.dcSales === 0
+                    ? "needs-attention"
+                    : "active-status"
+                }
+              >
+                {stats.dcSales === 0
+                  ? "Needs Attention"
+                  : "Active"}
+              </small>
+
+            </div>
+
+          </div>
+
         </div>
 
 
-        <div className="agent-sales-card">
-          <span>DC Sales</span>
-
-          <strong>
-            {stats.dcSales}
-          </strong>
-
-          <small
-            className={
-              stats.dcSales === 0
-                ? "needs-attention"
-                : "active-status"
-            }
-          >
-            {stats.dcSales === 0
-              ? "Needs Attention"
-              : "Active"}
-          </small>
-        </div>
-
+        {/* B2C SALES */}
 
         <div className="agent-sales-card">
           <span>B2C Sales</span>
@@ -88,6 +109,8 @@ export default function AgentSalesPerformance({
         </div>
 
 
+        {/* MAC CALLS */}
+
         <div className="agent-sales-card">
           <span>MAC Calls</span>
 
@@ -96,6 +119,8 @@ export default function AgentSalesPerformance({
           </strong>
         </div>
 
+
+        {/* PNRS */}
 
         <div className="agent-sales-card">
           <span>PNRs Created</span>
@@ -106,6 +131,8 @@ export default function AgentSalesPerformance({
         </div>
 
 
+        {/* TOA */}
+
         <div className="agent-sales-card">
           <span>TOA</span>
 
@@ -115,6 +142,8 @@ export default function AgentSalesPerformance({
           </strong>
         </div>
 
+
+        {/* GOOGLE REVIEWS */}
 
         <div className="agent-sales-card">
           <span>Google Reviews</span>
@@ -136,6 +165,8 @@ export default function AgentSalesPerformance({
           </small>
         </div>
 
+
+        {/* TRUSTPILOT */}
 
         <div className="agent-sales-card">
           <span>Trustpilot</span>

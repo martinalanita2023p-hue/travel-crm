@@ -302,3 +302,37 @@
   }
 
 }
+
+.dc-combined-card {
+  grid-column: span 2;
+}
+
+.dc-combined-values {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 14px;
+}
+
+.dc-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dc-value small {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dc-value strong {
+  font-size: 24px;
+}
+
+.dc-divider {
+  width: 1px;
+  height: 45px;
+  background: #dbe3ef;
+}

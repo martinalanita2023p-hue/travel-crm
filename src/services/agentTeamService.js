@@ -8,10 +8,10 @@ import supabase from "../supabase/client";
 export async function getAllAgents() {
 
   const { data, error } = await supabase
-    .from("users")
-    .select("id, name, username, role, status")
-    .eq("role", "Agent")
-    .order("name", { ascending: true });
+  .from("users")
+  .select("id,name,username,role,status")
+  .eq("role", "Agent")
+  .order("name", { ascending: true });
 
 
   if (error) {

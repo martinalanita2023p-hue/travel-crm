@@ -382,3 +382,45 @@ appearance:textfield;
   font-size: 15px;
   font-weight: 600;
 }
+
+/* =================================================
+   FRESH CALLS
+================================================= */
+
+.fresh-calls-group {
+  grid-column: 1 / -1;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.fresh-calls-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #003b7a;
+  margin-bottom: 8px;
+}
+
+.fresh-calls-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Keep each Fresh Call input nicely aligned */
+.fresh-calls-inputs > * {
+  width: 100%;
+}
+
+.fresh-calls-total {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #003b7a;
+  text-align: center;
+}
+
+.fresh-calls-total strong {
+  font-weight: 700;
+}

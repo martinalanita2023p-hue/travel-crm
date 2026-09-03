@@ -26,6 +26,11 @@ import { toast } from "react-toastify";
 import "../styles/agentDashboard.css";
 
 import { getUser } from "../services/authService";
+import { getBostonDate } from "../utils/bostonTime";
+
+import {
+  validateAgentAgainstReception,
+} from "../services/agentReceptionValidationService";
 
 import {
   getTodayReport,
@@ -41,20 +46,7 @@ import useAgentPerformance
    GET CURRENT EASTERN / BOSTON DATE
 ===================================================== */
 
-function getEasternDate() {
 
-  return new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone: "America/New_York",
-
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }
-  ).format(new Date());
-
-}
 
 
 /* =====================================================
@@ -172,91 +164,135 @@ function Agent() {
   const [loadingReport, setLoadingReport] =
     useState(true);
 
+    /* =====================================================
+   RECEPTION VERIFICATION
+===================================================== */
+
+const [receptionVerification, setReceptionVerification] =
+  useState(null);
+
+const [receptionVerificationLoading, setReceptionVerificationLoading] =
+  useState(true);
+
 
   /* =====================================================
      LOAD TODAY'S REPORT
   ===================================================== */
 
-  useEffect(() => {
+  /* =====================================================
+   LOAD TODAY'S REPORT + RECEPTION VERIFICATION
+===================================================== */
 
-    async function loadReport() {
+useEffect(() => {
 
-      try {
+  async function loadReport() {
 
-        setLoadingReport(true);
+    try {
 
-
-        if (!currentUser?.name) {
-
-          return;
-
-        }
+      setLoadingReport(true);
+      setReceptionVerificationLoading(true);
 
 
-        const todayReport =
-          await getTodayReport(
+      if (!currentUser?.name) {
+
+        return;
+
+      }
+
+
+      const reportDate =
+        getBostonDate();
+
+
+      const todayReport =
+        await getTodayReport(
+          currentUser.name
+        );
+
+
+      /* =============================================
+         LOAD AGENT REPORT
+      ============================================== */
+
+      if (todayReport) {
+
+        setReport(
+          todayReport
+        );
+
+        setIsSubmitted(true);
+
+      }
+
+      else {
+
+        setReport(
+          createEmptyReport(
             currentUser.name
-          );
-
-
-        /* =============================================
-           REPORT EXISTS
-        ============================================== */
-
-        if (todayReport) {
-
-          setReport(
-            todayReport
-          );
-
-          setIsSubmitted(true);
-
-        }
-
-
-        /* =============================================
-           NO REPORT YET
-        ============================================== */
-
-        else {
-
-          setReport(
-            createEmptyReport(
-              currentUser.name
-            )
-          );
-
-          setIsSubmitted(false);
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Failed to load today's report:",
-          error
+          )
         );
 
-        toast.error(
-          "Unable to load today's report."
+        setIsSubmitted(false);
+
+      }
+
+
+      /* =============================================
+         CHECK RECEPTION
+      ============================================== */
+
+      const reportForVerification =
+        todayReport ||
+        createEmptyReport(
+          currentUser.name
         );
 
-      }
 
-      finally {
+      const verification =
+        await validateAgentAgainstReception(
+          currentUser.name,
+          reportDate,
+          reportForVerification
+        );
 
-        setLoadingReport(false);
 
-      }
+      setReceptionVerification(
+        verification
+      );
 
     }
 
+    catch (error) {
 
-    loadReport();
+      console.error(
+        "Failed to load today's report:",
+        error
+      );
 
-  }, [currentUser?.name]);
+      toast.error(
+        "Unable to load today's report."
+      );
+
+      setReceptionVerification(
+        null
+      );
+
+    }
+
+    finally {
+
+      setLoadingReport(false);
+
+      setReceptionVerificationLoading(false);
+
+    }
+
+  }
+
+
+  loadReport();
+
+}, [currentUser?.name]);
 
 
   /* =====================================================
@@ -305,15 +341,15 @@ function Agent() {
 
       const reportData = {
 
-        ...report,
+  ...report,
 
-        agent_name:
-          currentUser.name,
+  agent_name:
+    currentUser.name,
 
-        report_date:
-          getEasternDate(),
+  report_date:
+    getBostonDate(),
 
-      };
+};
 
 
       /* =============================================
@@ -323,6 +359,61 @@ function Agent() {
       delete reportData.id;
 
       delete reportData.created_at;
+
+      /* =============================================
+   CHECK AGAINST RECEPTION BEFORE SAVING
+============================================= */
+
+const verification =
+  await validateAgentAgainstReception(
+    currentUser.name,
+    reportData.report_date,
+    reportData
+  );
+
+
+/* =============================================
+   RECEPTION EXISTS + NUMBERS DON'T MATCH
+============================================= */
+
+if (
+  verification.receptionExists &&
+  !verification.allowed
+) {
+
+  setReceptionVerification(
+    verification
+  );
+
+
+  const mismatchMessage =
+    verification.mismatches
+      .map(
+        (item) =>
+          `${item.metric}: Reception ${item.reception}, you entered ${item.agent}`
+      )
+      .join(" | ");
+
+
+  toast.error(
+    `Report not submitted. ${mismatchMessage}`
+  );
+
+
+  return;
+
+}
+
+
+/* =============================================
+   NUMBERS MATCH / RECEPTION NOT ENTERED
+============================================= */
+
+setReceptionVerification(
+  verification
+);
+
+
 
 
       /* =============================================
@@ -543,6 +634,151 @@ function Agent() {
         {/* =================================================
             TODAY'S REPORT + TODAY'S PERFORMANCE
         ================================================= */}
+
+        {/* =================================================
+    RECEPTION VERIFICATION
+================================================= */}
+
+{!receptionVerificationLoading &&
+  receptionVerification && (
+    <div
+      className={`agent-reception-verification ${
+        receptionVerification.receptionExists
+          ? receptionVerification.allowed
+            ? "verified"
+            : "mismatch"
+          : "waiting"
+      }`}
+    >
+
+      {/* ============================================
+          RECEPTION NOT ENTERED
+      ============================================ */}
+
+      {!receptionVerification.receptionExists && (
+
+        <>
+          <div className="agent-verification-icon">
+            🟡
+          </div>
+
+          <div className="agent-verification-content">
+
+            <strong>
+              Waiting for Reception verification
+            </strong>
+
+            <span>
+              Reception has not entered today's
+              call numbers yet. You can submit
+              your report normally.
+            </span>
+
+          </div>
+        </>
+
+      )}
+
+
+      {/* ============================================
+          VERIFIED
+      ============================================ */}
+
+      {receptionVerification.receptionExists &&
+        receptionVerification.allowed && (
+
+        <>
+          <div className="agent-verification-icon">
+            🟢
+          </div>
+
+          <div className="agent-verification-content">
+
+            <strong>
+              Reception Verified
+            </strong>
+
+            <span>
+              Your Fresh Calls, DC Calls, and
+              Cancellation Calls match Reception.
+            </span>
+
+          </div>
+        </>
+
+      )}
+
+
+      {/* ============================================
+          MISMATCH
+      ============================================ */}
+
+      {receptionVerification.receptionExists &&
+        !receptionVerification.allowed && (
+
+        <>
+
+          <div className="agent-verification-icon">
+            🔴
+          </div>
+
+          <div className="agent-verification-content">
+
+            <strong>
+              Reception Mismatch
+            </strong>
+
+            <span>
+              Your report does not match the numbers
+              entered by Reception. Please correct
+              the values below.
+            </span>
+
+
+            <div className="agent-reception-mismatches">
+
+              {receptionVerification.mismatches.map(
+                (item) => (
+
+                  <div
+                    className="agent-reception-mismatch"
+                    key={item.field}
+                  >
+
+                    <strong>
+                      {item.metric}
+                    </strong>
+
+                    <span>
+                      Reception:{" "}
+                      <b>{item.reception}</b>
+                    </span>
+
+                    <span>
+                      You entered:{" "}
+                      <b>{item.agent}</b>
+                    </span>
+
+                    <span className="agent-reception-fix">
+                      Please change {item.metric} to{" "}
+                      <b>{item.reception}</b>
+                    </span>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        </>
+
+      )}
+
+    </div>
+  )}
 
         <div className="agent-main-grid">
 

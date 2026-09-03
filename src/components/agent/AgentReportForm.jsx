@@ -19,12 +19,44 @@ export default function AgentReportForm({
 
         <div className="form-grid">
 
-          <FormInput
-            label="Fresh Calls"
-            name="fresh_calls"
-            value={report.fresh_calls}
-            onChange={handleChange}
-          />
+          {/* ================= FRESH CALLS ================= */}
+
+          <div className="fresh-calls-group">
+
+            <label className="fresh-calls-title">
+              Fresh Calls
+            </label>
+
+            <div className="fresh-calls-inputs">
+
+              <FormInput
+                label="EX-USA"
+                name="ex_usa"
+                value={report.ex_usa ?? 0}
+                onChange={handleChange}
+              />
+
+              <FormInput
+                label="EX-IND"
+                name="ex_ind"
+                value={report.ex_ind ?? 0}
+                onChange={handleChange}
+              />
+
+            </div>
+
+            <div className="fresh-calls-total">
+              Total Fresh Calls:{" "}
+              <strong>
+                {Number(report.ex_usa || 0) +
+                  Number(report.ex_ind || 0)}
+              </strong>
+            </div>
+
+          </div>
+
+
+          {/* ================= OTHER CALLS ================= */}
 
           <FormInput
             label="SC Calls"
@@ -79,10 +111,8 @@ export default function AgentReportForm({
 
       </div>
 
+
       {/* ================= SALES ================= */}
-
-      {/* Fresh Tickets */}
-
 
       <div className="form-section">
 
@@ -90,25 +120,22 @@ export default function AgentReportForm({
 
         <div className="form-grid">
 
+          {/* Fresh Tickets */}
 
           <div className="form-group">
 
-  <label>Fresh Tickets</label>
+            <label>Fresh Tickets</label>
 
-  <input
-    type="number"
-    name="fresh_tickets"
-    value={report.fresh_tickets || 0}
-    onChange={handleChange}
-    min="0"
-  />
+            <input
+              type="number"
+              name="fresh_tickets"
+              value={report.fresh_tickets || 0}
+              onChange={handleChange}
+              min="0"
+            />
 
-</div>
+          </div>
 
-
-          
-
-          
 
           <FormInput
             label="B2C Sales"
@@ -142,6 +169,7 @@ export default function AgentReportForm({
 
       </div>
 
+
       {/* ================= REVIEWS ================= */}
 
       <div className="form-section">
@@ -168,6 +196,7 @@ export default function AgentReportForm({
 
       </div>
 
+
       {/* ================= FINANCE ================= */}
 
       <div className="form-section">
@@ -187,31 +216,35 @@ export default function AgentReportForm({
 
       </div>
 
+
       {/* ================= SAVE ================= */}
 
       <div className="save-report-section">
 
-       <button
-  type="button"
-  className="premium-submit-btn"
-  onClick={handleSubmit}
->
-  <span className="premium-submit-icon">
-    {isSubmitted ? "↻" : "✓"}
-  </span>
+        <button
+          type="button"
+          className="premium-submit-btn"
+          onClick={handleSubmit}
+        >
 
-  <span>
-    {isSubmitted
-      ? "Update Today's Report"
-      : "Submit Today's Report"}
-  </span>
-</button>
+          <span className="premium-submit-icon">
+            {isSubmitted ? "↻" : "✓"}
+          </span>
+
+          <span>
+            {isSubmitted
+              ? "Update Today's Report"
+              : "Submit Today's Report"}
+          </span>
+
+        </button>
 
       </div>
 
     </div>
   );
 }
+
 
 function FormInput({
   label,
@@ -228,7 +261,7 @@ function FormInput({
         type="number"
         min="0"
         name={name}
-        value={value}
+        value={value ?? 0}
         onChange={onChange}
       />
 

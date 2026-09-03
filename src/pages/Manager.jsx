@@ -3,6 +3,8 @@ import * as XLSX from "xlsx";
 import TeamSalesComparison from "../components/manager/TeamSalesComparison";
 
 import Layout from "../components/Layout";
+import AgentIndividualInsight
+  from "../components/manager/AgentIndividualInsight";
 
 import ManagerHeader from "../components/manager/ManagerHeader";
 import aggregateReports from "../utils/aggregateReports";
@@ -45,17 +47,20 @@ export default function Manager() {
 
   const [viewMode, setViewMode] =
     useState("day");
+    
 
     
 
-  const [selectedAgent, setSelectedAgent] =
-    useState("All Agents");
+  const [selectedAgent, setSelectedAgent] =  useState("All Agents");
+    
+    const [selectedInsightAgent, setSelectedInsightAgent] = useState(null);
 
   const [search, setSearch] =
     useState("");
 
   const [selectedKPI, setSelectedKPI] =
     useState(null);
+    
 
   const [editingReport, setEditingReport] =
     useState(null);
@@ -143,7 +148,12 @@ export default function Manager() {
         const data =
           await getAllAgents();
 
-        setAgents(data || []);
+        setAgents(
+  (data || []).filter(
+    (user) =>
+      user.role?.trim().toLowerCase() === "agent"
+  )
+);
 
       } catch (err) {
 
@@ -1587,53 +1597,9 @@ export default function Manager() {
 
               )}
 
-            </section>
+           
 
-            {/* =============================================
-                MEETING TEAM
-            ============================================== */}
-
-            <section className="meeting-team-section">
-
-
-              {/* -----------------------------------------
-                  MEETING TEAM HEADER
-              ------------------------------------------ */}
-
-              <div className="meeting-team-header">
-
-                <div>
-
-                  <h2>
-                    Meeting Team
-                  </h2>
-
-                  <p>
-                    Select the agents who are
-                    part of this meeting.
-                  </p>
-
-                </div>
-
-
-                <button
-                  type="button"
-                  className="add-team-agent-btn"
-                  onClick={() =>
-                    setShowAgentSelector(
-                      (current) => !current
-                    )
-                  }
-                >
-
-                  {showAgentSelector
-                    ? "Close"
-                    : "+ Add Agent"}
-
-                </button>
-
-              </div>
-
+           
 
               {/* -----------------------------------------
                   DATE RANGE
@@ -2222,16 +2188,22 @@ export default function Manager() {
                                 (agent) => (
 
                                   <tr
-                                    key={
-                                      agent.agentName
-                                    }
-                                    className="clickable-agent-row"
-                                    onClick={() =>
-                                      setSelectedAgent(
-                                        agent.agentName
-                                      )
-                                    }
-                                  >
+  key={agent.agentName}
+  className="clickable-agent-row"
+  onClick={() => {
+    const fullAgent = agents.find(
+      (item) =>
+        item.name?.trim().toLowerCase() ===
+        agent.agentName?.trim().toLowerCase()
+    );
+
+    setSelectedInsightAgent(
+      fullAgent || {
+        name: agent.agentName,
+      }
+    );
+  }}
+>
 
                                     <td className="team-agent-name">
 
@@ -2362,22 +2334,41 @@ export default function Manager() {
             <div className="team-table-card">
 
               <TeamTable
-                reports={
-                  filteredReports
-                }
-                onEdit={
-                  setEditingReport
-                }
-                onDelete={
-                  setDeletingReport
-                }
-              />
+  reports={filteredReports}
+  onAnalytics={(report) => {
+    const fullAgent = agents.find(
+      (item) =>
+        item.name?.trim().toLowerCase() ===
+        report.agent_name?.trim().toLowerCase()
+    );
+
+    setSelectedInsightAgent(
+      fullAgent || {
+        name: report.agent_name,
+      }
+    );
+  }}
+/>
 
             </div>
 
           </>
 
         )}
+
+
+        {/* =================================================
+    INDIVIDUAL AGENT DEEP INSIGHTS
+================================================= */}
+
+{selectedInsightAgent && (
+  <AgentIndividualInsight
+    agents={agents}
+    reports={reports}
+    selectedAgent={selectedInsightAgent}
+    onSelectAgent={setSelectedInsightAgent}
+  />
+)}
 
 
         {/* =================================================

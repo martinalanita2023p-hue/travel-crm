@@ -4,6 +4,7 @@ export default function AgentPerformanceTable({
   reports,
   onEdit,
   onDelete,
+  onAgentClick,
 }) {
 
   return (
@@ -29,31 +30,18 @@ export default function AgentPerformanceTable({
             <tr>
 
               <th>Agent</th>
-
               <th>Fresh</th>
-
               <th>Name</th>
-
               <th>MAC</th>
-
               <th>Manager</th>
-
               <th>Airport</th>
-
               <th>Tickets</th>
-
               <th>PNRs</th>
-
               <th>Insurance</th>
-
               <th>Google</th>
-
               <th>Trustpilot</th>
-
               <th>TOA</th>
-
               <th>Conversion</th>
-
               <th>Actions</th>
 
             </tr>
@@ -105,7 +93,12 @@ export default function AgentPerformanceTable({
 
                   <tr key={report.id}>
 
-                    <td className="agent-name">
+                    <td
+                      className="agent-name clickable-agent"
+                      onClick={() =>
+                        onAgentClick?.(report)
+                      }
+                    >
 
                       👤 {report.agent_name}
 
@@ -175,11 +168,8 @@ export default function AgentPerformanceTable({
                         className={
                           conversion >= 80
                             ? "badge green"
-
                             : conversion >= 60
-
                             ? "badge orange"
-
                             : "badge red"
                         }
                       >
@@ -237,5 +227,4 @@ export default function AgentPerformanceTable({
     </div>
 
   );
-
 }

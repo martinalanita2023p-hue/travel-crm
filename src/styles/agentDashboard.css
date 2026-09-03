@@ -246,3 +246,181 @@ position:static;
   }
 
 }
+
+/* =====================================================
+   AGENT RECEPTION VERIFICATION
+===================================================== */
+
+.agent-reception-verification {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+
+  margin: 24px 0;
+
+  padding: 18px 20px;
+
+  border-radius: 14px;
+
+  border: 1px solid #e5e7eb;
+
+  background: #ffffff;
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.agent-verification-icon {
+  font-size: 24px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.agent-verification-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  flex: 1;
+}
+
+.agent-verification-content > strong {
+  font-size: 15px;
+}
+
+.agent-verification-content > span {
+  font-size: 13px;
+
+  color: #666;
+}
+
+
+/* =====================================================
+   WAITING
+===================================================== */
+
+.agent-reception-verification.waiting {
+  background: #fffaf0;
+
+  border-color: #f2d38b;
+}
+
+
+/* =====================================================
+   VERIFIED
+===================================================== */
+
+.agent-reception-verification.verified {
+  background: #f1faf4;
+
+  border-color: #b7e4c7;
+}
+
+
+/* =====================================================
+   MISMATCH
+===================================================== */
+
+.agent-reception-verification.mismatch {
+  background: #fff5f5;
+
+  border-color: #efb3b3;
+}
+
+
+/* =====================================================
+   MISMATCH LIST
+===================================================== */
+
+.agent-reception-mismatches {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+
+/* =====================================================
+   INDIVIDUAL MISMATCH
+===================================================== */
+
+.agent-reception-mismatch {
+  display: grid;
+
+  grid-template-columns:
+    minmax(150px, 1fr)
+    auto
+    auto;
+
+  gap: 12px;
+
+  align-items: center;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #f0d0d0;
+
+  font-size: 13px;
+}
+
+.agent-reception-mismatch > strong {
+  font-size: 13px;
+}
+
+.agent-reception-mismatch > span {
+  color: #666;
+}
+
+
+/* =====================================================
+   FIX MESSAGE
+===================================================== */
+
+.agent-reception-fix {
+  grid-column: 1 / -1;
+
+  color: #b42318 !important;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .agent-reception-verification {
+    padding: 16px;
+  }
+
+
+  .agent-reception-mismatch {
+    grid-template-columns: 1fr;
+
+    gap: 5px;
+  }
+
+
+  .agent-reception-fix {
+    grid-column: auto;
+  }
+
+}

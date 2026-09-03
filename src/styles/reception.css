@@ -949,3 +949,102 @@
     font-size: 9px;
   }
 }
+
+/* =========================================================
+   RECEPTION DATA IMPORT
+   ========================================================= */
+
+.reception-import-card {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7ef;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(20, 30, 60, 0.04);
+  text-align: center;
+}
+
+.reception-import-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.reception-import-eyebrow {
+  margin: 0;
+  color: #5146d8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reception-import-header h2 {
+  margin: 0;
+  color: #202638;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.reception-import-header p {
+  margin: 2px 0 0;
+  color: #697183;
+  font-size: 12px;
+}
+
+
+/* Upload button */
+
+.reception-import-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  background: #5b4df6;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reception-import-button:hover {
+  background: #493ce0;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(91, 77, 246, 0.2);
+}
+
+
+/* Uploaded file */
+
+.reception-import-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 7px 11px;
+  border: 1px solid #e2e5ee;
+  border-radius: 7px;
+  background: #f7f8fc;
+  color: #30384a;
+  font-size: 11px;
+}
+
+
+/* Error */
+
+.reception-import-error {
+  max-width: 600px;
+  margin: 12px auto 0;
+  padding: 9px 12px;
+  border: 1px solid #f1c4c4;
+  border-radius: 7px;
+  background: #fff5f5;
+  color: #b42318;
+  font-size: 11px;
+}
+

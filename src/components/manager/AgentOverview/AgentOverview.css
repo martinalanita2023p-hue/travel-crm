@@ -1240,3 +1240,44 @@
   }
 
 }
+
+
+.agent-dc-combined-card {
+  grid-column: span 2;
+}
+
+.dc-combined-values {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 14px;
+}
+
+.dc-combined-values > div:not(.dc-combined-divider) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dc-combined-values small {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dc-combined-values strong {
+  font-size: 24px;
+}
+
+.dc-combined-divider {
+  width: 1px;
+  height: 45px;
+  background: #dbe3ef;
+}
+
+.dc-combined-values em {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+}
